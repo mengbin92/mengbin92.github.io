@@ -22,7 +22,7 @@
 &lt;hr&gt;
 &lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
 &lt;p&gt;告警能力在Prometheus中是独立出来的部分。如下图所示，通过在Prometheus中定义AlertRule（告警规则），Prometheus会周期性的对告警规则进行计算，如果满足告警触发条件就会向Alertmanager发送告警信息。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://mengbin92.github.io/image/Prometheus/alert/alert.png&#34; alt=&#34;Prometheus告警处理&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/mengbin92/blog/blob/main/static/image/Prometheus/alert/alert.png&#34; alt=&#34;Prometheus告警处理&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Prometheus的告警规则一般有以下几部分：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;告警名称：用户为告警规则命名，最好可以直接表达出该告警的主要内容&lt;/li&gt;
@@ -33,7 +33,7 @@
 &lt;p&gt;Alertmanager还提供了静默和告警抑制机制来对告警通知行为进行优化。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;alertmanager特性&#34;&gt;Alertmanager特性&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&#34;https://mengbin92.github.io/image/Prometheus/alert/alert.png&#34; alt=&#34;Alertmanager特性&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/mengbin92/blog/blob/main/static/image/Prometheus/alert/Alertmanager%E7%89%B9%E6%80%A7.png&#34; alt=&#34;Alertmanager特性&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;分组&#34;&gt;分组&lt;/h3&gt;
 &lt;p&gt;分组机制可以将详细的告警信息合并成一个通知。在某些情况下，比如由于系统宕机导致大量的告警被同时触发，在这种情况下分组机制可以将这些被触发的告警合并为一个告警通知，避免一次性接受大量的告警通知，而无法对问题进行快速定位。&lt;/p&gt;
 &lt;p&gt;例如，当集群中有数百个正在运行的服务实例，并且为每一个实例设置了告警规则。假如此时发生了网络故障，可能导致大量的服务实例无法连接到数据库，结果就会有数百个告警被发送到Alertmanager。&lt;/p&gt;
