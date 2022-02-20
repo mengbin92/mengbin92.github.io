@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Meng`s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 20 Feb 2022 16:43:47 +0800</lastBuildDate><atom:link href="https://mengbin92.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 20 Feb 2022 16:54:53 +0800</lastBuildDate><atom:link href="https://mengbin92.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Prometheus Alertmanager</title>
+      <link>https://mengbin92.github.io/post/prometheus/alertmanager/</link>
+      <pubDate>Sun, 20 Feb 2022 16:54:53 +0800</pubDate>
+      
+      <guid>https://mengbin92.github.io/post/prometheus/alertmanager/</guid>
+      <description>Prometheus Alertmanager 简介 告警能力在Prometheus中是独立出来的部分。如下图所示，通过在Prometheus中定义AlertRule（告警规则），Pro</description>
+    </item>
+    
     <item>
       <title>使用boot.iso镜像安装OL8</title>
       <link>https://mengbin92.github.io/post/others/%E4%BD%BF%E7%94%A8boot.iso%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85ol8/</link>

@@ -3,14 +3,21 @@
   
   <url>
     <loc>https://mengbin92.github.io/</loc>
-    <lastmod>2022-02-20T16:43:47+08:00</lastmod>
+    <lastmod>2022-02-20T16:54:53+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://mengbin92.github.io/post/</loc>
-    <lastmod>2022-02-20T16:43:47+08:00</lastmod>
+    <lastmod>2022-02-20T16:54:53+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://mengbin92.github.io/post/prometheus/alertmanager/</loc>
+    <lastmod>2022-02-20T16:54:53+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

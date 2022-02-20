@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>使用boot.iso镜像安装OL8 - Meng`s Blog</title>
+  <title>Prometheus Alertmanager - Meng`s Blog</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -23,7 +23,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="mengbin" />
-  <meta name="description" content="使用boot.iso镜像安装OL8 本文记录使用boot.iso镜像安装Oracle Linux 8。 镜像下载 Oracle Linux 8 boot镜像可以从这里下载。 安装 Oracle Linux 8" />
+  <meta name="description" content="Prometheus Alertmanager 简介 告警能力在Prometheus中是独立出来的部分。如下图所示，通过在Prometheus中定义AlertRule（告警规则），Pro" />
 
 
 
@@ -34,7 +34,7 @@
 <meta name="generator" content="Hugo 0.92.2" />
 
 
-<link rel="canonical" href="https://mengbin92.github.io/post/others/%E4%BD%BF%E7%94%A8boot.iso%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85ol8/" />
+<link rel="canonical" href="https://mengbin92.github.io/post/prometheus/alertmanager/" />
 
 
 
@@ -58,20 +58,20 @@
 
 
 
-<meta property="og:title" content="使用boot.iso镜像安装OL8" />
-<meta property="og:description" content="使用boot.iso镜像安装OL8 本文记录使用boot.iso镜像安装Oracle Linux 8。 镜像下载 Oracle Linux 8 boot镜像可以从这里下载。 安装 Oracle Linux 8" />
+<meta property="og:title" content="Prometheus Alertmanager" />
+<meta property="og:description" content="Prometheus Alertmanager 简介 告警能力在Prometheus中是独立出来的部分。如下图所示，通过在Prometheus中定义AlertRule（告警规则），Pro" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://mengbin92.github.io/post/others/%E4%BD%BF%E7%94%A8boot.iso%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85ol8/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2022-02-20T16:43:47+08:00" />
-<meta property="article:modified_time" content="2022-02-20T16:43:47+08:00" />
+<meta property="og:url" content="https://mengbin92.github.io/post/prometheus/alertmanager/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-20T16:54:53+08:00" />
+<meta property="article:modified_time" content="2022-02-20T16:54:53+08:00" />
 
-<meta itemprop="name" content="使用boot.iso镜像安装OL8">
-<meta itemprop="description" content="使用boot.iso镜像安装OL8 本文记录使用boot.iso镜像安装Oracle Linux 8。 镜像下载 Oracle Linux 8 boot镜像可以从这里下载。 安装 Oracle Linux 8"><meta itemprop="datePublished" content="2022-02-20T16:43:47+08:00" />
-<meta itemprop="dateModified" content="2022-02-20T16:43:47+08:00" />
-<meta itemprop="wordCount" content="150">
+<meta itemprop="name" content="Prometheus Alertmanager">
+<meta itemprop="description" content="Prometheus Alertmanager 简介 告警能力在Prometheus中是独立出来的部分。如下图所示，通过在Prometheus中定义AlertRule（告警规则），Pro"><meta itemprop="datePublished" content="2022-02-20T16:54:53+08:00" />
+<meta itemprop="dateModified" content="2022-02-20T16:54:53+08:00" />
+<meta itemprop="wordCount" content="2556">
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="使用boot.iso镜像安装OL8"/>
-<meta name="twitter:description" content="使用boot.iso镜像安装OL8 本文记录使用boot.iso镜像安装Oracle Linux 8。 镜像下载 Oracle Linux 8 boot镜像可以从这里下载。 安装 Oracle Linux 8"/>
+<meta name="twitter:title" content="Prometheus Alertmanager"/>
+<meta name="twitter:description" content="Prometheus Alertmanager 简介 告警能力在Prometheus中是独立出来的部分。如下图所示，通过在Prometheus中定义AlertRule（告警规则），Pro"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -279,7 +279,7 @@
           <article class="post bg-white">
     
     <header class="post-header">
-      <h1 class="post-title">使用boot.iso镜像安装OL8</h1>
+      <h1 class="post-title">Prometheus Alertmanager</h1>
       
       <div class="post-meta">
         <time datetime="2022-02-20" class="post-time">
@@ -303,8 +303,21 @@
   <div class="post-toc-content">
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#镜像下载">镜像下载</a></li>
-    <li><a href="#安装">安装</a></li>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#alertmanager特性">Alertmanager特性</a>
+      <ul>
+        <li><a href="#分组">分组</a></li>
+        <li><a href="#抑制">抑制</a></li>
+        <li><a href="#静默">静默</a></li>
+      </ul>
+    </li>
+    <li><a href="#prometheus告警规则">Prometheus告警规则</a>
+      <ul>
+        <li><a href="#定义告警规则">定义告警规则</a></li>
+        <li><a href="#模块化">模块化</a></li>
+        <li><a href="#查看告警状态">查看告警状态</a></li>
+      </ul>
+    </li>
   </ul>
 </nav>
   </div>
@@ -312,38 +325,101 @@
 
     
     <div class="post-content">
-      <h1 id="使用bootiso镜像安装ol8">使用boot.iso镜像安装OL8</h1>
-<p>本文记录使用boot.iso镜像安装Oracle Linux 8。</p>
-<h2 id="镜像下载">镜像下载</h2>
-<p>Oracle Linux 8 boot镜像可以从<a href="http://yum.oracle.com/oracle-linux-isos.html">这里</a>下载。</p>
-<h2 id="安装">安装</h2>
-<p>Oracle Linux 8 boot镜像安装系统跟使用全镜像安装过程基本一样，除了需要自己手动配置<strong>软件源</strong>，我这里使用的时Oracle官方提供的yum源：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">名称</th>
-<th style="text-align:left">地址</th>
-<th style="text-align:left">类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">baseos</td>
-<td style="text-align:left"><a href="https://yum.oracle.com/repo/OracleLinux/OL8/baseos/latest/x86_64">https://yum.oracle.com/repo/OracleLinux/OL8/baseos/latest/x86_64</a></td>
-<td style="text-align:left">Repository URL</td>
-</tr>
-<tr>
-<td style="text-align:left">ol8_AppStream</td>
-<td style="text-align:left"><a href="https://yum.oracle.com/repo/OracleLinux/OL8/appstream/x86_64/">https://yum.oracle.com/repo/OracleLinux/OL8/appstream/x86_64/</a></td>
-<td style="text-align:left">Repository URL</td>
-</tr>
-<tr>
-<td style="text-align:left">ol8_UEKR6</td>
-<td style="text-align:left"><a href="https://yum.oracle.com/repo/OracleLinux/OL8/UEKR6/x86_64/">https://yum.oracle.com/repo/OracleLinux/OL8/UEKR6/x86_64/</a></td>
-<td style="text-align:left">Repository URL</td>
-</tr>
-</tbody>
-</table>
+      <h1 id="prometheus-alertmanager">Prometheus Alertmanager</h1>
+<hr>
+<h2 id="简介">简介</h2>
+<p>告警能力在Prometheus中是独立出来的部分。如下图所示，通过在Prometheus中定义AlertRule（告警规则），Prometheus会周期性的对告警规则进行计算，如果满足告警触发条件就会向Alertmanager发送告警信息。</p>
+<p><img src="../../../public/image/Prometheus/alert/alert.png" alt=""></p>
+<!-- raw HTML omitted -->
+<p>Prometheus的告警规则一般有以下几部分：</p>
+<ul>
+<li>告警名称：用户为告警规则命名，最好可以直接表达出该告警的主要内容</li>
+<li>告警规则：告警规则实际是一组PromQL，即当PromQL查询结果持续多长时间后发出告警</li>
+</ul>
+<p>在Prometheus中，还可以通过Group（告警组）对一组相关的告警进行统一定义，这些定义都是通过YAML文件来统一管理的。</p>
+<p>Alertmanager是一个单独的组件，用以处理来自Prometheus Server或其它客户端的告警信息。它可以对这些信息进行进一步处理。比如，当接收到大量重复告警时能够消除重复的告警信息，同时对告警信息进行分组并且路由到正确的通知方。Prometheus内置了对邮件、Slack等多种方式的支持，同时还支持与Webhook集成，以支持更多定制化的场景。例如，Alertmanager目前不支持钉钉，那么我们可以给通过Webhook与钉钉机器人进行集成，从而通过钉钉接收告警信息。</p>
+<p>Alertmanager还提供了静默和告警抑制机制来对告警通知行为进行优化。</p>
+<hr>
+<h2 id="alertmanager特性">Alertmanager特性</h2>
+<!-- raw HTML omitted -->
+<h3 id="分组">分组</h3>
+<p>分组机制可以将详细的告警信息合并成一个通知。在某些情况下，比如由于系统宕机导致大量的告警被同时触发，在这种情况下分组机制可以将这些被触发的告警合并为一个告警通知，避免一次性接受大量的告警通知，而无法对问题进行快速定位。</p>
+<p>例如，当集群中有数百个正在运行的服务实例，并且为每一个实例设置了告警规则。假如此时发生了网络故障，可能导致大量的服务实例无法连接到数据库，结果就会有数百个告警被发送到Alertmanager。</p>
+<p>而作为用户，可能只希望能够在一个通知中中就能查看哪些服务实例收到影响。这时可以按照服务所在集群或者告警名称对告警进行分组，而将这些告警内聚在一起成为一个通知。</p>
+<p>告警分组，告警时间，以及告警的接受方式可以通过Alertmanager的配置文件进行配置。</p>
+<h3 id="抑制">抑制</h3>
+<p>抑制是指当某一告警发出后，可以停止重复发送由此告警引发的其它告警的机制。</p>
+<p>例如，当集群不可访问时触发了一次告警，通过配置Alertmanager可以忽略与该集群有关的其它所有告警。这样可以避免接收到大量与实际问题无关的告警通知。</p>
+<p>抑制机制同样通过Alertmanager的配置文件进行设置。</p>
+<h3 id="静默">静默</h3>
+<p>静默提供了一个简单的机制可以快速根据标签对告警进行静默处理。如果接收到的告警符合静默的配置，Alertmanager则不会发送告警通知。</p>
+<p>静默设置需要在Alertmanager的Web页面上进行设置。</p>
+<hr>
+<h2 id="prometheus告警规则">Prometheus告警规则</h2>
+<p>Prometheus的告警规则实际是一组PromQL表达式定义的告警出发条件，由Prometheus后端对这些出发规则进行周期性计算，在满足触发条件时触发告警通知。默认情况下，用户可以通过Prometheus的Web界面查看这些告警规则以及告警的触发状态。当Promthues与Alertmanager关联之后，可以将告警发送到外部服务如Alertmanager中并通过Alertmanager可以对这些告警进行进一步的处理。</p>
+<h3 id="定义告警规则">定义告警规则</h3>
+<p>以下是一条典型的告警规则：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">groups</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">example</span>
+  <span style="color:#f92672">rules</span>:
+  - <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">HighErrorRate</span>
+    <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">job:request_latency_seconds:mean5m{job=&#34;myjob&#34;} &gt; 0.5</span>
+    <span style="color:#f92672">for</span>: <span style="color:#ae81ff">10m</span>
+    <span style="color:#f92672">labels</span>:
+      <span style="color:#f92672">severity</span>: <span style="color:#ae81ff">page</span>
+    <span style="color:#f92672">annotations</span>:
+      <span style="color:#f92672">summary</span>: <span style="color:#ae81ff">High request latency</span>
+      <span style="color:#f92672">description</span>: <span style="color:#ae81ff">description info</span>
+</code></pre></div><p>在告警规则中，我们将一组相关的规则定义在一个group下，每个group下可以包含多条规则（rule）。通常一条告警规则包含以下几部分：</p>
+<ul>
+<li>alert：告警规则名称。</li>
+<li>exper：基于PromQL的告警触发条件，用于计算是否有时间序列满足该条件。</li>
+<li>for：评估等待时间。可选项，用于表示只有触发条件持续一段时间后才发送告警。在等待期间新产生的告警的状态为pending。</li>
+<li>labels：自定义标签，允许用户指定要附加到告警信息的上的一组附加标签。</li>
+<li>annotations：指定一组附加信息，比如用于描述告警详细信息的文字等。annotations的内容在告警产生时会一同作为参数发送到Alertmanager。</li>
+</ul>
+<p>在Prometheus全局配置文件中，通过<strong>rule_file</strong>指定告警规则文件的访问路径可以使Prometheus启用告警规则。Prometheus启动后自动扫描这些路径下的规文件中定义的内容，并根据这些规则计算是否向外部发送通知：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">rule_files</span>:
+  [ - <span style="color:#ae81ff">&lt;filepath_glob&gt; ... ]</span>
+</code></pre></div><p>默认情况下Prometheus会每分钟对这些规则进行计算，如果用户想自定义自己的告警计算周期，可以通过<code>evaluation_interval</code>来覆盖默认的计算周期：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">global</span>:
+  <span style="color:#f92672">[ evaluation_interval</span>: <span style="color:#ae81ff">&lt;duration&gt; | default = 1m ]</span>
+</code></pre></div><h3 id="模块化">模块化</h3>
+<p>一般来说，在告警规则文件的annotations中使用<code>summary</code>描述告警的概要信息，<code>description</code>用于描述告警的详细信息。同时Alertmanager的UI也会根据这两个标签值，显示告警信息。为了让告警信息具有更好的可读性，Prometheus支持模板化label和annotations的中标签的值。</p>
+<p>通过<code>$labels.&lt;labelname&gt;</code>变量可以访问当前告警实例中指定标签的值。<code>$value</code>则可以获取当前PromQL表达式计算的样本值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># To insert a firing element&#39;s label values:</span>
+{{ <span style="color:#ae81ff">$labels.&lt;labelname&gt; }}</span>
+<span style="color:#75715e"># To insert the numeric expression value of the firing element:</span>
+{{ <span style="color:#ae81ff">$value }}</span>
+</code></pre></div><p>例如，可以通过模板化优化summary以及description的内容的可读性：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">groups</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">example</span>
+  <span style="color:#f92672">rules</span>:
+
+  <span style="color:#75715e"># Alert for any instance that is unreachable for &gt;5 minutes.</span>
+  - <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">InstanceDown</span>
+    <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">up == 0</span>
+    <span style="color:#f92672">for</span>: <span style="color:#ae81ff">5m</span>
+    <span style="color:#f92672">labels</span>:
+      <span style="color:#f92672">severity</span>: <span style="color:#ae81ff">page</span>
+    <span style="color:#f92672">annotations</span>:
+      <span style="color:#f92672">summary</span>: <span style="color:#e6db74">&#34;Instance {{ $labels.instance }} down&#34;</span>
+      <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.&#34;</span>
+
+  <span style="color:#75715e"># Alert for any instance that has a median request latency &gt;1s.</span>
+  - <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">APIHighRequestLatency</span>
+    <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">api_http_request_latencies_second{quantile=&#34;0.5&#34;} &gt; 1</span>
+    <span style="color:#f92672">for</span>: <span style="color:#ae81ff">10m</span>
+    <span style="color:#f92672">annotations</span>:
+      <span style="color:#f92672">summary</span>: <span style="color:#e6db74">&#34;High request latency on {{ $labels.instance }}&#34;</span>
+      <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;{{ $labels.instance }} has a median request latency above 1s (current value: {{ $value }}s)&#34;</span>
+</code></pre></div><h3 id="查看告警状态">查看告警状态</h3>
+<p>如下图所示，用户可以通过Prometheus的Web界面中的Alerts菜单查看当前Prometheus下的所有告警规则，以及当前所处的活动状态：</p>
+<!-- raw HTML omitted -->
+<p>同时对于已经pending或者firing的告警，Prometheus也会将他们存储到时间序列ALERTS{}中。</p>
+<p>可以通过表达式，查询告警实例：</p>
+<pre tabindex="0"><code>ALERTS{alertname=&quot;&lt;alert name&gt;&quot;, alertstate=&quot;pending|firing&quot;, &lt;additional alert labels&gt;}
+</code></pre><p>样本值为1表示当前告警处于活动状态（pending或者firing），当告警从活动状态转换为非活动状态时，样本值则为0。</p>
 
     </div>
 
@@ -378,22 +454,9 @@
       
       <nav class="post-nav">
         
-          <a class="prev" href="/post/prometheus/alertmanager/">
-            
-            <i class="iconfont">
-              <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
-  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-  width="18" height="18">
-  <path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417 757.434875 204.940602c11.338233-12.190647 11.035334-32.285311-0.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-0.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891 0.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"></path>
-</svg>
-
-            </i>
-            <span class="prev-text nav-default">Prometheus Alertmanager</span>
-            <span class="prev-text nav-mobile">Prev</span>
-          </a>
         
-          <a class="next" href="/post/others/ab%E4%BD%BF%E7%94%A8/">
-            <span class="next-text nav-default">ab使用</span>
+          <a class="next" href="/post/others/%E4%BD%BF%E7%94%A8boot.iso%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85ol8/">
+            <span class="next-text nav-default">使用boot.iso镜像安装OL8</span>
             <span class="prev-text nav-mobile">Next</span>
             
             <i class="iconfont">
