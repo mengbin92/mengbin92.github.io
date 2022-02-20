@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Meng`s Blog</title>
+    <link>https://monstermeng92.github.io/</link>
+    <description>Recent content on Meng`s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 20 Feb 2022 15:13:10 +0800</lastBuildDate>
+    
+        <atom:link href="https://monstermeng92.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>First</title>
+      <link>https://monstermeng92.github.io/post/first/</link>
+      <pubDate>Sun, 20 Feb 2022 15:13:10 +0800</pubDate>
+      
+      <guid>https://monstermeng92.github.io/post/first/</guid>
+      
+        <description>&lt;h1 id=&#34;first&#34;&gt;First&lt;/h1&gt;
+&lt;p&gt;this is a test&lt;/p&gt;
+</description>
+      
+    </item>
+    
+  </channel>
+</rss>
