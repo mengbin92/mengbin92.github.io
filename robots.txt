@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://monstermeng92.github.io/sitemap.xml
+Sitemap: https://mengbin92.github.io/sitemap.xml

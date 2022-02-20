@@ -2,18 +2,54 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Meng`s Blog</title>
-    <link>https://monstermeng92.github.io/post/</link>
+    <link>https://mengbin92.github.io/post/</link>
     <description>Recent content in Posts on Meng`s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 20 Feb 2022 15:13:10 +0800</lastBuildDate><atom:link href="https://monstermeng92.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 20 Feb 2022 16:43:47 +0800</lastBuildDate><atom:link href="https://mengbin92.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>First</title>
-      <link>https://monstermeng92.github.io/post/first/</link>
-      <pubDate>Sun, 20 Feb 2022 15:13:10 +0800</pubDate>
+      <title>使用boot.iso镜像安装OL8</title>
+      <link>https://mengbin92.github.io/post/others/%E4%BD%BF%E7%94%A8boot.iso%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85ol8/</link>
+      <pubDate>Sun, 20 Feb 2022 16:43:47 +0800</pubDate>
       
-      <guid>https://monstermeng92.github.io/post/first/</guid>
-      <description>First this is a test</description>
+      <guid>https://mengbin92.github.io/post/others/%E4%BD%BF%E7%94%A8boot.iso%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85ol8/</guid>
+      <description>使用boot.iso镜像安装OL8 本文记录使用boot.iso镜像安装Oracle Linux 8。 镜像下载 Oracle Linux 8 boot镜像可以从这里下载。 安装 Oracle Linux 8</description>
+    </item>
+    
+    <item>
+      <title>ab使用</title>
+      <link>https://mengbin92.github.io/post/others/ab%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Sun, 20 Feb 2022 16:42:42 +0800</pubDate>
+      
+      <guid>https://mengbin92.github.io/post/others/ab%E4%BD%BF%E7%94%A8/</guid>
+      <description>ab命令介绍 网站性能压力测试是网站性能调优过程中必不可少的一个环节。只有服务器处于高压情况下，才能暴露出软件、硬件等各种设置的不当之处。 性能</description>
+    </item>
+    
+    <item>
+      <title>Golang Plugin介绍</title>
+      <link>https://mengbin92.github.io/post/golang/plugin/</link>
+      <pubDate>Sun, 20 Feb 2022 16:40:26 +0800</pubDate>
+      
+      <guid>https://mengbin92.github.io/post/golang/plugin/</guid>
+      <description>Plugin [toc] 以下内容来自官方文档。 go version： 1.17.5 综述 plugin包实现了Go插件的加载和符号解析。 Go插件是一个包括了可导出函数和变量的mai</description>
+    </item>
+    
+    <item>
+      <title>Fabric区块链网络升级</title>
+      <link>https://mengbin92.github.io/post/fabric/upgrade/</link>
+      <pubDate>Sun, 20 Feb 2022 16:33:13 +0800</pubDate>
+      
+      <guid>https://mengbin92.github.io/post/fabric/upgrade/</guid>
+      <description>fabric网络升级 原文地址在这里。 在fabric网络中，升级nodes和通道至最新版本需要四步： 备份账本和MSPs。 以滚动的方式将orde</description>
+    </item>
+    
+    <item>
+      <title>Fabric网络升级示例</title>
+      <link>https://mengbin92.github.io/post/fabric/example/</link>
+      <pubDate>Sun, 20 Feb 2022 16:31:50 +0800</pubDate>
+      
+      <guid>https://mengbin92.github.io/post/fabric/example/</guid>
+      <description>Fabric v1.4.x升级至v2.2.0 以fabric-samples v1.4.8为例，将v1.4.8升级至v2.2.0。注意，所有节点以滚动的方式</description>
     </item>
     
   </channel>
