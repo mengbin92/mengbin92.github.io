@@ -2,16 +2,16 @@
 
 ## Fabric相关
 
-[Fabric升级](fabric/upgrade.md)
-[Fabric v1.4.x升级至v2.2.0](fabric/example.md)
+[Fabric升级](fabric/upgrade.md)  
+[Fabric v1.4.x升级至v2.2.0](fabric/example.md)  
 
 ## StudyGolang
 
-[1. 插件](golang/plugin.md) golang plugin介绍
+[1. 插件](golang/plugin.md) golang plugin介绍  
 
 ## RabbitMQ
 
-本章节内容翻译自[RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)，介绍RabbitMQ的使用。
+本章节内容翻译自[RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)，介绍RabbitMQ的使用。  
 
 [0. 准备](RabbitMQ/00.md) 前期准备  
 [1. Hello World](RabbitMQ/1.md) 最简入门教程  
