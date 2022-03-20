@@ -49,6 +49,6 @@ plugin包中包含4个文件，**plugin.go**、**plugin_dlopen.go**、**plugin_s
 ---
 
 > 声明：本作品采用[署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)进行许可，使用时请注明出处。
-> Author: MonsterMeng92
+> Author: MengBin92
 
 ---
