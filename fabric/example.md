@@ -150,7 +150,7 @@ docker run -d -v $LEDGERS_BACKUP/$PEER_CONTAINER:/var/hyperledger/production/ -v
 
 ---
 
-> 声明：本作品采用[署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)进行许可，使用时请注明出处。 
+> 声明：本作品采用[署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)进行许可，使用时请注明出处。
 > Author: MengBin92
 
 ---
