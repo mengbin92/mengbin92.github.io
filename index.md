@@ -6,7 +6,7 @@
 [Fabric v1.4.x升级至v2.2.0](fabric/example.md)  
 [使用CouchDB](fabric/使用CouchDB.md)  
 [fabric浏览器实现思路](fabric/fabric浏览器实现思路.md)  
-[从源码中解析fabric区块数据结构（一）](fabric/从源码中解析区块数据结构（一）.md)  
+[从源码中解析fabric区块数据结构（一）](fabric/browser/00.md)  
 
 ## StudyGolang
 
