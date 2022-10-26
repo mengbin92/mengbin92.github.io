@@ -846,11 +846,11 @@ jq -s '.[0] * {"channel_group":{"groups":{"Application": {"values": {"ACLs": {"v
 
 关于节点升级的信息，详见[Upgrading your components](https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrading_your_components.html)。  
 
-
-
 ---
 
-> 声明：本作品采用[署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)进行许可，使用时请注明出处。 
-> Author: MengBin92
+> 声明：本作品采用[署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)进行许可，使用时请注明出处。
+> Author: mengbin92
+> Github: [mengbin92](https://mengbin92.github.io/)
+> cnblogs: [恋水无意](https://www.cnblogs.com/lianshuiwuyi/)
 
 ---

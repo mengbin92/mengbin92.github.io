@@ -151,4 +151,13 @@ groups:
 ALERTS{alertname="<alert name>", alertstate="pending|firing", <additional alert labels>}
 ```
 
-样本值为1表示当前告警处于活动状态（pending或者firing），当告警从活动状态转换为非活动状态时，样本值则为0。
+样本值为1表示当前告警处于活动状态（pending或者firing），当告警从活动状态转换为非活动状态时，样本值则为0。  
+
+---
+
+> 声明：本作品采用[署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)进行许可，使用时请注明出处。
+> Author: mengbin92
+> Github: [mengbin92](https://mengbin92.github.io/)
+> cnblogs: [恋水无意](https://www.cnblogs.com/lianshuiwuyi/)
+
+---
