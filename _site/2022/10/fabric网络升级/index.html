@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>fabric网络升级</title>
+  <meta name="description" content="原文地址在这里。">
+  <meta name="author" content="leopardpan">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fabric网络升级">
+  <meta name="twitter:description" content="原文地址在这里。">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="fabric网络升级">
+  <meta property="og:description" content="原文地址在这里。">
+  
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://192.168.1.5:4000/2022/10/fabric%E7%BD%91%E7%BB%9C%E5%8D%87%E7%BA%A7/">
+  <link rel="alternate" type="application/rss+xml" title="孟斌" href="http://192.168.1.5:4000/feed.xml">
+  
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+<!-- 站点统计 -->
+  <script 
+  async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>  
+
+<!-- 百度统计 -->
+  
+
+<!-- google 统计 -->
+  
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-9005224472374751",
+    enable_page_level_ads: true
+  });
+</script>
+
+  
+    <script src="https://unpkg.com/mermaid@9.1.7/dist/mermaid.min.js"></script>
+
+<script>
+var config = {
+  startOnLoad: true,
+  theme: "default",
+  flowchart:{
+    useMaxWidth: true,
+    htmlLabels: true
+  }
+};
+mermaid.initialize(config);
+window.mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));
+</script>
+  
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/archive" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      所有文章
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      标签
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/support" title="support" class="btn-mobile-menu__icon">
+                      技术支持
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+          </nav>
+      </div>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/images/background-cover.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">            
+            <a href="/archive" title="前往 孟斌 的主页" class="blog-button">
+                <div class="img"><img src="/images/mengbin.jpg" alt="img"></div>
+                <div class="info">
+                    <div class="info-back">
+                        <h2> 
+                            
+                                mengbin92
+                            
+                        </h2>
+                        <p>
+                           
+                                区块链
+                            
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/archive" title="link to homepage for 孟斌" class="blog-button">孟斌</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">个人站</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的个人站~</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+        
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/archive" title="" class="blog-button">博客主页</a></li>
+                
+                  <li class="navigation__item"><a href="/archive" title="archive">所有文章</a></li>
+                
+                  <li class="navigation__item"><a href="/tags" title="tags">标签</a></li>
+                
+                  <li class="navigation__item"><a href="/support" title="support">技术支持</a></li>
+                
+                  <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+              </ul>
+            </nav>
+          </div>          
+        </div>
+
+
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="panel-cover--overlay cover-clear"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <head>
+  <link rel="stylesheet" href="/css/post.css">
+</head>
+
+<article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title">fabric网络升级</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/> 
+      <time datetime="2022-10-28 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2022-10-28</time>  
+
+      <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
+    </p>
+    </div>
+  </header>
+
+  
+    <h2 class="post-title">目录</h2>
+    <ul>
+  <li><a href="#considerations-for-getting-to-v2x">Considerations for getting to v2.x</a>
+    <ul>
+      <li><a href="#从21升级到22">从2.1升级到2.2</a></li>
+      <li><a href="#从v14x长期支持版本升级到v22">从v1.4.x长期支持版本升级到v2.2</a>
+        <ul>
+          <li><a href="#chaincode-lifecycle">chaincode lifecycle</a></li>
+          <li><a href="#chaincode-shim包仅golang版">chaincode shim包（仅Golang版）</a></li>
+          <li><a href="#chaincode日志仅golang版">chaincode日志（仅Golang版）</a></li>
+          <li><a href="#peer数据库升级">Peer数据库升级</a></li>
+          <li><a href="#capability">Capability</a></li>
+          <li><a href="#为每个组织配置orderer终端推荐配置">为每个组织配置orderer终端（推荐配置）</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#更新你的组件">更新你的组件</a>
+    <ul>
+      <li><a href="#总览">总览</a></li>
+      <li><a href="#环境变量配置">环境变量配置</a></li>
+      <li><a href="#账本备份与还原">账本备份与还原</a></li>
+      <li><a href="#升级排序节点">升级排序节点</a>
+        <ul>
+          <li><a href="#设置环境变量">设置环境变量</a></li>
+          <li><a href="#升级容器">升级容器</a></li>
+        </ul>
+      </li>
+      <li><a href="#升级peer节点">升级peer节点</a>
+        <ul>
+          <li><a href="#设置环境变量-1">设置环境变量</a></li>
+          <li><a href="#升级容器-1">升级容器</a></li>
+          <li><a href="#验证peer升级完成">验证peer升级完成</a></li>
+        </ul>
+      </li>
+      <li><a href="#升级ca">升级CA</a></li>
+      <li><a href="#升级-nodejs-sdk">升级 Node.js SDK</a></li>
+      <li><a href="#升级couchdb">升级CouchDB</a></li>
+      <li><a href="#升级node-chaincode">升级Node chaincode</a></li>
+      <li><a href="#升级go-chaincode">升级Go chaincode</a></li>
+    </ul>
+  </li>
+  <li><a href="#更新通道的capability版本">更新通道的capability版本</a>
+    <ul>
+      <li><a href="#先决条件和注意事项">先决条件和注意事项</a></li>
+      <li><a href="#概览">概览</a>
+        <ul>
+          <li><a href="#新建capabilities配置文件">新建capabilities配置文件</a></li>
+        </ul>
+      </li>
+      <li><a href="#orderer-system-通道-capabilities">orderer system 通道 capabilities</a>
+        <ul>
+          <li><a href="#设置环境变量-2">设置环境变量</a></li>
+          <li><a href="#orderer组"><code class="language-plaintext highlighter-rouge">Orderer</code>组</a></li>
+          <li><a href="#通道组"><code class="language-plaintext highlighter-rouge">通道</code>组</a></li>
+        </ul>
+      </li>
+      <li><a href="#在已有通道上启用capabilities">在已有通道上启用capabilities</a>
+        <ul>
+          <li><a href="#设置环境变量-3">设置环境变量</a></li>
+          <li><a href="#orderer组-1"><code class="language-plaintext highlighter-rouge">Orderer</code>组</a></li>
+          <li><a href="#通道组-1"><code class="language-plaintext highlighter-rouge">通道</code>组</a></li>
+          <li><a href="#application组"><code class="language-plaintext highlighter-rouge">Application</code>组</a></li>
+        </ul>
+      </li>
+      <li><a href="#启用capabilities后进行验证">启用capabilities后进行验证</a></li>
+    </ul>
+  </li>
+  <li><a href="#启用新的chaincode-lifecycle">启用新的chaincode lifecycle</a>
+    <ul>
+      <li><a href="#创建enable_lifecyclejson文件">创建<code class="language-plaintext highlighter-rouge">enable_lifecycle.json</code>文件</a></li>
+      <li><a href="#编辑通道配置">编辑通道配置</a>
+        <ul>
+          <li><a href="#系统通道更新">系统通道更新</a></li>
+          <li><a href="#应用程序通道更新">应用程序通道更新</a>
+            <ul>
+              <li><a href="#编辑peer组织">编辑peer组织</a></li>
+              <li><a href="#编辑应用程序通道">编辑应用程序通道</a></li>
+              <li><a href="#编辑通道acls可选">编辑通道ACLs（可选）</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#在coreyaml中启用新的lifecycle">在<code class="language-plaintext highlighter-rouge">core.yaml</code>中启用新的lifecycle</a></li>
+    </ul>
+  </li>
+</ul>
+
+  
+
+  <section class="post">
+    <p>原文地址在<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade.html">这里</a>。</p>
+
+<p>在fabric网络中，升级nodes和通道至最新版本需要四步：</p>
+
+<ol>
+  <li>备份账本和MSPs。</li>
+  <li>以滚动的方式将orderer升级到最新版。</li>
+  <li>以滚动的方式将peers升级到最新版。</li>
+  <li>将orderer系统通道和所有可用的应用程序通道升级至最新版。</li>
+</ol>
+
+<p>更多通道 capabilities信息，可以从<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/capabilities_concept.html">这里</a>了解。</p>
+
+<p>要了解以上的升级过程，可以查阅这些教程：</p>
+
+<ol>
+  <li><a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html">Considerations for getting to v2.x</a> 介绍如何从之前的版本或其他长期支持版本升级至最新版。</li>
+  <li><a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrading_your_components.html">Upgrading your components</a> capabilities更新之前应该先升级组件。</li>
+  <li><a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/updating_capabilities.html">Updating the capability level of a channel</a> 完成所有节点的升级。</li>
+  <li><a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/enable_cc_lifecycle.html">Enabling the new chaincode lifecycle</a> 针对fabric v2.x，需要为新的chaincode lifecycle添加特定的背书策略。</li>
+</ol>
+
+<p>现在升级节点和增加通道的能力被认作是一个标准的Fabric过程，所以我们不再显示升级到最新版的命令。同样地，fabric-samples repo中也不会再提供脚本将示例网络升级到最新版。</p>
+
+<blockquote>
+  <p>fabric网络升级到最新版之后，最好也将SDK升级至最新版。</p>
+</blockquote>
+
+<hr />
+
+<h2 id="considerations-for-getting-to-v2x">Considerations for getting to v2.x</h2>
+
+<p>本章节主要介绍如何从之前的版本或其他长期支持版本升级至最新版。</p>
+
+<h3 id="从21升级到22">从2.1升级到2.2</h3>
+
+<p>Fabric v2.1和v2.2都是稳定版，以bug修复和其它形式的代码加固位置。因此，升级不需要特别考虑，也不需要更新特定的镜像版本或通道配置更新。</p>
+
+<h3 id="从v14x长期支持版本升级到v22">从v1.4.x长期支持版本升级到v2.2</h3>
+
+<p>从v1.4.x升级到v2.2，你需要考虑一下内容：</p>
+
+<h4 id="chaincode-lifecycle">chaincode lifecycle</h4>
+
+<p>在chaincode被应用到通道前，允许多个组织表决该合约应该如何使用，这是v2.0新增的功能。要了解更多关于chaincode lifecycle的信息，可以参阅<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/chaincode_lifecycle.html">这里</a>。</p>
+
+<p>最佳操作是在启用使用了新的chaincode lifecycle的通道和应用程序之前，先升级通道中的所有peers节点（尽管通道 capabilities不是必须的，但此时更新它更有意义）。未更新至v2.x的peers节点都将会在启用任一capability后崩溃，未更新至v2的orderer节点会在启用通道 capability后崩溃。这种崩溃行为是有意义的，因为如果peers节点或orderer节点不支持必要的capabilities，那它将不能安全地参与到通道中。</p>
+
+<p>在通道更新应用程序的capabilities到v2.0之后，你必须使用v2.x lifecycle程序来打包、安装、审核和提交新的chaincode。因此，在更新功能之前，请确保为新的 lifecycle做好准备。</p>
+
+<p>新的lifecycle默认使用的背书策略是在配置在通道中的（例如 org中的<code class="language-plaintext highlighter-rouge">MAJORITY</code>），因此通道启用capabilities时应将背书策略添加到通道的配置中。</p>
+
+<p>有关如何编辑相关通道配置以通过为每个组织添加背书策略的方式来启用行的lifecycle的信息，请查阅<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/enable_cc_lifecycle.html">Enabling the new chaincode lifecycle</a>。</p>
+
+<h4 id="chaincode-shim包仅golang版">chaincode shim包（仅Golang版）</h4>
+
+<p>在升级peers和通道之前，推荐使用<strong>vendor</strong>来管理v1.4版本的Go chaincode使用的shim包。这样的话，你就无需更改的你的chaincode。</p>
+
+<p>Fabric网络升级后，如果你不使用vendor来管理你的shim包，尽管之前的chaincode镜像仍能正常工作，但这是有风险的。如果你的chaincode镜像从你的环境中删除了，那么v2.x的peer的invoke会重建chaincode镜像，但此时会报错，因为找不到shim包。</p>
+
+<p>此时，你有两个选择：</p>
+
+<ol>
+  <li>如果整个通道都已经准备好升级chaincode，那你可以在所有的peers和通道上升级chaincode（至于使用旧的还是新的lifecycle，这取决于你启用的capability版本）。此时最好的方式是使用go mod来管理新的chaincode使用的shim包。</li>
+  <li>如果整个通道都没有准备好升级chaincode，那你可以使用环境变量来指定的重建chaincode镜像时使用v1.4的<code class="language-plaintext highlighter-rouge">ccenv</code>。v1.4的<code class="language-plaintext highlighter-rouge">ccenv</code>仍可以在v2.x的peers上使用。</li>
+</ol>
+
+<h4 id="chaincode日志仅golang版">chaincode日志（仅Golang版）</h4>
+
+<p>chaincode shim包中的日志服务shim.ChaincodeLogger已被删除，所以需要用户自己选择日志服务。详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/logging-control.html#chaincode">Logging control</a>。</p>
+
+<h4 id="peer数据库升级">Peer数据库升级</h4>
+
+<p>关于如何升级peers节点的详细信息，可以参考<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrading_your_components.html">upgrading components</a>。在升级的你的peers节点之前，你还需要额外进行一步操作，那就是升级peer数据库。所有peers节点的数据库（不仅包括状态数据库，还包括历史数据库和peer节点的其它内部数据库）都必须使用v2.x的数据格式进行重建，这是升级到v2.x版本的一部分。要出发重建操作，在peers节点启动前需要删除数据库。接下来介绍如何使用<code class="language-plaintext highlighter-rouge">peer node upgrade-dbs</code>命令来删除本地数据库并为升级做好准备，这样在启动v2.xpeers节点的第一时间，所有的数据库都会被重建。如果你使用CouchDB作为状态数据库，v2.2的peers已经支持自动删除CouchDB了。要启用该支持，需要你配置peer使用CouchDB，且在执行<code class="language-plaintext highlighter-rouge">upgrade-dbs</code>命令前启动CouchDB。在v2.0和v2.1中，peer并不支持自动删除CouchDB数据库，你需要自己手动删除。</p>
+
+<p>在使用<code class="language-plaintext highlighter-rouge">docker run</code>命令启动新的peer容器之后，再使用下面的命令来升级peer节点（你可以跳过设置<code class="language-plaintext highlighter-rouge">IMAGE_TAG</code>的步骤，因为<code class="language-plaintext highlighter-rouge">upgrade-dbs</code>只对v2.x Fabric有效。如果跳过的话，你需要设置<code class="language-plaintext highlighter-rouge">PEER_CONTAINER</code>和<code class="language-plaintext highlighter-rouge">LEDGERS_BACKUP</code> 环境变量）。使用下面的命令来代替<code class="language-plaintext highlighter-rouge">docker run</code>命令启动peer的话，peer节点会删除本地的数据库，并为管理本地数据库做好准备（如果你是从v1.4.x版本升级的话，请使用v2.1代替v2.0）：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> <span class="nt">-v</span> /opt/backup/<span class="nv">$PEER_CONTAINER</span>/:/var/hyperledger/production/ <span class="se">\</span>
+            <span class="nt">-v</span> /opt/msp/:/etc/hyperledger/fabric/msp/ <span class="se">\</span>
+            <span class="nt">--env-file</span> ./env&lt;name of node&gt;.list <span class="se">\</span>
+            <span class="nt">--name</span> <span class="nv">$PEER_CONTAINER</span> <span class="se">\</span>
+            hyperledger/fabric-peer:2.0 peer node upgrade-dbs
+</code></pre></div></div>
+
+<p>在v2.0和v2.1中，如果你使用的是CouchDB作为状态数据库，那么也需要删除CouchDB数据库。删除CouchDB的<code class="language-plaintext highlighter-rouge">/data</code>目录即可。</p>
+
+<p>然后使用下面的命令来启动<code class="language-plaintext highlighter-rouge">2.0</code>标签的peer：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-d</span> <span class="nt">-v</span> /opt/backup/<span class="nv">$PEER_CONTAINER</span>/:/var/hyperledger/production/ <span class="se">\</span>
+            <span class="nt">-v</span> /opt/msp/:/etc/hyperledger/fabric/msp/ <span class="se">\</span>
+            <span class="nt">--env-file</span> ./env&lt;name of node&gt;.list <span class="se">\</span>
+            <span class="nt">--name</span> <span class="nv">$PEER_CONTAINER</span> <span class="se">\</span>
+            hyperledger/fabric-peer:2.0 peer node start
+</code></pre></div></div>
+
+<p>peer节点会在启动之后立即使用v2.x数据格式重建数据库。由于重建数据库可能是一个漫长的过程（这取决于你的数据库大小，可能长达数小时），所以需要实时检查peer节点的日志来确认重建的进度。每隔1000个区块，你会看到如下信息：</p>
+
+<blockquote>
+  <font color="red">[lockbasedtxmgr] CommitLostBlock -&gt; INFO 041 Recommitting block [1000] to state database</font>
+</blockquote>
+
+<p>表示数据库还在重建中。</p>
+
+<p>如果升级过程中没有删除数据库，在peer节点启动时会返回错误信息：<strong>peer节点使用的是老旧的数据格式，必须使用<code class="language-plaintext highlighter-rouge">peer node upgrade-dbs</code>命令删除上述数据库（如果使用CouchDB作为状态数据库，则需要手动删除）</strong>。处理完成后重启节点即可。</p>
+
+<h4 id="capability">Capability</h4>
+
+<p>v2.0新增了下面三个Capabilities：</p>
+
+<ol>
+  <li><strong>Application <code class="language-plaintext highlighter-rouge">V2_0</code></strong>: 如<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/chaincode_lifecycle.html">Fabric chaincode lifecycle</a>章节所述，启用了新的chaincode lifecycle。</li>
+  <li><strong>通道 <code class="language-plaintext highlighter-rouge">V2_0</code></strong>：无更新，但与application和orderer版本保持一致。</li>
+  <li><strong>Orderer <code class="language-plaintext highlighter-rouge">V2_0</code></strong>：控制<code class="language-plaintext highlighter-rouge">Use通道CreationPolicyAsAdmins</code>，可修改通道创建交易的验证方式。当configtxgen与<code class="language-plaintext highlighter-rouge">-bashProfile</code>选项联用时，可重置从orderer系统通道继承的值。</li>
+</ol>
+
+<p>与Capability版本更新一样，更新<code class="language-plaintext highlighter-rouge">Application</code>和<code class="language-plaintext highlighter-rouge">通道</code>之前，确保已经升级的了你的peer可执行文件，更新<code class="language-plaintext highlighter-rouge">Orderer</code>和<code class="language-plaintext highlighter-rouge">通道</code>之前，确保已经升级的了你的orderer可执行文件。</p>
+
+<p>关于如何设置新的Capabilities，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/updating_capabilities.html">Updating the capability level of a 通道</a>。</p>
+
+<h4 id="为每个组织配置orderer终端推荐配置">为每个组织配置orderer终端（推荐配置）</h4>
+
+<p>从v1.4.2开始，推荐在组织版本为所有的系统通道和应用程序通道定义orderer终端，可以在组织的通道配置中新增<code class="language-plaintext highlighter-rouge">OrdererEndpoints</code>来替代全局的<code class="language-plaintext highlighter-rouge">OrdererAddresses</code>。如果有一个组织设置了组织版本的的orderer服务终端，那么在连接orderer节点时，所有的orderers和peers都会忽略通道版本的终端。</p>
+
+<p>当服务发现与多个组织提供的orderer节点一起使用时，那就必须使用组织版本的orderer终端。这需要客户端配置正确的TLS证书。</p>
+
+<p>如果你的通道配置中每个组织都未包含<code class="language-plaintext highlighter-rouge">OrdererEndpoints</code>，那你需要升级你的通道配置来给它们添加这一配置。首先需要创建一个包含新配置章节的JSON文件。</p>
+
+<p>在这个例子中，我们将为名为<code class="language-plaintext highlighter-rouge">OrdererOrg</code>的组织添加配置。如果你有多个提供orderer服务的组织，那么每个组织都需要添加配置。JSON文件<code class="language-plaintext highlighter-rouge">orglevelEndpoints.json</code>内容如下：</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"OrdererOrgEndpoint"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"Endpoints"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"mod_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Admins"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nl">"addresses"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                 </span><span class="s2">"127.0.0.1:30000"</span><span class="w">
+              </span><span class="p">]</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>之后，导入如下配置：</p>
+
+<ul>
+  <li>
+    <font color="red">CH_NAME</font>
+    <p>：待更新的通道名称。所有的系统通道和应用程序通道都应该包含排序节点的组织终端。</p>
+  </li>
+  <li>
+    <font color="red">CORE_PEER_LOCALMSPID</font>
+    <p>：提出通道更新的组织的MSPID。排序组织的MSP之一。</p>
+  </li>
+  <li>
+    <font color="red">CORE_PEER_MSPCONFIGPATH</font>
+    <p>：标识你的组织的MSP的绝对路径。</p>
+  </li>
+  <li>
+    <font color="red">TLS_ROOT_CA</font>
+    <p>：提出系统通道更新的组织根证书的绝对路径。</p>
+  </li>
+  <li>
+    <font color="red">ORDERER_CONTAINER</font>
+    <p>：排序节点的容器名称。访问排序服务时，你可以访问提供排序服务的任何排序节点。你的请求会自动提交给leader节点。</p>
+  </li>
+  <li>
+    <font color="red">ORGNAME</font>
+    <p>：当前你要更新的组织名称，例如<code class="language-plaintext highlighter-rouge">OrdererOrg</code>。</p>
+  </li>
+</ul>
+
+<p>当你设置好环境变量后，就可以按照<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config">Step 1: Pull and translate the config</a>。</p>
+
+<p>之后使用下面的命令将组织的lifecycle策略（<code class="language-plaintext highlighter-rouge">orglevelEndpoints.json</code>文件中配置的）添加到名为<code class="language-plaintext highlighter-rouge">modified_config</code>的文件中：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jq <span class="nt">-s</span> <span class="s2">".[0] * {</span><span class="se">\"</span><span class="s2">通道_group</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">groups</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">Orderer</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">groups</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="nv">$ORGNAME</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">values</span><span class="se">\"</span><span class="s2">: .[1].</span><span class="k">${</span><span class="nv">ORGNAME</span><span class="k">}</span><span class="s2">Endpoint}}}}}}"</span> config.json ./orglevelEndpoints.json <span class="o">&gt;</span> modified_config.json
+</code></pre></div></div>
+
+<p>之后的操作，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config">Step 3: Re-encode and submit the config</a>。</p>
+
+<p>如果排序服务组织执行它们自己的通道编辑操作，那么它们可以在没有进一步签名（默认情况下，编辑组织内部参数只需要该组织管理员的签名）的情况下编辑配置。如果不同组织执行更新，那就需要被编辑的组织对更新请求进行签名。</p>
+
+<hr />
+
+<h2 id="更新你的组件">更新你的组件</h2>
+
+<p>如果想了解最新版Fabric的特殊事项，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html">Upgrading to the latest release of Fabric</a>。</p>
+
+<p>本章只介绍更新Fabric组件的操作。关于如何通过编辑通道来改变你通道的capability版本，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/updating_capabilities.html">Updating a 通道 capability</a>。</p>
+
+<blockquote>
+  <p>注意：在Hyperledger Fabric中使用术语<strong>升级</strong>时，指的是升级组件的版本（例如，将可执行文件升级到最新版）。使用<strong>更新</strong>时，指的是配置的更新，例如更新通道的配置或部署脚本。在Fabric中，如果没有数据<strong>迁移</strong>的话，我们不会使用术语<strong>迁移</strong>。</p>
+</blockquote>
+
+<h3 id="总览">总览</h3>
+
+<p>整体来看，在可执行程序层面升级你的节点，分两步：</p>
+
+<ol>
+  <li>备份账本和MSPs</li>
+  <li>更新所有的可执行程序到最新版</li>
+</ol>
+
+<p>如果你拥有排序节点和peers，最好的做法是先升级排序节点。peer节点版本滞后或暂时无法处理某些交易，之后它总是可以赶上的。但如果相当数量的排序节点宕机，那Fabric网络将无法提供服务。</p>
+
+<p>本文所有的操作都是通过Docker CLI命令执行。如果你使用其它的部署方法（Rancher，Kubernetes，OpenShift，等等），请查阅它的文档了解其CLI如何使用。</p>
+
+<p>对于本机部署的，你还需要更新节点的YAML配置文件，例如<code class="language-plaintext highlighter-rouge">orderer.yaml</code>。</p>
+
+<p>备份<code class="language-plaintext highlighter-rouge">orderer.yaml</code>或<code class="language-plaintext highlighter-rouge">core.yaml</code>（peer节点），然后使用最新发布版中的<code class="language-plaintext highlighter-rouge">orderer.yaml</code>或<code class="language-plaintext highlighter-rouge">core.yaml</code>来替换它们。之后将备份的<code class="language-plaintext highlighter-rouge">orderer.yaml</code>或<code class="language-plaintext highlighter-rouge">core.yaml</code>文件中修改的地方更新到新的文件中。可以使用<code class="language-plaintext highlighter-rouge">diff</code>来协助。注意，更新YAML文件时，推荐使用最新发布的来替换原有的，这样可以减少很多错误。</p>
+
+<p>本文是假设你是使用Docker来部署Fabric网络的，YAML文件都已经内嵌到docker镜像中，配置文件中的默认值可以通过环境变量覆盖。</p>
+
+<h3 id="环境变量配置">环境变量配置</h3>
+
+<p>在部署peer或order节点时，你需要设置大量跟配置相关的环境变量。最好的做法是将这些环境记录在与要部署相关节点相关的文件中，并保存到本地。这样，在更新节点时可以保证你使用的是更节点创建是一样的环境变量。</p>
+
+<p>下面是<strong>peer</strong>相关的一系列环境变量（这些环境变量是本地部署使用的）可以放在文件中，你可能并不需要用到下面所有的环境变量：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CORE_PEER_TLS_ENABLED=true
+CORE_PEER_GOSSIP_USELEADERELECTION=true
+CORE_PEER_GOSSIP_ORGLEADER=false
+CORE_PEER_PROFILE_ENABLED=true
+CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+CORE_PEER_ID=peer0.org1.example.com
+CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
+CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
+CORE_PEER_LOCALMSPID=Org1MSP
+</code></pre></div></div>
+
+<p>下面是<strong>orderer</strong>相关的一系列环境变量（这些环境变量是本地部署使用的）可以放在文件中，你可能并不需要用到下面所有的环境变量：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+ORDERER_GENERAL_GENESISMETHOD=file
+ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+ORDERER_GENERAL_TLS_ENABLED=true
+ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+</code></pre></div></div>
+
+<p>你需要为每个你想升级的节点设置环境变量。</p>
+
+<h3 id="账本备份与还原">账本备份与还原</h3>
+
+<p>虽然我们将在本教程中演示备份账本数据的过程，但并不严格要求备份peer或排序节点（提供排序服务的一组排序节点之一）的账本数据。因为即使是最坏的情况下（例如硬盘故障），peer节点也能在没有账本的情况下启动。之后你再将peer节点重新加入到期望的通道中，peer节点会自动为每个通道创建账本，并周期性的从排序符合或其它peer节点中接受区块数据。在处理区块的过程中，peer节点会构建它自己的状态数据库。</p>
+
+<p>但是，备份账本数据可以直接还原peer节点，不需要考虑从创世块构建数据和重新处理所有交易所花费的时间和计算成本，这一通过通常会花费数小时（取决于账本的大小）。此外，账本数据的备份还可能有助于新增peer节点，它可以从现有的peer节点获取账本数据来启动自己。</p>
+
+<p>本文假定账本数据存放的文件路径并没有改变，还放在默认的路径：<code class="language-plaintext highlighter-rouge">/var/hyperledger/production/</code>(peer节点)或<code class="language-plaintext highlighter-rouge">/var/hyperledger/production/orderer</code>（排序节点）。如果你的路径改变了，那么在执行下面的命令时就需要输入你存放账本数据的路径。</p>
+
+<p>需要注意的是账本和chaincodes数据都保存在该路径下。最好的做法是将两者都进行备份，这样做的话会忽略<code class="language-plaintext highlighter-rouge">/var/hyperledger/production/ledgersData</code>下的<code class="language-plaintext highlighter-rouge">stateLeveldb</code>、<code class="language-plaintext highlighter-rouge">historyLeveldb</code>和<code class="language-plaintext highlighter-rouge">chains/index</code>目录。尽管这样可以减少备份所需的存储空间，但peer从备份的数据中恢复时可能会花费更多的时间，因为这些账本会在peer启动时重新构建。</p>
+
+<p>如果使用CouchDB作为状态数据库，那么默认路径下是没有<code class="language-plaintext highlighter-rouge">stateLeveldb</code>的，因为状态数据库的数据会存如CouchDB中。同样的，如果peer启动时找不到CouchDB数据库或块高较小（基于早先的CouchDB备份），状态数据库会自动地重构数据直至当前块高。所以，如果你分别备份peer的账本数据和CouchDB数据，那么你需要确保CouchDB备份总早于peer的备份。</p>
+
+<h3 id="升级排序节点">升级排序节点</h3>
+
+<p>排序节点应该以滚动的方式进行升级（在一次升级过程中）。总体来讲，排序节点的更新步骤如下：</p>
+
+<ol>
+  <li>关闭排序节点。</li>
+  <li>备份排序节点的账本和MSP。</li>
+  <li>移除排序节点容器。</li>
+  <li>使用相应的镜像启动新的排序节点。</li>
+</ol>
+
+<p>在排序服务的所有节点上重复执行上面的过程，直至整个排序服务都完成升级。</p>
+
+<h4 id="设置环境变量">设置环境变量</h4>
+
+<p>在更新排序节点前导入以下环境变量：</p>
+
+<ul>
+  <li>
+    <font color="red">ORDERER_CONTAINER</font>
+    <p>：排序节点的容器名称。注意，每个节点更新时你都样设置一遍。</p>
+  </li>
+  <li>
+    <font color="red">LEDGERS_BACKUP</font>
+    <p>：存放备份数据的路径。就如下面的示例中，每个节点都有它自己的子目录来存放它的账本。目录如果不存在的话，你需要手动创建。</p>
+  </li>
+  <li>
+    <font color="red">IMAGE_TAG</font>
+    <p>：你期望升级到的Fabric版本，例如v2.0。</p>
+  </li>
+</ul>
+
+<p>注意，<strong>镜像标签</strong>是必须设置，这样才能确保你使用正确的镜像来启动节点。设置标签的过程取决你的部署方式。</p>
+
+<h4 id="升级容器">升级容器</h4>
+
+<p>开始更新之前，我们需要先<strong>下线排序节点</strong>：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker stop <span class="nv">$ORDERER_CONTAINER</span>
+</code></pre></div></div>
+
+<p>服务下线后，你就可以<strong>备份账本和MSP</strong>：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">cp</span> <span class="nv">$ORDERER_CONTAINER</span>:/var/hyperledger/production/orderer/ ./<span class="nv">$LEDGERS_BACKUP</span>/<span class="nv">$ORDERER_CONTAINER</span>
+</code></pre></div></div>
+
+<p>然后删除排序服务容器（因为我们需要新容器与现有的容器同名）：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$ORDERER_CONTAINER</span>
+</code></pre></div></div>
+
+<p>最后，启用新的排序节点容器：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-d</span> <span class="nt">-v</span> /opt/backup/<span class="nv">$ORDERER_CONTAINER</span>/:/var/hyperledger/production/orderer/ <span class="se">\</span>
+            <span class="nt">-v</span> /opt/msp/:/etc/hyperledger/fabric/msp/ <span class="se">\</span>
+            <span class="nt">--env-file</span> ./env&lt;name of node&gt;.list <span class="se">\</span>
+            <span class="nt">--name</span> <span class="nv">$ORDERER_CONTAINER</span> <span class="se">\</span>
+            hyperledger/fabric-orderer:<span class="nv">$IMAGE_TAG</span> orderer
+</code></pre></div></div>
+
+<p>当所有的排序节点都完成升级，你就可以开始升级peer节点。</p>
+
+<h3 id="升级peer节点">升级peer节点</h3>
+
+<p>与排序节点升级一样，peer节点也应该以滚动的方式进行升级（在一次升级过程中）。正如排序节点升级时提到的，排序节点的升级和peer节点的升级是可以并行的，但在本教程中我们是串行执行这两个过程。总体来看，peer节点的升级需要以下几步：</p>
+
+<ol>
+  <li>下线peer节点。</li>
+  <li>备份peer账本和MSP。</li>
+  <li>移除chaincode容器和镜像。</li>
+  <li>移除peer容器。</li>
+  <li>使用相应的镜像启动新的peer容器。</li>
+</ol>
+
+<h4 id="设置环境变量-1">设置环境变量</h4>
+
+<p>在更新peer节点前导入以下环境变量：</p>
+
+<ul>
+  <li>
+    <font color="red">PEER_CONTAINER</font>
+    <p>：peer节点的容器名称。注意，每个节点更新时你都样设置一遍。</p>
+  </li>
+  <li>
+    <font color="red">LEDGERS_BACKUP</font>
+    <p>：存放备份数据的路径。就如下面的示例中，每个节点都有它自己的子目录来存放它的账本。目录如果不存在的话，你需要手动创建。</p>
+  </li>
+  <li>
+    <font color="red">IMAGE_TAG</font>
+    <p>：你期望升级到的Fabric版本，例如v2.0。</p>
+  </li>
+</ul>
+
+<p>注意，<strong>镜像标签</strong>是必须设置，这样才能确保你使用正确的镜像来启动节点。设置标签的过程取决你的部署方式。</p>
+
+<p>在所有peer节点上重复执行上面的过程，以便完成所有peer节点的升级。</p>
+
+<h4 id="升级容器-1">升级容器</h4>
+
+<p>首先，使用下面的命令来<strong>下线peer节点</strong>：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker stop <span class="nv">$PEER_CONTAINER</span>
+</code></pre></div></div>
+
+<p>然后<strong>备份peer账本和MSP</strong>：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">cp</span> <span class="nv">$PEER_CONTAINER</span>:/var/hyperledger/production ./<span class="nv">$LEDGERS_BACKUP</span>/<span class="nv">$PEER_CONTAINER</span>
+</code></pre></div></div>
+
+<p>在完成peer节点下线和账本备份后，<strong>移除peerchaincode容器和镜像</strong>：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">CC_CONTAINERS</span><span class="o">=</span><span class="si">$(</span>docker ps | <span class="nb">grep </span>dev-<span class="nv">$PEER_CONTAINER</span> | <span class="nb">awk</span> <span class="s1">'{print $1}'</span><span class="si">)</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$CC_CONTAINERS</span><span class="s2">"</span> <span class="o">]</span> <span class="p">;</span> <span class="k">then </span>docker <span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$CC_CONTAINERS</span> <span class="p">;</span> <span class="k">fi
+
+</span><span class="nv">CC_IMAGES</span><span class="o">=</span><span class="si">$(</span>docker images | <span class="nb">grep </span>dev-<span class="nv">$PEER</span> | <span class="nb">awk</span> <span class="s1">'{print $1}'</span><span class="si">)</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$CC_IMAGES</span><span class="s2">"</span> <span class="o">]</span> <span class="p">;</span> <span class="k">then </span>docker rmi <span class="nt">-f</span> <span class="nv">$CC_IMAGES</span> <span class="p">;</span> <span class="k">fi</span>
+</code></pre></div></div>
+
+<p>然后删除peer容器（因为我们需要新容器与现有的容器同名）：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$PEER_CONTAINER</span>
+</code></pre></div></div>
+
+<p>最后，启动新的peer容器：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-d</span> <span class="nt">-v</span> /opt/backup/<span class="nv">$PEER_CONTAINER</span>/:/var/hyperledger/production/ <span class="se">\</span>
+            <span class="nt">-v</span> /opt/msp/:/etc/hyperledger/fabric/msp/ <span class="se">\</span>
+            <span class="nt">--env-file</span> ./env&lt;name of node&gt;.list <span class="se">\</span>
+            <span class="nt">--name</span> <span class="nv">$PEER_CONTAINER</span> <span class="se">\</span>
+            hyperledger/fabric-peer:<span class="nv">$IMAGE_TAG</span> peer node start
+</code></pre></div></div>
+
+<p>chaincode容器并不需要手动启动。在收到chaincode请求时（invoke或query），peer首先会检查chaincode是否在运行。如果是，直接使用；如果没有的话，peer节点会启动chaincode（必要时会重建chaincode镜像）。</p>
+
+<h4 id="验证peer升级完成">验证peer升级完成</h4>
+
+<p>确认peer是否完成升级最好的方法是一次chaincode调用请求。注意，查询操作只能确定账本所在的单个peer节点成功升级。如果你想确认多个peer节点是否升级完成，同时更新chaincode也是升级操作的一部分的话，那你应该等到符合背书策略、且来自足够多组织的peer节点完成升级之后在进行验证。</p>
+
+<p>在你计划验证之前，你需要升级来自足够多的组织的peer节点，以满足你的背书策略。但只有将更新chaincode作为升级peer操作的一部分时，才需要这样做。如果你的升级操作中不包括更新chaincode，那验证peer升级是否完成的操作可能会得到运行不同Fabric版本的peer节点的背书。</p>
+
+<h3 id="升级ca">升级CA</h3>
+
+<p>要了解如何升级你的Fabric CA服务，详见<a href="http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#upgrading-the-server">CA documentation</a>。</p>
+
+<h3 id="升级-nodejs-sdk">升级 Node.js SDK</h3>
+
+<p>升级Node.js SDK前需要先升级Fabric和Fabric CA。Fabric和Fabric CA兼容旧版的SDK。在旧版的Fabric和Fabric CA上使用较新的SDK，通常会提示旧版的Fabric和Fabric CA部分功能不可用，且兼容性并未经过测试。</p>
+
+<p>在你应用程序的根目录下执行下面的命令可以升级所有的<code class="language-plaintext highlighter-rouge">Node.js</code>客户端：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm <span class="nb">install </span>fabric-client@latest
+
+npm <span class="nb">install </span>fabric-ca-client@latest
+</code></pre></div></div>
+
+<p>上面的命令安装最新版的Fabric和Fabric CA客户端，并将版本信息写入<code class="language-plaintext highlighter-rouge">package.json</code>中。</p>
+
+<h3 id="升级couchdb">升级CouchDB</h3>
+
+<p>如果使用CouchDB作为状态数据库，那么在你升级peer节点也要同步升级CouchDB。</p>
+
+<p>升级CouchDB：</p>
+
+<ol>
+  <li>下线CouchDB。</li>
+  <li>备份CouchDB数据目录。</li>
+  <li>安装最新版的CouchDB或更新部署脚本启用新的Docker镜像。</li>
+  <li>重启CouchDB。</li>
+</ol>
+
+<h3 id="升级node-chaincode">升级Node chaincode</h3>
+
+<p>要升级到新版的Node chaincode shim包，开发人员需要：</p>
+
+<ol>
+  <li>更新chaincode<code class="language-plaintext highlighter-rouge">package.json</code>中的<code class="language-plaintext highlighter-rouge">fabric-shim</code>至新版。</li>
+  <li>重新打包新的chaincode包，并在通道的所有背书节点上进行安装。</li>
+  <li>升级新到新的chaincode，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/commands/peerchaincode.html">Peer chaincode commands</a>。</li>
+</ol>
+
+<h3 id="升级go-chaincode">升级Go chaincode</h3>
+
+<p>关于升级Go chaincode到v2.0版，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html#chaincode-shim-changes">Chaincode shim changes</a>。</p>
+
+<p>有大量的第三方工具来帮你管理你的chaincode shim包。选择你熟悉的方式来管理你的chaincode shim包，并重新打包你的chaincode。</p>
+
+<p>如果你更新了chaincode shim包，那你必须在所有已安装改chaincode的peer节点上重新安装它。安装时使用相同的名称，不同的版本号。之后你还要在部署了该chaincode的所有通道上执行chaincode升级操作来升级chaincode。</p>
+
+<h2 id="更新通道的capability版本">更新通道的capability版本</h2>
+
+<p>如果不熟悉capability，那么操作前可以查阅<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/capabilities_concept.html">Capabilities</a>。需要注意的是<strong>在启用capabilities前，需要升级归属该通道的peer节点和排序节点</strong>。</p>
+
+<p>更多关于最新版Fabric中capabilities版本的信息，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html#Capabilities">Upgrading your components</a>。</p>
+
+<blockquote>
+  <p>注意：在Hyperledger Fabric中使用术语<strong>升级</strong>时，指的是升级组件的版本（例如，将可执行文件升级到最新版）。使用<strong>更新</strong>时，指的是配置的更新，例如更新通道的配置或部署脚本。在Fabric中，如果没有数据<strong>迁移</strong>的话，我们不会使用术语<strong>迁移</strong>。</p>
+</blockquote>
+
+<h3 id="先决条件和注意事项">先决条件和注意事项</h3>
+
+<p>更新前，请先确保你的机器上有<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/prereqs.html">Prerequisites</a>中所提及的所有依赖。这将保证你拥有更新通道配置所需的最新版工具。</p>
+
+<p>由于Fabric可以并且应该滚动更新，所以<strong>启用capabilities前需要完成Fabric的升级</strong>。任何没有升级到至少capabilities相关的可执行程序都将引起崩溃，并指出错误的配置，否则会导致账本分叉。</p>
+
+<p>一旦启用capabilities，它成为该通道的永久记录。这意味着即使之后禁用了capabilities，旧的可执行程序也无法参与到该通道中，因为它无法处理启用capabilities到禁用capabilities期间的所有区块。结果就是一旦启用了capabilities，就不建议或不支持禁用它。</p>
+
+<p>有鉴于此，可将启用capabilities视为不可逆的。所以在测试设置新capabilities，并在生成环境下启用之前，请三思。</p>
+
+<h3 id="概览">概览</h3>
+
+<p>在接下来的教程中，我们将展示如何在所有的系统通道和应用程序通道中配置capabilities更新。</p>
+
+<p>是否需要为所有的通道更新配置的每个部分，这取决于最新版的内容以及你的使用场景。详情参见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html">Upgrading to the latest version of Fabric</a>。需要注意的是在使用最新版功能前，可能需要更新到最新的capability版本，最好的做法是始终使用最新版的可执行程序和最新的capability版本。</p>
+
+<p>因为更新capability版本涉及到配置更新事务流程，相关命令详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html">Updating a 通道 configuration</a>。</p>
+
+<p>与通道其它配置更新一样，capability版本更新也分三步（每个通道）：</p>
+
+<ol>
+  <li>获取最新的通道配置</li>
+  <li>创建修改后的通道配置</li>
+  <li>创建配置更新事务</li>
+</ol>
+
+<p>我们将按照下面的顺序来启用capabilities：</p>
+
+<ol>
+  <li><a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/updating_capabilities.html#orderer-system-通道-capabilities">Orderer system 通道</a>
+    <ol>
+      <li>Orderer group</li>
+      <li>通道 group</li>
+    </ol>
+  </li>
+  <li><a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/updating_capabilities.html#enable-capabilities-on-existing-通道">Application 通道</a>
+    <ol>
+      <li>Orderer group</li>
+      <li>通道 group</li>
+      <li>Application group</li>
+    </ol>
+  </li>
+</ol>
+
+<p>尽管可以同时编辑通道配置的多个部分，但在本教程中我们将展示如何逐步处理这些过程。也就是说我们不会在一次配置修改中同时修改系统通道的<code class="language-plaintext highlighter-rouge">Orderer</code>组和<code class="language-plaintext highlighter-rouge">通道</code>组。这是因为并不是每次发布都有新的<code class="language-plaintext highlighter-rouge">Orderer</code>组capability和<code class="language-plaintext highlighter-rouge">通道</code>组capability。</p>
+
+<p>在生成网络中，单个用户可以独立完成所有通道（和其它配置）更新时不可能的，也是不明智的。例如，orderer system 通道更新，只能由组织的管理员来执行（尽管可以将peer组织添加到排序服务组织中）。同样地，更新其它的<code class="language-plaintext highlighter-rouge">Orderer</code>或<code class="language-plaintext highlighter-rouge">通道</code>组的通道配置除了需要排序服务组织的签名外还需要peer组织的签名。分布式系统需要协同管理。</p>
+
+<h4 id="新建capabilities配置文件">新建capabilities配置文件</h4>
+
+<p>本教程假设名为<code class="language-plaintext highlighter-rouge">capabilities.json</code>的文件已创建，它包含所有你想更新的capabilities。使用<code class="language-plaintext highlighter-rouge">jq</code>将编辑的配置应用到修改后的文件中。</p>
+
+<p>你也不是非要创建类似<code class="language-plaintext highlighter-rouge">capabilities.json</code>的文件或使用<code class="language-plaintext highlighter-rouge">jq</code>工具。修改后的配置也可手动编辑，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#sample-通道-configuration">sample 通道 configuration</a>。</p>
+
+<p>然而，这里所描述的过程（使用JSON文件和<code class="language-plaintext highlighter-rouge">jq</code>工具）在脚本化方面确实有优势，这使得它适合想大量的通道进行配置更新。这也是这种方式为什么会成为<strong>更新通道的推荐方式</strong>。</p>
+
+<p>示例中，<code class="language-plaintext highlighter-rouge">capabilities.json</code>文件内容如下（如果将更新通道作为你<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html">Fabric升级到最新版</a>的一部分，则需要将capabilities设置为适合该版本的版本）：</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+     </span><span class="nl">"通道"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+         </span><span class="nl">"mod_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Admins"</span><span class="p">,</span><span class="w">
+             </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                 </span><span class="nl">"capabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                     </span><span class="nl">"V2_0"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+                 </span><span class="p">}</span><span class="w">
+             </span><span class="p">},</span><span class="w">
+         </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="nl">"orderer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+         </span><span class="nl">"mod_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Admins"</span><span class="p">,</span><span class="w">
+             </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                 </span><span class="nl">"capabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                     </span><span class="nl">"V2_0"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+                 </span><span class="p">}</span><span class="w">
+             </span><span class="p">},</span><span class="w">
+         </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="nl">"application"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+         </span><span class="nl">"mod_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Admins"</span><span class="p">,</span><span class="w">
+             </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                 </span><span class="nl">"capabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                     </span><span class="nl">"V2_0"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+                 </span><span class="p">}</span><span class="w">
+             </span><span class="p">},</span><span class="w">
+         </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+     </span><span class="p">}</span><span class="w">
+   </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>默认情况下，peer节点并不是orderer system 通道的管理员，所以peer节点不能发起orderer system 通道配置更新。排序组织的管理员必须创建类似的文件（没<code class="language-plaintext highlighter-rouge">application</code>组capability，因为系统通道中不存在<code class="language-plaintext highlighter-rouge">application</code>组）来执行系统通道配置更新操作。默认情况下应用程序通道配置是复制系统通道的，所以除非为了特定的capability版本而创建了不同的通道配置，否则应用程序通道的<code class="language-plaintext highlighter-rouge">Orderer</code>组和<code class="language-plaintext highlighter-rouge">通道</code>组与网络中其它的系统通道是一样的。</p>
+
+<h3 id="orderer-system-通道-capabilities">orderer system 通道 capabilities</h3>
+
+<p>默认情况下应用程序通道复制系统通道的配置，所以最好的操作是在跟应用程序通道前先更新系统通道的capabilities。就像<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrading_your_components.html">Upgrading your components</a>中所述，更新peer之前先将排序节点更新至最新版。</p>
+
+<p>orderer system 通道归排序服务组织管理。默认情况下，只有一个组织（在排序服务初始化节点时创建的组织），但也可以扩展多个组织（例如，有多个组织为排序服务提供节点）。</p>
+
+<p>在更新<code class="language-plaintext highlighter-rouge">Orderer</code>和<code class="language-plaintext highlighter-rouge">通道</code> capability之前，请确保在你的排序服务中的所有节点都已经升级到所需版本。如果排序节点没有升级到所需版本，它将无法处理具有该capability的配置块，并且将崩溃。类似的，如果排序服务中新增一条通道，那所有将被加入到该通道的peer节点必须至少处于<code class="language-plaintext highlighter-rouge">通道</code>和<code class="language-plaintext highlighter-rouge">Application</code> capabilities相近的节点版本，否则在处理配置块时这些peer节点将会崩溃。要了解更多信息，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/capabilities_concept.html">Capabilities</a>。</p>
+
+<h4 id="设置环境变量-2">设置环境变量</h4>
+
+<p>你需要导入以下环境变量：</p>
+
+<ul>
+  <li>
+    <font color="red">CH_NAME</font>
+    <p>：待更新的系统通道名称。</p>
+  </li>
+  <li>
+    <font color="red">CORE_PEER_LOCALMSPID</font>
+    <p>：执行通道更新操作的MSP ID，排序服务组织中的MSP。</p>
+  </li>
+  <li>
+    <font color="red">TLS_ROOT_CA</font>
+    <p>：排序节点TLS证书的绝对路径。</p>
+  </li>
+  <li>
+    <font color="red">CORE_PEER_MSPCONFIGPATH</font>
+    <p>：标识你的组织的MSP存放的绝对路径。</p>
+  </li>
+  <li>
+    <font color="red">ORDERER_CONTAINER</font>
+    <p>：排序节点的容器名称。访问排序服务时，你可以访问排序服务中的任意节点。你的请求会自动提交给leader节点。</p>
+  </li>
+</ul>
+
+<h4 id="orderer组"><code class="language-plaintext highlighter-rouge">Orderer</code>组</h4>
+
+<p>关于如何拉取、传递和确定通道配置范围的命令，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config">Step 1: Pull and translate the config</a>。如果你有了<code class="language-plaintext highlighter-rouge">modified_config.json</code>文件，那你可以使用下面的命令来新增<code class="language-plaintext highlighter-rouge">Orderer</code>组capabilities：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jq <span class="nt">-s</span> <span class="s1">'.[0] * {"通道_group":{"groups":{"Orderer": {"values": {"Capabilities": .[1].orderer}}}}}'</span> config.json ./capabilities.json <span class="o">&gt;</span> modified_config.json
+</code></pre></div></div>
+
+<p>然后执行步骤<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config">Step 3: Re-encode and submit the config</a>。</p>
+
+<p>因为你现在更新的是系统通道，系统通道修改策略只需要排序服务组织的管理员签名。</p>
+
+<h4 id="通道组"><code class="language-plaintext highlighter-rouge">通道</code>组</h4>
+
+<p>关于如何拉取、传递和确定通道配置范围的命令，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config">Step 1: Pull and translate the config</a>。如果你有了<code class="language-plaintext highlighter-rouge">modified_config.json</code>文件，那你可以使用下面的命令来新增<code class="language-plaintext highlighter-rouge">通道</code>组capabilities：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jq <span class="nt">-s</span> <span class="s1">'.[0] * {"通道_group":{"values": {"Capabilities": .[1].通道}}}'</span> config.json ./capabilities.json <span class="o">&gt;</span> modified_config.json
+</code></pre></div></div>
+
+<p>然后执行步骤<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config">Step 3: Re-encode and submit the config</a>。</p>
+
+<p>因为你现在更新的是系统通道，系统通道的修改策略只需要排序服务组织的管理员签名。在应用程序通道中，假如你没有修改默认值，通常需要同时满足<code class="language-plaintext highlighter-rouge">Application</code>组（由peer组织的MSPs组成）和<code class="language-plaintext highlighter-rouge">Orderer</code>组（由排序服务组织组成）的<strong>大多数管理员</strong>策略。</p>
+
+<h3 id="在已有通道上启用capabilities">在已有通道上启用capabilities</h3>
+
+<p>现在我们来更新orderer system 通道的capabilities，我们将会更新已有通道（你想更新的）的配置。</p>
+
+<p>应用程序通道的配置与系统通道的非常相似。这样，我们就能复用<code class="language-plaintext highlighter-rouge">capabilities.json</code>文件，并使用相同的命令来进行更新（只需要重新设置环境变量即可）。</p>
+
+<p><strong>在更新capabilities前，请确保排序服务中的所有排序节点和通道中的所有peer节点都已升级至要求的版本，否则未升级的节点将无法处理启用了capability的配置块并引起崩溃</strong>。更多信息详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/capabilities_concept.html">Capabilities</a>。</p>
+
+<h4 id="设置环境变量-3">设置环境变量</h4>
+
+<ul>
+  <li>
+    <font color="red">CH_NAME</font>
+    <p>：待更新的应用程序通道名称。</p>
+  </li>
+  <li>
+    <font color="red">CORE_PEER_LOCALMSPID</font>
+    <p>：执行通道更新操作的MSP ID，peer组织中的MSP。</p>
+  </li>
+  <li>
+    <font color="red">TLS_ROOT_CA</font>
+    <p>：peer组织TLS证书的绝对路径。</p>
+  </li>
+  <li>
+    <font color="red">CORE_PEER_MSPCONFIGPATH</font>
+    <p>：标识你的组织的MSP存放的绝对路径。</p>
+  </li>
+  <li>
+    <font color="red">ORDERER_CONTAINER</font>
+    <p>：排序节点的容器名称。访问排序服务时，你可以访问排序服务中的任意节点。你的请求会自动提交给leader节点。</p>
+  </li>
+</ul>
+
+<h4 id="orderer组-1"><code class="language-plaintext highlighter-rouge">Orderer</code>组</h4>
+
+<p><a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config">Step 1: Pull and translate the config</a>。如果你有了<code class="language-plaintext highlighter-rouge">modified_config.json</code>文件，那你可以使用下面的命令来新增<code class="language-plaintext highlighter-rouge">Orderer</code>组capabilities：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jq <span class="nt">-s</span> <span class="s1">'.[0] * {"通道_group":{"groups":{"Orderer": {"values": {"Capabilities": .[1].orderer}}}}}'</span> config.json ./capabilities.json <span class="o">&gt;</span> modified_config.json
+</code></pre></div></div>
+
+<p>然后执行步骤<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config">Step 3: Re-encode and submit the config</a>。</p>
+
+<p>该capability默认的修改策略是需要<code class="language-plaintext highlighter-rouge">Orderer</code>组中<strong>大多数管理员</strong>同意（即，大多数排序服务的管理员）。peer组织可以更新该capability，但这种情况下，peer组织的签名并不满足该策略。</p>
+
+<h4 id="通道组-1"><code class="language-plaintext highlighter-rouge">通道</code>组</h4>
+
+<p><a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config">Step 1: Pull and translate the config</a>。如果你有了<code class="language-plaintext highlighter-rouge">modified_config.json</code>文件，那你可以使用下面的命令来新增<code class="language-plaintext highlighter-rouge">通道</code>组capabilities：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jq <span class="nt">-s</span> <span class="s1">'.[0] * {"通道_group":{"values": {"Capabilities": .[1].通道}}}'</span> config.json ./capabilities.json <span class="o">&gt;</span> modified_config.json
+</code></pre></div></div>
+
+<p>然后执行步骤<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config">Step 3: Re-encode and submit the config</a>。</p>
+
+<p>该capability默认的修改策略是需要<code class="language-plaintext highlighter-rouge">Application</code>和<code class="language-plaintext highlighter-rouge">Orderer</code>组<strong>大多数管理员</strong>审核通过。也就是说，需要peer组织和排序服务组织中大多数管理员对该请求进行签名认证。</p>
+
+<h4 id="application组"><code class="language-plaintext highlighter-rouge">Application</code>组</h4>
+
+<p><a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config">Step 1: Pull and translate the config</a>。如果你有了<code class="language-plaintext highlighter-rouge">modified_config.json</code>文件，那你可以使用下面的命令来新增<code class="language-plaintext highlighter-rouge">通道</code>组capabilities：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jq <span class="nt">-s</span> <span class="s1">'.[0] * {"通道_group":{"groups":{"Application": {"values": {"Capabilities": .[1].application}}}}}'</span> config.json ./capabilities.json <span class="o">&gt;</span> modified_config.json
+</code></pre></div></div>
+
+<p>然后执行步骤<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config">Step 3: Re-encode and submit the config</a>。</p>
+
+<p>该capability默认的修改策略是需要<code class="language-plaintext highlighter-rouge">Application</code>组<strong>大多数管理员</strong>审核通过。也就是说，需要peer组织中的大多数管理员进行投票。排序服务的管理员不需要参与。</p>
+
+<p><strong>这样的结果就是不要将此capability设置为不存在的版本</strong>。因为排序节点既不会解析应用程序capabilities，也不会验证它，排序节点会审核通过所有的应用程序capabilities版本并将新的配置块分发给peer节点以便peer节点将其保存到账本中。这样的话，peer节点将无法处理该capability并引起崩溃。即使之后再将一个合法的capability版本配置到peer节点上，但之前的配置块仍存在于账本中，当尝试处理之前的配置块时还是会引发崩溃。</p>
+
+<p>这也是为什么需要<code class="language-plaintext highlighter-rouge">capabilities.json</code>这样的文件。它可以有效防止简单的用户错误，例如，当将应用程序的apability设置为<code class="language-plaintext highlighter-rouge">V20</code>，而不是<code class="language-plaintext highlighter-rouge">V2_0</code>时，这会导致通道不可用且无法恢复。</p>
+
+<h3 id="启用capabilities后进行验证">启用capabilities后进行验证</h3>
+
+<p>验证capabilities是否成功启用的最好方式是在所有的通道上执行一次chaincode调用。未升级到相应版本的节点都无法解析新的capabilities，这些节点都会崩溃。在这些节点成功重启之前你需要将它们升级至相应的版本。</p>
+
+<hr />
+
+<h2 id="启用新的chaincode-lifecycle">启用新的chaincode lifecycle</h2>
+
+<p>用户从v1.4.x升级到v2.x后，必须编辑通道配置来启用新的lifecycle功能。这个过程涉及到相关用户必须执行的一系列<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html">通道配置更新</a>。</p>
+
+<p>要启用新的chaincode lifecycle，应用程序通道的<code class="language-plaintext highlighter-rouge">Channel</code>和<code class="language-plaintext highlighter-rouge">Application</code>capabilities必须更新到<strong>V2_0</strong>，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html#chaincode-lifecycle">Considerations for getting to 2.0</a>。</p>
+
+<p>总体来看，通道配置更新分三步（每个通道）：</p>
+
+<ol>
+  <li>获取最新的通道配置</li>
+  <li>创建修改后的通道配置</li>
+  <li>创建配置更新交易</li>
+</ol>
+
+<p>接下来我们使用<code class="language-plaintext highlighter-rouge">enable_lifecycle.json</code>文件（包含我们所需要的所有通道配置更新）来更新通道配置。需要留意的是，在生成环境中，可能有多个用户发起通道更新请求。为了方便起见，我们将所有的更新都放在单个文件中呈现。</p>
+
+<h3 id="创建enable_lifecyclejson文件">创建<code class="language-plaintext highlighter-rouge">enable_lifecycle.json</code>文件</h3>
+
+<p>除了使用<code class="language-plaintext highlighter-rouge">enable_lifecycle.json</code>文件外，本教程还将使用<code class="language-plaintext highlighter-rouge">jq</code>将编辑后的内容应用到文件中。修改的文件也可以手动编辑，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#sample-channel-configuration">sample channel configuration</a>。</p>
+
+<p>本文展示的操作（使用JSON文件和<code class="language-plaintext highlighter-rouge">jq</code>工具）在脚本化方面更具优势，更适合大量的通道配置更新。也是编辑通道配置的推荐操作。</p>
+
+<p><code class="language-plaintext highlighter-rouge">enable_lifecycle.json</code>使用的示例，例如<code class="language-plaintext highlighter-rouge">org1Policies</code>和<code class="language-plaintext highlighter-rouge">Org1ExampleCom</code>，在部署时需要替换成实际值：</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"org1Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"Endorsement"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"mod_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Admins"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"policy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"identities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                        </span><span class="p">{</span><span class="w">
+                            </span><span class="nl">"principal"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                                </span><span class="nl">"msp_identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Org1ExampleCom"</span><span class="p">,</span><span class="w">
+                                </span><span class="nl">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PEER"</span><span class="w">
+                            </span><span class="p">},</span><span class="w">
+                            </span><span class="nl">"principal_classification"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ROLE"</span><span class="w">
+                        </span><span class="p">}</span><span class="w">
+                    </span><span class="p">],</span><span class="w">
+                    </span><span class="nl">"rule"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="nl">"n_out_of"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                            </span><span class="nl">"n"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                            </span><span class="nl">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                                </span><span class="p">{</span><span class="w">
+                                    </span><span class="nl">"signed_by"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+                                </span><span class="p">}</span><span class="w">
+                            </span><span class="p">]</span><span class="w">
+                        </span><span class="p">}</span><span class="w">
+                    </span><span class="p">},</span><span class="w">
+                    </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"org2Policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"Endorsement"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"mod_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Admins"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"policy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"identities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                        </span><span class="p">{</span><span class="w">
+                            </span><span class="nl">"principal"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                                </span><span class="nl">"msp_identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Org2ExampleCom"</span><span class="p">,</span><span class="w">
+                                </span><span class="nl">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PEER"</span><span class="w">
+                            </span><span class="p">},</span><span class="w">
+                            </span><span class="nl">"principal_classification"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ROLE"</span><span class="w">
+                        </span><span class="p">}</span><span class="w">
+                    </span><span class="p">],</span><span class="w">
+                    </span><span class="nl">"rule"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="nl">"n_out_of"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                            </span><span class="nl">"n"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                            </span><span class="nl">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                                </span><span class="p">{</span><span class="w">
+                                    </span><span class="nl">"signed_by"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+                                </span><span class="p">}</span><span class="w">
+                            </span><span class="p">]</span><span class="w">
+                        </span><span class="p">}</span><span class="w">
+                    </span><span class="p">},</span><span class="w">
+                    </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"appPolicies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"Endorsement"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"mod_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Admins"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"policy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"rule"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MAJORITY"</span><span class="p">,</span><span class="w">
+                    </span><span class="nl">"sub_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Endorsement"</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"LifecycleEndorsement"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"mod_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Admins"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"policy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"rule"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MAJORITY"</span><span class="p">,</span><span class="w">
+                    </span><span class="nl">"sub_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Endorsement"</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"acls"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"_lifecycle/CheckCommitReadiness"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"policy_ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/Channel/Application/Writers"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"_lifecycle/CommitChaincodeDefinition"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"policy_ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/Channel/Application/Writers"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"_lifecycle/QueryChaincodeDefinition"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"policy_ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/Channel/Application/Readers"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"_lifecycle/QueryChaincodeDefinitions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"policy_ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/Channel/Application/Readers"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>在新的策略中，如果<code class="language-plaintext highlighter-rouge">NodeOUs</code>启用了，”role”字段应该设置为<code class="language-plaintext highlighter-rouge">PEER</code>，否则设置为<code class="language-plaintext highlighter-rouge">MEMBER</code></strong>。</p>
+
+<h3 id="编辑通道配置">编辑通道配置</h3>
+
+<h4 id="系统通道更新">系统通道更新</h4>
+
+<p>因为修改系统通道配置以启用新的lifecycle只涉及到peer组织配置中的通道配置参数，所以被编辑的peer组织都必须掉相关的通道配置更新进行签名。</p>
+
+<p>默认情况下，系统通道只能被系统通道的管理员编辑（排序服务组织的管理员，而非peer组织的），这意味着对联盟中peer组织的配置更新必须有系统通道管理提出，并发送给相应的peer组织进行签名。</p>
+
+<p>需要导入以下环境变量：</p>
+
+<ul>
+  <li>
+    <font color="red">CH_NAME</font>
+    <p>：待更新的系统通道名称。</p>
+  </li>
+  <li>
+    <font color="red">CORE_PEER_LOCALMSPID</font>
+    <p>：执行通道更新操作的MSP ID，排序服务组织中的MSP。</p>
+  </li>
+  <li>
+    <font color="red">TLS_ROOT_CA</font>
+    <p>：发起系统通道更新组织的TLS证书的绝对路径。</p>
+  </li>
+  <li>
+    <font color="red">CORE_PEER_MSPCONFIGPATH</font>
+    <p>：标识你的组织的MSP存放的绝对路径。</p>
+  </li>
+  <li>
+    <font color="red">ORDERER_CONTAINER</font>
+    <p>：排序节点的容器名称。访问排序服务时，你可以访问排序服务中的任意节点。你的请求会自动提交给leader节点。</p>
+  </li>
+  <li>
+    <font color="red">ORGNAME</font>
+    <p>：正在更新的组织名称。</p>
+  </li>
+  <li>
+    <font color="red">CONSORTIUM_NAME</font>
+    <p>：正在更新的联盟名称。</p>
+  </li>
+</ul>
+
+<p>设置好环境变量之后，<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config">Step 1: Pull and translate the config</a>。</p>
+
+<p>之后，使用下面的命令将lifecycle组织策略（<code class="language-plaintext highlighter-rouge">enable_lifecycle.json</code>中列出的）添加到名为<code class="language-plaintext highlighter-rouge">modified_config.json</code>文件中：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jq <span class="nt">-s</span> <span class="s2">".[0] * {</span><span class="se">\"</span><span class="s2">channel_group</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">groups</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">Consortiums</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">groups</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="nv">$CONSORTIUM_NAME</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">groups</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="nv">$ORGNAME</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">policies</span><span class="se">\"</span><span class="s2">: .[1].</span><span class="k">${</span><span class="nv">ORGNAME</span><span class="k">}</span><span class="s2">Policies}}}}}}}}"</span> config.json ./enable_lifecycle.json <span class="o">&gt;</span> modified_config.json
+</code></pre></div></div>
+
+<p>最后，<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config">Step 3: Re-encode and submit the config</a>。</p>
+
+<p>如上所述，这些更新都必须由系统通道管理员提出，并发送给相应的peer组织进行签名。</p>
+
+<h4 id="应用程序通道更新">应用程序通道更新</h4>
+
+<h5 id="编辑peer组织">编辑peer组织</h5>
+
+<p>我们需要对所有应用程序通道上的组织执行一组类似的编辑。</p>
+
+<p>跟系统通道不同，peer组织可以发起对应用程序通道的配置更新请求。如果你只是对自己的组织进行配置更新，那你不需要其它组织的签名；但如果你要更新另一个组织的配置，那你就需要这个组织的签名。</p>
+
+<p>需要导入以下环境变量：</p>
+
+<ul>
+  <li>
+    <font color="red">CH_NAME</font>
+    <p>：待更新的应用程序通道名称。</p>
+  </li>
+  <li>
+    <font color="red">CORE_PEER_LOCALMSPID</font>
+    <p>：执行通道更新操作的MSP ID，peer组织中的MSP。</p>
+  </li>
+  <li>
+    <font color="red">TLS_ROOT_CA</font>
+    <p>：排序节点的TLS证书的绝对路径。</p>
+  </li>
+  <li>
+    <font color="red">CORE_PEER_MSPCONFIGPATH</font>
+    <p>：标识你的组织的MSP存放的绝对路径。</p>
+  </li>
+  <li>
+    <font color="red">ORDERER_CONTAINER</font>
+    <p>：排序节点的容器名称。访问排序服务时，你可以访问排序服务中的任意节点。你的请求会自动提交给leader节点。</p>
+  </li>
+  <li>
+    <font color="red">ORGNAME</font>
+    <p>：正在更新的组织名称。</p>
+  </li>
+</ul>
+
+<p>设置好环境变量之后，<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config">Step 1: Pull and translate the config</a>。</p>
+
+<p>之后，使用下面的命令将lifecycle组织策略（<code class="language-plaintext highlighter-rouge">enable_lifecycle.json</code>中列出的）添加到名为<code class="language-plaintext highlighter-rouge">modified_config.json</code>文件中：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jq <span class="nt">-s</span> <span class="s2">".[0] * {</span><span class="se">\"</span><span class="s2">channel_group</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">groups</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">Application</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">groups</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="nv">$ORGNAME</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">policies</span><span class="se">\"</span><span class="s2">: .[1].</span><span class="k">${</span><span class="nv">ORGNAME</span><span class="k">}</span><span class="s2">Policies}}}}}}"</span> config.json ./enable_lifecycle.json <span class="o">&gt;</span> modified_config.json
+</code></pre></div></div>
+
+<p>最后，<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config">Step 3: Re-encode and submit the config</a>。</p>
+
+<h5 id="编辑应用程序通道">编辑应用程序通道</h5>
+
+<p>在所有的应用程序通道都已经<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html#capabilities">更新到包含V2_0capabilities</a>后，新的chaincode lifecycle背书策略必须添加到所有的通道中。</p>
+
+<p>所需的环境变量与更新peer组织时一样。不同之处在于不需要更新配置文件中的组织配置，所以不需要设置<code class="language-plaintext highlighter-rouge">ORGNAME</code>。</p>
+
+<p>设置好环境变量之后，<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config">Step 1: Pull and translate the config</a>。</p>
+
+<p>之后，使用下面的命令将lifecycle组织策略（<code class="language-plaintext highlighter-rouge">enable_lifecycle.json</code>中列出的）添加到名为<code class="language-plaintext highlighter-rouge">modified_config.json</code>文件中：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jq <span class="nt">-s</span> <span class="s1">'.[0] * {"channel_group":{"groups":{"Application": {"policies": .[1].appPolicies}}}}'</span> config.json ./enable_lifecycle.json <span class="o">&gt;</span> modified_config.json
+</code></pre></div></div>
+
+<p>最后，<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config">Step 3: Re-encode and submit the config</a>。</p>
+
+<p>要通过通过更新请求，则必须满足配置文件中<code class="language-plaintext highlighter-rouge">Channel/Application</code>章节配置的修改策略。默认情况下，需要该通道中的<strong>大多数</strong>peer组织同意。</p>
+
+<h5 id="编辑通道acls可选">编辑通道ACLs（可选）</h5>
+
+<p>下面的<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/access_control.html">访问控制列表（ACL）</a>是<code class="language-plaintext highlighter-rouge">enable_lifecycle.json</code>文件中的默认值，可根据你的使用场景进行选择：</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"acls"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+ </span><span class="nl">"_lifecycle/CheckCommitReadiness"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+   </span><span class="nl">"policy_ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/Channel/Application/Writers"</span><span class="w">
+ </span><span class="p">},</span><span class="w">
+ </span><span class="nl">"_lifecycle/CommitChaincodeDefinition"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+   </span><span class="nl">"policy_ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/Channel/Application/Writers"</span><span class="w">
+ </span><span class="p">},</span><span class="w">
+ </span><span class="nl">"_lifecycle/QueryChaincodeDefinition"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+   </span><span class="nl">"policy_ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/Channel/Application/Readers"</span><span class="w">
+ </span><span class="p">},</span><span class="w">
+ </span><span class="nl">"_lifecycle/QueryChaincodeDefinitions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+   </span><span class="nl">"policy_ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/Channel/Application/Readers"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>可以使用前面编辑应用程序通道时使用的环境变量。</p>
+
+<p>设置好环境变量之后，<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config">Step 1: Pull and translate the config</a>。</p>
+
+<p>之后，使用下面的命令将lifecycle组织策略（<code class="language-plaintext highlighter-rouge">enable_lifecycle.json</code>中列出的）添加到名为<code class="language-plaintext highlighter-rouge">modified_config.json</code>文件中：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jq <span class="nt">-s</span> <span class="s1">'.[0] * {"channel_group":{"groups":{"Application": {"values": {"ACLs": {"value": {"acls": .[1].acls}}}}}}}'</span> config.json ./enable_lifecycle.json <span class="o">&gt;</span> modified_config.json
+</code></pre></div></div>
+
+<p>最后，<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config">Step 3: Re-encode and submit the config</a>。</p>
+
+<p>要通过通过更新请求，则必须满足配置文件中<code class="language-plaintext highlighter-rouge">Channel/Application</code>章节配置的修改策略。默认情况下，需要该通道中的<strong>大多数</strong>peer组织同意。</p>
+
+<h3 id="在coreyaml中启用新的lifecycle">在<code class="language-plaintext highlighter-rouge">core.yaml</code>中启用新的lifecycle</h3>
+
+<p>如果你是按照<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrading_your_components.html#overview">推荐操作</a>，使用<code class="language-plaintext highlighter-rouge">diff</code>之类的工具比较新旧<code class="language-plaintext highlighter-rouge">core.yaml</code>，那你就不必添加<code class="language-plaintext highlighter-rouge">_lifecycle: enable</code>来启用系统chaincode，因为它在新版<code class="language-plaintext highlighter-rouge">core.yaml</code>的<code class="language-plaintext highlighter-rouge">chaincode/system</code>下。</p>
+
+<p>如果你是直接更新原有的YAML文件，那就必须添加<code class="language-plaintext highlighter-rouge">_lifecycle: enable</code>来启用系统chaincode。</p>
+
+<p>关于节点升级的信息，详见<a href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrading_your_components.html">Upgrading your components</a>。</p>
+
+<hr />
+
+<blockquote>
+  <p>声明：本作品采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>进行许可，使用时请注明出处。<br />
+Author: mengbin92<br />
+Github: <a href="https://mengbin92.github.io/">mengbin92</a><br />
+cnblogs: <a href="https://www.cnblogs.com/lianshuiwuyi/">恋水无意</a></p>
+</blockquote>
+
+<hr />
+
+  </section>
+
+</article>
+
+<section>
+
+            <!--div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏一个呗</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">    
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div-->
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2022/10/example/" data-toggle="tooltip" data-placement="top" title="fabric网络升级示例">上一篇：  <span>fabric网络升级示例</span>
+            </a>
+        </li>
+        
+        
+    </ul>
+</section>
+
+<!--section class="post-comments">
+
+  
+
+</section-->
+
+
+            <section class="footer">
+    <footer>
+        <div class = "footer_div">  
+        <nav class="cover-navigation navigation--social">
+          <ul class="navigation">
+
+          
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/mengbin92" title="@mengbin92 的 Github" target="_blank">
+              <div class="footer-social-icon" style="background:url(/images/github.png);"></div>
+            </a>
+          </li>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:mengbin1992@outlook.com" title="Contact me">
+              <div class="footer-social-icon" style="background:url(/images/email.png);"></div>
+            </a>
+          </li>
+          
+          
+          <!-- RSS >
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <div class="footer-social-icon" style="background:url(/images/rss.png);"></div>
+              <span class="label">RSS</span>
+            </a>
+          </li-->
+
+          </ul>
+        </nav>
+
+        </div>
+
+        <div class = "footer_div">  
+           <p class="copyright text-muted">
+            Copyright &copy; 孟斌 2022 Theme by <a href="http://leopardpan.cn/">leopardpan</a> |
+            <iframe
+                style="margin-left: 2px; margin-bottom:-5px;"
+                frameborder="0" scrolling="0" width="91px" height="20px"
+                src="https://ghbtns.com/github-btn.html?user=leopardpan&repo=leopardpan.github.io&type=star&count=true" >
+            </iframe>
+            </p>
+        	<div align="right">
+    			<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+          <!-- 访问统计 -->
+          <span id="busuanzi_container_site_pv">
+            本站总访问量
+            <span id="busuanzi_value_site_pv"></span>次
+          </span>
+
+        </div>
+        <div>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+  </body>
+
+</html>

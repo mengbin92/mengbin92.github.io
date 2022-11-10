@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>从源码中解析fabric区块数据结构（一）</title>
+  <meta name="description" content="前言">
+  <meta name="author" content="leopardpan">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="从源码中解析fabric区块数据结构（一）">
+  <meta name="twitter:description" content="前言">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="从源码中解析fabric区块数据结构（一）">
+  <meta property="og:description" content="前言">
+  
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://192.168.1.5:4000/2022/10/00/">
+  <link rel="alternate" type="application/rss+xml" title="孟斌" href="http://192.168.1.5:4000/feed.xml">
+  
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+<!-- 站点统计 -->
+  <script 
+  async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>  
+
+<!-- 百度统计 -->
+  
+
+<!-- google 统计 -->
+  
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-9005224472374751",
+    enable_page_level_ads: true
+  });
+</script>
+
+  
+    <script src="https://unpkg.com/mermaid@9.1.7/dist/mermaid.min.js"></script>
+
+<script>
+var config = {
+  startOnLoad: true,
+  theme: "default",
+  flowchart:{
+    useMaxWidth: true,
+    htmlLabels: true
+  }
+};
+mermaid.initialize(config);
+window.mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));
+</script>
+  
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/archive" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      所有文章
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      标签
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/support" title="support" class="btn-mobile-menu__icon">
+                      技术支持
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+          </nav>
+      </div>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/images/background-cover.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">            
+            <a href="/archive" title="前往 孟斌 的主页" class="blog-button">
+                <div class="img"><img src="/images/mengbin.jpg" alt="img"></div>
+                <div class="info">
+                    <div class="info-back">
+                        <h2> 
+                            
+                                mengbin92
+                            
+                        </h2>
+                        <p>
+                           
+                                区块链
+                            
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/archive" title="link to homepage for 孟斌" class="blog-button">孟斌</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">个人站</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的个人站~</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+        
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/archive" title="" class="blog-button">博客主页</a></li>
+                
+                  <li class="navigation__item"><a href="/archive" title="archive">所有文章</a></li>
+                
+                  <li class="navigation__item"><a href="/tags" title="tags">标签</a></li>
+                
+                  <li class="navigation__item"><a href="/support" title="support">技术支持</a></li>
+                
+                  <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+              </ul>
+            </nav>
+          </div>          
+        </div>
+
+
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="panel-cover--overlay cover-clear"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <head>
+  <link rel="stylesheet" href="/css/post.css">
+</head>
+
+<article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title">从源码中解析fabric区块数据结构（一）</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/> 
+      <time datetime="2022-10-27 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2022-10-27</time>  
+
+      <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
+    </p>
+    </div>
+  </header>
+
+  
+    <h2 class="post-title">目录</h2>
+    <ul>
+  <li><a href="#前言">前言</a></li>
+</ul>
+
+  
+
+  <section class="post">
+    <h2 id="前言">前言</h2>
+
+<p>最近打算基于<a href="https://github.com/hyperledger/fabric-sdk-go">fabric-sdk-go</a>实现<a href="https://hyperledger-fabric.readthedocs.io/en/latest/getting_started.html">hyperledger fabric</a>浏览器，其中最重要的一步就是解析fabric的上链区块。虽说fabric是<strong>Golang</strong>实现的，但直到<a href="https://github.com/hyperledger/fabric-sdk-go/releases">2021年2月1号</a>才发布了第一个稳定版<strong>fabric-sdk-go</strong>，而且官方几乎没有响应的文档介绍。对于fabric-sdk-go，基本都是参照源码中的测试用例来使用；而要实现区块链浏览器，仅靠测试用例还差好多，特别是对出块信息的解析。</p>
+
+<p>通过<code class="language-plaintext highlighter-rouge">event.Client.RegisterBlockEvent()</code>可以监听fabric的出块事件，但返回的信息中有用的是一个<code class="language-plaintext highlighter-rouge">BlockEvent</code>类型的<code class="language-plaintext highlighter-rouge">chan</code>，定义如下：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// BlockEvent contains the data for the block event</span>
+<span class="k">type</span> <span class="n">BlockEvent</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="c">// Block is the block that was committed</span>
+	<span class="n">Block</span> <span class="o">*</span><span class="n">cb</span><span class="o">.</span><span class="n">Block</span>
+	<span class="c">// SourceURL specifies the URL of the peer that produced the event</span>
+	<span class="n">SourceURL</span> <span class="kt">string</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>区块链浏览器需要的所有信息基本都包含在<code class="language-plaintext highlighter-rouge">Block</code>中，其定义如下：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// This is finalized block structure to be shared among the orderer and peer</span>
+<span class="c">// Note that the BlockHeader chains to the previous BlockHeader, and the BlockData hash is embedded</span>
+<span class="c">// in the BlockHeader.  This makes it natural and obvious that the Data is included in the hash, but</span>
+<span class="c">// the Metadata is not.</span>
+<span class="k">type</span> <span class="n">Block</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">Header</span>               <span class="o">*</span><span class="n">BlockHeader</span>   <span class="s">`protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"`</span>
+	<span class="n">Data</span>                 <span class="o">*</span><span class="n">BlockData</span>     <span class="s">`protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`</span>
+	<span class="n">Metadata</span>             <span class="o">*</span><span class="n">BlockMetadata</span> <span class="s">`protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>本文作为区块链浏览器系列的开篇，结构体中各字段的含义会在之后的文章中一一介绍，这里就不再过多介绍。接下来将以类图的形式来解析区块中包含的信息。</p>
+
+<div class="mermaid">
+classDiagram
+	class Block{
+		Header *BlockHeader
+		Data   *BlockData
+		Metadata *BlockMetadata
+	}
+	class BlockHeader{
+		Number uint64
+		PreviousHash []byte
+		DataHash []byte
+	}
+	class BlockData{
+		Data [][]byte
+	}
+	class BlockMetadata{
+		Metadata [][]byte
+	}
+	class Metadata{
+		Value []byte
+		Signatures []*MetadataSignature
+	}
+	class MetadataSignature{
+		SignatureHeader []byte
+		Signature []byte
+		IdentifierHeader []byte
+	}
+	class SignatureHeader{
+		Creator []byte
+		Nonce []byte
+	}
+	class SerializedIdentity{
+		Mspid string
+		IdBytes []byte
+	}
+	class Certificate{
+		crypto/x509.Certificate
+	}
+	class IdentifierHeader{
+		Identifier uint32
+		Nonce []byte
+	}
+	class Envelope{
+		Payload []byte
+		Signature []byte
+	}
+	class Payload{
+		Header *Header
+		Data []byte
+	}
+	class Header{
+		ChannelHeader []byte
+		SignatureHeader []byte
+	}
+	class ChannelHeader{
+		Type int32
+		Version int32
+		Timestamp *timestamp.Timestamp
+		TxId string
+		Epoch uint64
+		Extension []byte
+		TlsCertHash          []byte
+	}
+	class Transaction{
+		Actions              []*TransactionAction
+	}
+	class TransactionAction{
+		Header []byte
+		Payload []byte
+	}
+	class ChaincodeActionPayload{
+		ChaincodeProposalPayload []byte
+		Action               *ChaincodeEndorsedAction
+	}
+	class ChaincodeEndorsedAction{
+		ProposalResponsePayload []byte
+		Endorsements         []*Endorsement
+	}
+	class ProposalResponsePayload{
+		ProposalHash []byte
+		Extension            []byte
+	}
+	class Endorsement{
+		Endorser []byte
+		Signature []byte
+	}
+	class ChaincodeProposalPayload{
+		Input []byte
+		TransientMap map[string][]byte
+	}
+	class ChaincodeInvocationSpec{
+		ChaincodeSpec        *ChaincodeSpec
+	}
+	class ChaincodeSpec{
+		Type                 ChaincodeSpec_Type
+		ChaincodeId          *ChaincodeID
+		Input                *ChaincodeInput
+		Timeout              int32
+	}
+	class ChaincodeID{
+		Path string
+		Name string
+		Version string
+	}
+	class ChaincodeInput{
+		Args        [][]byte
+		Decorations map[string][]byte
+		IsInit               bool
+	}
+	class ChaincodeAction{
+		Results []byte
+		Events []byte
+		Response *Response
+		ChaincodeId          *ChaincodeID
+	}
+	class TxReadWriteSet{
+		DataModel  TxReadWriteSet_DataModel
+		NsRwset []*NsReadWriteSet
+	}
+	class NsReadWriteSet{
+		Namespace             string
+		Rwset                 []byte
+		CollectionHashedRwset []*CollectionHashedReadWriteSet
+	}
+	class KVRWSet{
+		Reads                []*KVRead
+		RangeQueriesInfo     []*RangeQueryInfo
+		Writes               []*KVWrite
+		MetadataWrites       []*KVMetadataWrite
+	}
+	
+	Block --* BlockHeader
+	Block --* BlockData
+	Block --* BlockMetadata
+	
+	BlockMetadata --* Metadata
+	Metadata --* MetadataSignature
+	
+	MetadataSignature --* SignatureHeader
+	MetadataSignature --* IdentifierHeader
+	
+	SignatureHeader --* SerializedIdentity
+	SerializedIdentity --* Certificate
+	
+	BlockData --* Envelope
+	Envelope --* Payload
+	
+	Payload --* Header
+	Payload --* Transaction
+	Transaction --* TransactionAction
+	
+	TransactionAction --* ChaincodeActionPayload
+	
+	ChaincodeActionPayload --* ChaincodeEndorsedAction
+	ChaincodeActionPayload --* ChaincodeProposalPayload
+	
+	ChaincodeProposalPayload --* ChaincodeInvocationSpec
+	
+	ChaincodeInvocationSpec --* ChaincodeSpec
+	
+	ChaincodeSpec --* ChaincodeID
+	ChaincodeSpec --* ChaincodeInput
+	
+	ChaincodeEndorsedAction --* Endorsement
+	ChaincodeEndorsedAction --* ProposalResponsePayload
+	
+	ProposalResponsePayload --* ChaincodeAction
+	
+	ChaincodeAction --* TxReadWriteSet
+	
+	TxReadWriteSet --* NsReadWriteSet
+	
+	NsReadWriteSet --* KVRWSet
+	
+	Header --* ChannelHeader
+	Header --* SignatureHeader
+</div>
+
+<hr />
+
+<blockquote>
+  <p>声明：本作品采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>进行许可，使用时请注明出处。<br />
+Author: mengbin92<br />
+Github: <a href="https://mengbin92.github.io/">mengbin92</a><br />
+cnblogs: <a href="https://www.cnblogs.com/lianshuiwuyi/">恋水无意</a></p>
+</blockquote>
+
+<hr />
+
+  </section>
+
+</article>
+
+<section>
+
+            <!--div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏一个呗</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">    
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div-->
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2022/10/ol8%E5%AE%89%E8%A3%85/" data-toggle="tooltip" data-placement="top" title="使用boot.iso镜像安装OL8">上一篇：  <span>使用boot.iso镜像安装OL8</span>
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2022/10/couchdb/" data-toggle="tooltip" data-placement="top" title="fabric couchdb使用">下一篇：  <span>fabric couchdb使用</span>
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+<!--section class="post-comments">
+
+  
+
+</section-->
+
+
+            <section class="footer">
+    <footer>
+        <div class = "footer_div">  
+        <nav class="cover-navigation navigation--social">
+          <ul class="navigation">
+
+          
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/mengbin92" title="@mengbin92 的 Github" target="_blank">
+              <div class="footer-social-icon" style="background:url(/images/github.png);"></div>
+            </a>
+          </li>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:mengbin1992@outlook.com" title="Contact me">
+              <div class="footer-social-icon" style="background:url(/images/email.png);"></div>
+            </a>
+          </li>
+          
+          
+          <!-- RSS >
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <div class="footer-social-icon" style="background:url(/images/rss.png);"></div>
+              <span class="label">RSS</span>
+            </a>
+          </li-->
+
+          </ul>
+        </nav>
+
+        </div>
+
+        <div class = "footer_div">  
+           <p class="copyright text-muted">
+            Copyright &copy; 孟斌 2022 Theme by <a href="http://leopardpan.cn/">leopardpan</a> |
+            <iframe
+                style="margin-left: 2px; margin-bottom:-5px;"
+                frameborder="0" scrolling="0" width="91px" height="20px"
+                src="https://ghbtns.com/github-btn.html?user=leopardpan&repo=leopardpan.github.io&type=star&count=true" >
+            </iframe>
+            </p>
+        	<div align="right">
+    			<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+          <!-- 访问统计 -->
+          <span id="busuanzi_container_site_pv">
+            本站总访问量
+            <span id="busuanzi_value_site_pv"></span>次
+          </span>
+
+        </div>
+        <div>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+  </body>
+
+</html>

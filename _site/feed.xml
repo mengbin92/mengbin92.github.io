@@ -1,0 +1,1642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>孟斌</title>
+    <description>欢迎来到我的个人站~</description>
+    <link>http://192.168.1.5:4000/</link>
+    <atom:link href="http://192.168.1.5:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 29 Oct 2022 20:51:17 +0800</pubDate>
+    <lastBuildDate>Sat, 29 Oct 2022 20:51:17 +0800</lastBuildDate>
+    <generator>Jekyll v4.3.1</generator>
+    
+      <item>
+        <title>fabric网络升级</title>
+        <description>&lt;p&gt;原文地址在&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade.html&quot;&gt;这里&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;在fabric网络中，升级nodes和通道至最新版本需要四步：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;备份账本和MSPs。&lt;/li&gt;
+  &lt;li&gt;以滚动的方式将orderer升级到最新版。&lt;/li&gt;
+  &lt;li&gt;以滚动的方式将peers升级到最新版。&lt;/li&gt;
+  &lt;li&gt;将orderer系统通道和所有可用的应用程序通道升级至最新版。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;更多通道 capabilities信息，可以从&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/capabilities_concept.html&quot;&gt;这里&lt;/a&gt;了解。&lt;/p&gt;
+
+&lt;p&gt;要了解以上的升级过程，可以查阅这些教程：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html&quot;&gt;Considerations for getting to v2.x&lt;/a&gt; 介绍如何从之前的版本或其他长期支持版本升级至最新版。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrading_your_components.html&quot;&gt;Upgrading your components&lt;/a&gt; capabilities更新之前应该先升级组件。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/updating_capabilities.html&quot;&gt;Updating the capability level of a channel&lt;/a&gt; 完成所有节点的升级。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/enable_cc_lifecycle.html&quot;&gt;Enabling the new chaincode lifecycle&lt;/a&gt; 针对fabric v2.x，需要为新的chaincode lifecycle添加特定的背书策略。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;现在升级节点和增加通道的能力被认作是一个标准的Fabric过程，所以我们不再显示升级到最新版的命令。同样地，fabric-samples repo中也不会再提供脚本将示例网络升级到最新版。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;fabric网络升级到最新版之后，最好也将SDK升级至最新版。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;considerations-for-getting-to-v2x&quot;&gt;Considerations for getting to v2.x&lt;/h2&gt;
+
+&lt;p&gt;本章节主要介绍如何从之前的版本或其他长期支持版本升级至最新版。&lt;/p&gt;
+
+&lt;h3 id=&quot;从21升级到22&quot;&gt;从2.1升级到2.2&lt;/h3&gt;
+
+&lt;p&gt;Fabric v2.1和v2.2都是稳定版，以bug修复和其它形式的代码加固位置。因此，升级不需要特别考虑，也不需要更新特定的镜像版本或通道配置更新。&lt;/p&gt;
+
+&lt;h3 id=&quot;从v14x长期支持版本升级到v22&quot;&gt;从v1.4.x长期支持版本升级到v2.2&lt;/h3&gt;
+
+&lt;p&gt;从v1.4.x升级到v2.2，你需要考虑一下内容：&lt;/p&gt;
+
+&lt;h4 id=&quot;chaincode-lifecycle&quot;&gt;chaincode lifecycle&lt;/h4&gt;
+
+&lt;p&gt;在chaincode被应用到通道前，允许多个组织表决该合约应该如何使用，这是v2.0新增的功能。要了解更多关于chaincode lifecycle的信息，可以参阅&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/chaincode_lifecycle.html&quot;&gt;这里&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;最佳操作是在启用使用了新的chaincode lifecycle的通道和应用程序之前，先升级通道中的所有peers节点（尽管通道 capabilities不是必须的，但此时更新它更有意义）。未更新至v2.x的peers节点都将会在启用任一capability后崩溃，未更新至v2的orderer节点会在启用通道 capability后崩溃。这种崩溃行为是有意义的，因为如果peers节点或orderer节点不支持必要的capabilities，那它将不能安全地参与到通道中。&lt;/p&gt;
+
+&lt;p&gt;在通道更新应用程序的capabilities到v2.0之后，你必须使用v2.x lifecycle程序来打包、安装、审核和提交新的chaincode。因此，在更新功能之前，请确保为新的 lifecycle做好准备。&lt;/p&gt;
+
+&lt;p&gt;新的lifecycle默认使用的背书策略是在配置在通道中的（例如 org中的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MAJORITY&lt;/code&gt;），因此通道启用capabilities时应将背书策略添加到通道的配置中。&lt;/p&gt;
+
+&lt;p&gt;有关如何编辑相关通道配置以通过为每个组织添加背书策略的方式来启用行的lifecycle的信息，请查阅&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/enable_cc_lifecycle.html&quot;&gt;Enabling the new chaincode lifecycle&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&quot;chaincode-shim包仅golang版&quot;&gt;chaincode shim包（仅Golang版）&lt;/h4&gt;
+
+&lt;p&gt;在升级peers和通道之前，推荐使用&lt;strong&gt;vendor&lt;/strong&gt;来管理v1.4版本的Go chaincode使用的shim包。这样的话，你就无需更改的你的chaincode。&lt;/p&gt;
+
+&lt;p&gt;Fabric网络升级后，如果你不使用vendor来管理你的shim包，尽管之前的chaincode镜像仍能正常工作，但这是有风险的。如果你的chaincode镜像从你的环境中删除了，那么v2.x的peer的invoke会重建chaincode镜像，但此时会报错，因为找不到shim包。&lt;/p&gt;
+
+&lt;p&gt;此时，你有两个选择：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;如果整个通道都已经准备好升级chaincode，那你可以在所有的peers和通道上升级chaincode（至于使用旧的还是新的lifecycle，这取决于你启用的capability版本）。此时最好的方式是使用go mod来管理新的chaincode使用的shim包。&lt;/li&gt;
+  &lt;li&gt;如果整个通道都没有准备好升级chaincode，那你可以使用环境变量来指定的重建chaincode镜像时使用v1.4的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ccenv&lt;/code&gt;。v1.4的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ccenv&lt;/code&gt;仍可以在v2.x的peers上使用。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;chaincode日志仅golang版&quot;&gt;chaincode日志（仅Golang版）&lt;/h4&gt;
+
+&lt;p&gt;chaincode shim包中的日志服务shim.ChaincodeLogger已被删除，所以需要用户自己选择日志服务。详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/logging-control.html#chaincode&quot;&gt;Logging control&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&quot;peer数据库升级&quot;&gt;Peer数据库升级&lt;/h4&gt;
+
+&lt;p&gt;关于如何升级peers节点的详细信息，可以参考&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrading_your_components.html&quot;&gt;upgrading components&lt;/a&gt;。在升级的你的peers节点之前，你还需要额外进行一步操作，那就是升级peer数据库。所有peers节点的数据库（不仅包括状态数据库，还包括历史数据库和peer节点的其它内部数据库）都必须使用v2.x的数据格式进行重建，这是升级到v2.x版本的一部分。要出发重建操作，在peers节点启动前需要删除数据库。接下来介绍如何使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;peer node upgrade-dbs&lt;/code&gt;命令来删除本地数据库并为升级做好准备，这样在启动v2.xpeers节点的第一时间，所有的数据库都会被重建。如果你使用CouchDB作为状态数据库，v2.2的peers已经支持自动删除CouchDB了。要启用该支持，需要你配置peer使用CouchDB，且在执行&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upgrade-dbs&lt;/code&gt;命令前启动CouchDB。在v2.0和v2.1中，peer并不支持自动删除CouchDB数据库，你需要自己手动删除。&lt;/p&gt;
+
+&lt;p&gt;在使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker run&lt;/code&gt;命令启动新的peer容器之后，再使用下面的命令来升级peer节点（你可以跳过设置&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IMAGE_TAG&lt;/code&gt;的步骤，因为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upgrade-dbs&lt;/code&gt;只对v2.x Fabric有效。如果跳过的话，你需要设置&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PEER_CONTAINER&lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LEDGERS_BACKUP&lt;/code&gt; 环境变量）。使用下面的命令来代替&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker run&lt;/code&gt;命令启动peer的话，peer节点会删除本地的数据库，并为管理本地数据库做好准备（如果你是从v1.4.x版本升级的话，请使用v2.1代替v2.0）：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /opt/backup/&lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;/:/var/hyperledger/production/ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /opt/msp/:/etc/hyperledger/fabric/msp/ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;--env-file&lt;/span&gt; ./env&amp;lt;name of node&amp;gt;.list &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            hyperledger/fabric-peer:2.0 peer node upgrade-dbs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;在v2.0和v2.1中，如果你使用的是CouchDB作为状态数据库，那么也需要删除CouchDB数据库。删除CouchDB的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/data&lt;/code&gt;目录即可。&lt;/p&gt;
+
+&lt;p&gt;然后使用下面的命令来启动&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2.0&lt;/code&gt;标签的peer：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /opt/backup/&lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;/:/var/hyperledger/production/ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /opt/msp/:/etc/hyperledger/fabric/msp/ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;--env-file&lt;/span&gt; ./env&amp;lt;name of node&amp;gt;.list &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            hyperledger/fabric-peer:2.0 peer node start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;peer节点会在启动之后立即使用v2.x数据格式重建数据库。由于重建数据库可能是一个漫长的过程（这取决于你的数据库大小，可能长达数小时），所以需要实时检查peer节点的日志来确认重建的进度。每隔1000个区块，你会看到如下信息：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;font color=&quot;red&quot;&gt;[lockbasedtxmgr] CommitLostBlock -&amp;gt; INFO 041 Recommitting block [1000] to state database&lt;/font&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;表示数据库还在重建中。&lt;/p&gt;
+
+&lt;p&gt;如果升级过程中没有删除数据库，在peer节点启动时会返回错误信息：&lt;strong&gt;peer节点使用的是老旧的数据格式，必须使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;peer node upgrade-dbs&lt;/code&gt;命令删除上述数据库（如果使用CouchDB作为状态数据库，则需要手动删除）&lt;/strong&gt;。处理完成后重启节点即可。&lt;/p&gt;
+
+&lt;h4 id=&quot;capability&quot;&gt;Capability&lt;/h4&gt;
+
+&lt;p&gt;v2.0新增了下面三个Capabilities：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Application &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;V2_0&lt;/code&gt;&lt;/strong&gt;: 如&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/chaincode_lifecycle.html&quot;&gt;Fabric chaincode lifecycle&lt;/a&gt;章节所述，启用了新的chaincode lifecycle。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;通道 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;V2_0&lt;/code&gt;&lt;/strong&gt;：无更新，但与application和orderer版本保持一致。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Orderer &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;V2_0&lt;/code&gt;&lt;/strong&gt;：控制&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Use通道CreationPolicyAsAdmins&lt;/code&gt;，可修改通道创建交易的验证方式。当configtxgen与&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-bashProfile&lt;/code&gt;选项联用时，可重置从orderer系统通道继承的值。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;与Capability版本更新一样，更新&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Application&lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;之前，确保已经升级的了你的peer可执行文件，更新&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;之前，确保已经升级的了你的orderer可执行文件。&lt;/p&gt;
+
+&lt;p&gt;关于如何设置新的Capabilities，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/updating_capabilities.html&quot;&gt;Updating the capability level of a 通道&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&quot;为每个组织配置orderer终端推荐配置&quot;&gt;为每个组织配置orderer终端（推荐配置）&lt;/h4&gt;
+
+&lt;p&gt;从v1.4.2开始，推荐在组织版本为所有的系统通道和应用程序通道定义orderer终端，可以在组织的通道配置中新增&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrdererEndpoints&lt;/code&gt;来替代全局的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrdererAddresses&lt;/code&gt;。如果有一个组织设置了组织版本的的orderer服务终端，那么在连接orderer节点时，所有的orderers和peers都会忽略通道版本的终端。&lt;/p&gt;
+
+&lt;p&gt;当服务发现与多个组织提供的orderer节点一起使用时，那就必须使用组织版本的orderer终端。这需要客户端配置正确的TLS证书。&lt;/p&gt;
+
+&lt;p&gt;如果你的通道配置中每个组织都未包含&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrdererEndpoints&lt;/code&gt;，那你需要升级你的通道配置来给它们添加这一配置。首先需要创建一个包含新配置章节的JSON文件。&lt;/p&gt;
+
+&lt;p&gt;在这个例子中，我们将为名为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrdererOrg&lt;/code&gt;的组织添加配置。如果你有多个提供orderer服务的组织，那么每个组织都需要添加配置。JSON文件&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;orglevelEndpoints.json&lt;/code&gt;内容如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;OrdererOrgEndpoint&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Endpoints&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;mod_policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admins&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+              &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;addresses&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                 &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;127.0.0.1:30000&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+              &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;之后，导入如下配置：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CH_NAME&lt;/font&gt;
+    &lt;p&gt;：待更新的通道名称。所有的系统通道和应用程序通道都应该包含排序节点的组织终端。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CORE_PEER_LOCALMSPID&lt;/font&gt;
+    &lt;p&gt;：提出通道更新的组织的MSPID。排序组织的MSP之一。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CORE_PEER_MSPCONFIGPATH&lt;/font&gt;
+    &lt;p&gt;：标识你的组织的MSP的绝对路径。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;TLS_ROOT_CA&lt;/font&gt;
+    &lt;p&gt;：提出系统通道更新的组织根证书的绝对路径。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;ORDERER_CONTAINER&lt;/font&gt;
+    &lt;p&gt;：排序节点的容器名称。访问排序服务时，你可以访问提供排序服务的任何排序节点。你的请求会自动提交给leader节点。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;ORGNAME&lt;/font&gt;
+    &lt;p&gt;：当前你要更新的组织名称，例如&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrdererOrg&lt;/code&gt;。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当你设置好环境变量后，就可以按照&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config&quot;&gt;Step 1: Pull and translate the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;之后使用下面的命令将组织的lifecycle策略（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;orglevelEndpoints.json&lt;/code&gt;文件中配置的）添加到名为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modified_config&lt;/code&gt;的文件中：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jq &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;.[0] * {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;通道_group&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Orderer&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ORGNAME&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: .[1].&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ORGNAME&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Endpoint}}}}}}&quot;&lt;/span&gt; config.json ./orglevelEndpoints.json &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; modified_config.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;之后的操作，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config&quot;&gt;Step 3: Re-encode and submit the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;如果排序服务组织执行它们自己的通道编辑操作，那么它们可以在没有进一步签名（默认情况下，编辑组织内部参数只需要该组织管理员的签名）的情况下编辑配置。如果不同组织执行更新，那就需要被编辑的组织对更新请求进行签名。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;更新你的组件&quot;&gt;更新你的组件&lt;/h2&gt;
+
+&lt;p&gt;如果想了解最新版Fabric的特殊事项，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html&quot;&gt;Upgrading to the latest release of Fabric&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;本章只介绍更新Fabric组件的操作。关于如何通过编辑通道来改变你通道的capability版本，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/updating_capabilities.html&quot;&gt;Updating a 通道 capability&lt;/a&gt;。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注意：在Hyperledger Fabric中使用术语&lt;strong&gt;升级&lt;/strong&gt;时，指的是升级组件的版本（例如，将可执行文件升级到最新版）。使用&lt;strong&gt;更新&lt;/strong&gt;时，指的是配置的更新，例如更新通道的配置或部署脚本。在Fabric中，如果没有数据&lt;strong&gt;迁移&lt;/strong&gt;的话，我们不会使用术语&lt;strong&gt;迁移&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;总览&quot;&gt;总览&lt;/h3&gt;
+
+&lt;p&gt;整体来看，在可执行程序层面升级你的节点，分两步：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;备份账本和MSPs&lt;/li&gt;
+  &lt;li&gt;更新所有的可执行程序到最新版&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;如果你拥有排序节点和peers，最好的做法是先升级排序节点。peer节点版本滞后或暂时无法处理某些交易，之后它总是可以赶上的。但如果相当数量的排序节点宕机，那Fabric网络将无法提供服务。&lt;/p&gt;
+
+&lt;p&gt;本文所有的操作都是通过Docker CLI命令执行。如果你使用其它的部署方法（Rancher，Kubernetes，OpenShift，等等），请查阅它的文档了解其CLI如何使用。&lt;/p&gt;
+
+&lt;p&gt;对于本机部署的，你还需要更新节点的YAML配置文件，例如&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;orderer.yaml&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;备份&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;orderer.yaml&lt;/code&gt;或&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core.yaml&lt;/code&gt;（peer节点），然后使用最新发布版中的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;orderer.yaml&lt;/code&gt;或&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core.yaml&lt;/code&gt;来替换它们。之后将备份的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;orderer.yaml&lt;/code&gt;或&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core.yaml&lt;/code&gt;文件中修改的地方更新到新的文件中。可以使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;diff&lt;/code&gt;来协助。注意，更新YAML文件时，推荐使用最新发布的来替换原有的，这样可以减少很多错误。&lt;/p&gt;
+
+&lt;p&gt;本文是假设你是使用Docker来部署Fabric网络的，YAML文件都已经内嵌到docker镜像中，配置文件中的默认值可以通过环境变量覆盖。&lt;/p&gt;
+
+&lt;h3 id=&quot;环境变量配置&quot;&gt;环境变量配置&lt;/h3&gt;
+
+&lt;p&gt;在部署peer或order节点时，你需要设置大量跟配置相关的环境变量。最好的做法是将这些环境记录在与要部署相关节点相关的文件中，并保存到本地。这样，在更新节点时可以保证你使用的是更节点创建是一样的环境变量。&lt;/p&gt;
+
+&lt;p&gt;下面是&lt;strong&gt;peer&lt;/strong&gt;相关的一系列环境变量（这些环境变量是本地部署使用的）可以放在文件中，你可能并不需要用到下面所有的环境变量：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CORE_PEER_TLS_ENABLED=true
+CORE_PEER_GOSSIP_USELEADERELECTION=true
+CORE_PEER_GOSSIP_ORGLEADER=false
+CORE_PEER_PROFILE_ENABLED=true
+CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+CORE_PEER_ID=peer0.org1.example.com
+CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
+CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
+CORE_PEER_LOCALMSPID=Org1MSP
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;下面是&lt;strong&gt;orderer&lt;/strong&gt;相关的一系列环境变量（这些环境变量是本地部署使用的）可以放在文件中，你可能并不需要用到下面所有的环境变量：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+ORDERER_GENERAL_GENESISMETHOD=file
+ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+ORDERER_GENERAL_TLS_ENABLED=true
+ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;你需要为每个你想升级的节点设置环境变量。&lt;/p&gt;
+
+&lt;h3 id=&quot;账本备份与还原&quot;&gt;账本备份与还原&lt;/h3&gt;
+
+&lt;p&gt;虽然我们将在本教程中演示备份账本数据的过程，但并不严格要求备份peer或排序节点（提供排序服务的一组排序节点之一）的账本数据。因为即使是最坏的情况下（例如硬盘故障），peer节点也能在没有账本的情况下启动。之后你再将peer节点重新加入到期望的通道中，peer节点会自动为每个通道创建账本，并周期性的从排序符合或其它peer节点中接受区块数据。在处理区块的过程中，peer节点会构建它自己的状态数据库。&lt;/p&gt;
+
+&lt;p&gt;但是，备份账本数据可以直接还原peer节点，不需要考虑从创世块构建数据和重新处理所有交易所花费的时间和计算成本，这一通过通常会花费数小时（取决于账本的大小）。此外，账本数据的备份还可能有助于新增peer节点，它可以从现有的peer节点获取账本数据来启动自己。&lt;/p&gt;
+
+&lt;p&gt;本文假定账本数据存放的文件路径并没有改变，还放在默认的路径：&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/var/hyperledger/production/&lt;/code&gt;(peer节点)或&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/var/hyperledger/production/orderer&lt;/code&gt;（排序节点）。如果你的路径改变了，那么在执行下面的命令时就需要输入你存放账本数据的路径。&lt;/p&gt;
+
+&lt;p&gt;需要注意的是账本和chaincodes数据都保存在该路径下。最好的做法是将两者都进行备份，这样做的话会忽略&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/var/hyperledger/production/ledgersData&lt;/code&gt;下的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stateLeveldb&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;historyLeveldb&lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chains/index&lt;/code&gt;目录。尽管这样可以减少备份所需的存储空间，但peer从备份的数据中恢复时可能会花费更多的时间，因为这些账本会在peer启动时重新构建。&lt;/p&gt;
+
+&lt;p&gt;如果使用CouchDB作为状态数据库，那么默认路径下是没有&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stateLeveldb&lt;/code&gt;的，因为状态数据库的数据会存如CouchDB中。同样的，如果peer启动时找不到CouchDB数据库或块高较小（基于早先的CouchDB备份），状态数据库会自动地重构数据直至当前块高。所以，如果你分别备份peer的账本数据和CouchDB数据，那么你需要确保CouchDB备份总早于peer的备份。&lt;/p&gt;
+
+&lt;h3 id=&quot;升级排序节点&quot;&gt;升级排序节点&lt;/h3&gt;
+
+&lt;p&gt;排序节点应该以滚动的方式进行升级（在一次升级过程中）。总体来讲，排序节点的更新步骤如下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;关闭排序节点。&lt;/li&gt;
+  &lt;li&gt;备份排序节点的账本和MSP。&lt;/li&gt;
+  &lt;li&gt;移除排序节点容器。&lt;/li&gt;
+  &lt;li&gt;使用相应的镜像启动新的排序节点。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在排序服务的所有节点上重复执行上面的过程，直至整个排序服务都完成升级。&lt;/p&gt;
+
+&lt;h4 id=&quot;设置环境变量&quot;&gt;设置环境变量&lt;/h4&gt;
+
+&lt;p&gt;在更新排序节点前导入以下环境变量：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;ORDERER_CONTAINER&lt;/font&gt;
+    &lt;p&gt;：排序节点的容器名称。注意，每个节点更新时你都样设置一遍。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;LEDGERS_BACKUP&lt;/font&gt;
+    &lt;p&gt;：存放备份数据的路径。就如下面的示例中，每个节点都有它自己的子目录来存放它的账本。目录如果不存在的话，你需要手动创建。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;IMAGE_TAG&lt;/font&gt;
+    &lt;p&gt;：你期望升级到的Fabric版本，例如v2.0。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;注意，&lt;strong&gt;镜像标签&lt;/strong&gt;是必须设置，这样才能确保你使用正确的镜像来启动节点。设置标签的过程取决你的部署方式。&lt;/p&gt;
+
+&lt;h4 id=&quot;升级容器&quot;&gt;升级容器&lt;/h4&gt;
+
+&lt;p&gt;开始更新之前，我们需要先&lt;strong&gt;下线排序节点&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker stop &lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;服务下线后，你就可以&lt;strong&gt;备份账本和MSP&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker &lt;span class=&quot;nb&quot;&gt;cp&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt;:/var/hyperledger/production/orderer/ ./&lt;span class=&quot;nv&quot;&gt;$LEDGERS_BACKUP&lt;/span&gt;/&lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后删除排序服务容器（因为我们需要新容器与现有的容器同名）：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;最后，启用新的排序节点容器：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /opt/backup/&lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt;/:/var/hyperledger/production/orderer/ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /opt/msp/:/etc/hyperledger/fabric/msp/ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;--env-file&lt;/span&gt; ./env&amp;lt;name of node&amp;gt;.list &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            hyperledger/fabric-orderer:&lt;span class=&quot;nv&quot;&gt;$IMAGE_TAG&lt;/span&gt; orderer
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;当所有的排序节点都完成升级，你就可以开始升级peer节点。&lt;/p&gt;
+
+&lt;h3 id=&quot;升级peer节点&quot;&gt;升级peer节点&lt;/h3&gt;
+
+&lt;p&gt;与排序节点升级一样，peer节点也应该以滚动的方式进行升级（在一次升级过程中）。正如排序节点升级时提到的，排序节点的升级和peer节点的升级是可以并行的，但在本教程中我们是串行执行这两个过程。总体来看，peer节点的升级需要以下几步：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;下线peer节点。&lt;/li&gt;
+  &lt;li&gt;备份peer账本和MSP。&lt;/li&gt;
+  &lt;li&gt;移除chaincode容器和镜像。&lt;/li&gt;
+  &lt;li&gt;移除peer容器。&lt;/li&gt;
+  &lt;li&gt;使用相应的镜像启动新的peer容器。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;设置环境变量-1&quot;&gt;设置环境变量&lt;/h4&gt;
+
+&lt;p&gt;在更新peer节点前导入以下环境变量：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;PEER_CONTAINER&lt;/font&gt;
+    &lt;p&gt;：peer节点的容器名称。注意，每个节点更新时你都样设置一遍。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;LEDGERS_BACKUP&lt;/font&gt;
+    &lt;p&gt;：存放备份数据的路径。就如下面的示例中，每个节点都有它自己的子目录来存放它的账本。目录如果不存在的话，你需要手动创建。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;IMAGE_TAG&lt;/font&gt;
+    &lt;p&gt;：你期望升级到的Fabric版本，例如v2.0。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;注意，&lt;strong&gt;镜像标签&lt;/strong&gt;是必须设置，这样才能确保你使用正确的镜像来启动节点。设置标签的过程取决你的部署方式。&lt;/p&gt;
+
+&lt;p&gt;在所有peer节点上重复执行上面的过程，以便完成所有peer节点的升级。&lt;/p&gt;
+
+&lt;h4 id=&quot;升级容器-1&quot;&gt;升级容器&lt;/h4&gt;
+
+&lt;p&gt;首先，使用下面的命令来&lt;strong&gt;下线peer节点&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker stop &lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后&lt;strong&gt;备份peer账本和MSP&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker &lt;span class=&quot;nb&quot;&gt;cp&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;:/var/hyperledger/production ./&lt;span class=&quot;nv&quot;&gt;$LEDGERS_BACKUP&lt;/span&gt;/&lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;在完成peer节点下线和账本备份后，&lt;strong&gt;移除peerchaincode容器和镜像&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;CC_CONTAINERS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;docker ps | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;dev-&lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{print $1}&apos;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$CC_CONTAINERS&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$CC_CONTAINERS&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;fi
+
+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;CC_IMAGES&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;docker images | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;dev-&lt;span class=&quot;nv&quot;&gt;$PEER&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{print $1}&apos;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$CC_IMAGES&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then &lt;/span&gt;docker rmi &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$CC_IMAGES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后删除peer容器（因为我们需要新容器与现有的容器同名）：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;最后，启动新的peer容器：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /opt/backup/&lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;/:/var/hyperledger/production/ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /opt/msp/:/etc/hyperledger/fabric/msp/ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;--env-file&lt;/span&gt; ./env&amp;lt;name of node&amp;gt;.list &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            hyperledger/fabric-peer:&lt;span class=&quot;nv&quot;&gt;$IMAGE_TAG&lt;/span&gt; peer node start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;chaincode容器并不需要手动启动。在收到chaincode请求时（invoke或query），peer首先会检查chaincode是否在运行。如果是，直接使用；如果没有的话，peer节点会启动chaincode（必要时会重建chaincode镜像）。&lt;/p&gt;
+
+&lt;h4 id=&quot;验证peer升级完成&quot;&gt;验证peer升级完成&lt;/h4&gt;
+
+&lt;p&gt;确认peer是否完成升级最好的方法是一次chaincode调用请求。注意，查询操作只能确定账本所在的单个peer节点成功升级。如果你想确认多个peer节点是否升级完成，同时更新chaincode也是升级操作的一部分的话，那你应该等到符合背书策略、且来自足够多组织的peer节点完成升级之后在进行验证。&lt;/p&gt;
+
+&lt;p&gt;在你计划验证之前，你需要升级来自足够多的组织的peer节点，以满足你的背书策略。但只有将更新chaincode作为升级peer操作的一部分时，才需要这样做。如果你的升级操作中不包括更新chaincode，那验证peer升级是否完成的操作可能会得到运行不同Fabric版本的peer节点的背书。&lt;/p&gt;
+
+&lt;h3 id=&quot;升级ca&quot;&gt;升级CA&lt;/h3&gt;
+
+&lt;p&gt;要了解如何升级你的Fabric CA服务，详见&lt;a href=&quot;http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#upgrading-the-server&quot;&gt;CA documentation&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h3 id=&quot;升级-nodejs-sdk&quot;&gt;升级 Node.js SDK&lt;/h3&gt;
+
+&lt;p&gt;升级Node.js SDK前需要先升级Fabric和Fabric CA。Fabric和Fabric CA兼容旧版的SDK。在旧版的Fabric和Fabric CA上使用较新的SDK，通常会提示旧版的Fabric和Fabric CA部分功能不可用，且兼容性并未经过测试。&lt;/p&gt;
+
+&lt;p&gt;在你应用程序的根目录下执行下面的命令可以升级所有的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Node.js&lt;/code&gt;客户端：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;fabric-client@latest
+
+npm &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;fabric-ca-client@latest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上面的命令安装最新版的Fabric和Fabric CA客户端，并将版本信息写入&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;package.json&lt;/code&gt;中。&lt;/p&gt;
+
+&lt;h3 id=&quot;升级couchdb&quot;&gt;升级CouchDB&lt;/h3&gt;
+
+&lt;p&gt;如果使用CouchDB作为状态数据库，那么在你升级peer节点也要同步升级CouchDB。&lt;/p&gt;
+
+&lt;p&gt;升级CouchDB：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;下线CouchDB。&lt;/li&gt;
+  &lt;li&gt;备份CouchDB数据目录。&lt;/li&gt;
+  &lt;li&gt;安装最新版的CouchDB或更新部署脚本启用新的Docker镜像。&lt;/li&gt;
+  &lt;li&gt;重启CouchDB。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;升级node-chaincode&quot;&gt;升级Node chaincode&lt;/h3&gt;
+
+&lt;p&gt;要升级到新版的Node chaincode shim包，开发人员需要：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;更新chaincode&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;package.json&lt;/code&gt;中的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fabric-shim&lt;/code&gt;至新版。&lt;/li&gt;
+  &lt;li&gt;重新打包新的chaincode包，并在通道的所有背书节点上进行安装。&lt;/li&gt;
+  &lt;li&gt;升级新到新的chaincode，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/commands/peerchaincode.html&quot;&gt;Peer chaincode commands&lt;/a&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;升级go-chaincode&quot;&gt;升级Go chaincode&lt;/h3&gt;
+
+&lt;p&gt;关于升级Go chaincode到v2.0版，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html#chaincode-shim-changes&quot;&gt;Chaincode shim changes&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;有大量的第三方工具来帮你管理你的chaincode shim包。选择你熟悉的方式来管理你的chaincode shim包，并重新打包你的chaincode。&lt;/p&gt;
+
+&lt;p&gt;如果你更新了chaincode shim包，那你必须在所有已安装改chaincode的peer节点上重新安装它。安装时使用相同的名称，不同的版本号。之后你还要在部署了该chaincode的所有通道上执行chaincode升级操作来升级chaincode。&lt;/p&gt;
+
+&lt;h2 id=&quot;更新通道的capability版本&quot;&gt;更新通道的capability版本&lt;/h2&gt;
+
+&lt;p&gt;如果不熟悉capability，那么操作前可以查阅&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/capabilities_concept.html&quot;&gt;Capabilities&lt;/a&gt;。需要注意的是&lt;strong&gt;在启用capabilities前，需要升级归属该通道的peer节点和排序节点&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;更多关于最新版Fabric中capabilities版本的信息，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html#Capabilities&quot;&gt;Upgrading your components&lt;/a&gt;。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注意：在Hyperledger Fabric中使用术语&lt;strong&gt;升级&lt;/strong&gt;时，指的是升级组件的版本（例如，将可执行文件升级到最新版）。使用&lt;strong&gt;更新&lt;/strong&gt;时，指的是配置的更新，例如更新通道的配置或部署脚本。在Fabric中，如果没有数据&lt;strong&gt;迁移&lt;/strong&gt;的话，我们不会使用术语&lt;strong&gt;迁移&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;先决条件和注意事项&quot;&gt;先决条件和注意事项&lt;/h3&gt;
+
+&lt;p&gt;更新前，请先确保你的机器上有&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/prereqs.html&quot;&gt;Prerequisites&lt;/a&gt;中所提及的所有依赖。这将保证你拥有更新通道配置所需的最新版工具。&lt;/p&gt;
+
+&lt;p&gt;由于Fabric可以并且应该滚动更新，所以&lt;strong&gt;启用capabilities前需要完成Fabric的升级&lt;/strong&gt;。任何没有升级到至少capabilities相关的可执行程序都将引起崩溃，并指出错误的配置，否则会导致账本分叉。&lt;/p&gt;
+
+&lt;p&gt;一旦启用capabilities，它成为该通道的永久记录。这意味着即使之后禁用了capabilities，旧的可执行程序也无法参与到该通道中，因为它无法处理启用capabilities到禁用capabilities期间的所有区块。结果就是一旦启用了capabilities，就不建议或不支持禁用它。&lt;/p&gt;
+
+&lt;p&gt;有鉴于此，可将启用capabilities视为不可逆的。所以在测试设置新capabilities，并在生成环境下启用之前，请三思。&lt;/p&gt;
+
+&lt;h3 id=&quot;概览&quot;&gt;概览&lt;/h3&gt;
+
+&lt;p&gt;在接下来的教程中，我们将展示如何在所有的系统通道和应用程序通道中配置capabilities更新。&lt;/p&gt;
+
+&lt;p&gt;是否需要为所有的通道更新配置的每个部分，这取决于最新版的内容以及你的使用场景。详情参见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html&quot;&gt;Upgrading to the latest version of Fabric&lt;/a&gt;。需要注意的是在使用最新版功能前，可能需要更新到最新的capability版本，最好的做法是始终使用最新版的可执行程序和最新的capability版本。&lt;/p&gt;
+
+&lt;p&gt;因为更新capability版本涉及到配置更新事务流程，相关命令详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html&quot;&gt;Updating a 通道 configuration&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;与通道其它配置更新一样，capability版本更新也分三步（每个通道）：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;获取最新的通道配置&lt;/li&gt;
+  &lt;li&gt;创建修改后的通道配置&lt;/li&gt;
+  &lt;li&gt;创建配置更新事务&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;我们将按照下面的顺序来启用capabilities：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/updating_capabilities.html#orderer-system-通道-capabilities&quot;&gt;Orderer system 通道&lt;/a&gt;
+    &lt;ol&gt;
+      &lt;li&gt;Orderer group&lt;/li&gt;
+      &lt;li&gt;通道 group&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/updating_capabilities.html#enable-capabilities-on-existing-通道&quot;&gt;Application 通道&lt;/a&gt;
+    &lt;ol&gt;
+      &lt;li&gt;Orderer group&lt;/li&gt;
+      &lt;li&gt;通道 group&lt;/li&gt;
+      &lt;li&gt;Application group&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;尽管可以同时编辑通道配置的多个部分，但在本教程中我们将展示如何逐步处理这些过程。也就是说我们不会在一次配置修改中同时修改系统通道的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;组和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;组。这是因为并不是每次发布都有新的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;组capability和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;组capability。&lt;/p&gt;
+
+&lt;p&gt;在生成网络中，单个用户可以独立完成所有通道（和其它配置）更新时不可能的，也是不明智的。例如，orderer system 通道更新，只能由组织的管理员来执行（尽管可以将peer组织添加到排序服务组织中）。同样地，更新其它的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;或&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;组的通道配置除了需要排序服务组织的签名外还需要peer组织的签名。分布式系统需要协同管理。&lt;/p&gt;
+
+&lt;h4 id=&quot;新建capabilities配置文件&quot;&gt;新建capabilities配置文件&lt;/h4&gt;
+
+&lt;p&gt;本教程假设名为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;capabilities.json&lt;/code&gt;的文件已创建，它包含所有你想更新的capabilities。使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jq&lt;/code&gt;将编辑的配置应用到修改后的文件中。&lt;/p&gt;
+
+&lt;p&gt;你也不是非要创建类似&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;capabilities.json&lt;/code&gt;的文件或使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jq&lt;/code&gt;工具。修改后的配置也可手动编辑，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#sample-通道-configuration&quot;&gt;sample 通道 configuration&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;然而，这里所描述的过程（使用JSON文件和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jq&lt;/code&gt;工具）在脚本化方面确实有优势，这使得它适合想大量的通道进行配置更新。这也是这种方式为什么会成为&lt;strong&gt;更新通道的推荐方式&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;示例中，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;capabilities.json&lt;/code&gt;文件内容如下（如果将更新通道作为你&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html&quot;&gt;Fabric升级到最新版&lt;/a&gt;的一部分，则需要将capabilities设置为适合该版本的版本）：&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+     &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;通道&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+         &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;mod_policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admins&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+             &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                 &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;capabilities&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                     &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;V2_0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+             &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+         &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+     &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+     &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;orderer&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+         &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;mod_policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admins&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+             &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                 &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;capabilities&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                     &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;V2_0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+             &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+         &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+     &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+     &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;application&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+         &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;mod_policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admins&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+             &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                 &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;capabilities&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                     &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;V2_0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+             &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+         &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+     &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;默认情况下，peer节点并不是orderer system 通道的管理员，所以peer节点不能发起orderer system 通道配置更新。排序组织的管理员必须创建类似的文件（没&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;application&lt;/code&gt;组capability，因为系统通道中不存在&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;application&lt;/code&gt;组）来执行系统通道配置更新操作。默认情况下应用程序通道配置是复制系统通道的，所以除非为了特定的capability版本而创建了不同的通道配置，否则应用程序通道的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;组和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;组与网络中其它的系统通道是一样的。&lt;/p&gt;
+
+&lt;h3 id=&quot;orderer-system-通道-capabilities&quot;&gt;orderer system 通道 capabilities&lt;/h3&gt;
+
+&lt;p&gt;默认情况下应用程序通道复制系统通道的配置，所以最好的操作是在跟应用程序通道前先更新系统通道的capabilities。就像&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrading_your_components.html&quot;&gt;Upgrading your components&lt;/a&gt;中所述，更新peer之前先将排序节点更新至最新版。&lt;/p&gt;
+
+&lt;p&gt;orderer system 通道归排序服务组织管理。默认情况下，只有一个组织（在排序服务初始化节点时创建的组织），但也可以扩展多个组织（例如，有多个组织为排序服务提供节点）。&lt;/p&gt;
+
+&lt;p&gt;在更新&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt; capability之前，请确保在你的排序服务中的所有节点都已经升级到所需版本。如果排序节点没有升级到所需版本，它将无法处理具有该capability的配置块，并且将崩溃。类似的，如果排序服务中新增一条通道，那所有将被加入到该通道的peer节点必须至少处于&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Application&lt;/code&gt; capabilities相近的节点版本，否则在处理配置块时这些peer节点将会崩溃。要了解更多信息，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/capabilities_concept.html&quot;&gt;Capabilities&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&quot;设置环境变量-2&quot;&gt;设置环境变量&lt;/h4&gt;
+
+&lt;p&gt;你需要导入以下环境变量：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CH_NAME&lt;/font&gt;
+    &lt;p&gt;：待更新的系统通道名称。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CORE_PEER_LOCALMSPID&lt;/font&gt;
+    &lt;p&gt;：执行通道更新操作的MSP ID，排序服务组织中的MSP。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;TLS_ROOT_CA&lt;/font&gt;
+    &lt;p&gt;：排序节点TLS证书的绝对路径。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CORE_PEER_MSPCONFIGPATH&lt;/font&gt;
+    &lt;p&gt;：标识你的组织的MSP存放的绝对路径。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;ORDERER_CONTAINER&lt;/font&gt;
+    &lt;p&gt;：排序节点的容器名称。访问排序服务时，你可以访问排序服务中的任意节点。你的请求会自动提交给leader节点。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;orderer组&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;组&lt;/h4&gt;
+
+&lt;p&gt;关于如何拉取、传递和确定通道配置范围的命令，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config&quot;&gt;Step 1: Pull and translate the config&lt;/a&gt;。如果你有了&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modified_config.json&lt;/code&gt;文件，那你可以使用下面的命令来新增&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;组capabilities：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jq &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;.[0] * {&quot;通道_group&quot;:{&quot;groups&quot;:{&quot;Orderer&quot;: {&quot;values&quot;: {&quot;Capabilities&quot;: .[1].orderer}}}}}&apos;&lt;/span&gt; config.json ./capabilities.json &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; modified_config.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后执行步骤&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config&quot;&gt;Step 3: Re-encode and submit the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;因为你现在更新的是系统通道，系统通道修改策略只需要排序服务组织的管理员签名。&lt;/p&gt;
+
+&lt;h4 id=&quot;通道组&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;组&lt;/h4&gt;
+
+&lt;p&gt;关于如何拉取、传递和确定通道配置范围的命令，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config&quot;&gt;Step 1: Pull and translate the config&lt;/a&gt;。如果你有了&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modified_config.json&lt;/code&gt;文件，那你可以使用下面的命令来新增&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;组capabilities：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jq &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;.[0] * {&quot;通道_group&quot;:{&quot;values&quot;: {&quot;Capabilities&quot;: .[1].通道}}}&apos;&lt;/span&gt; config.json ./capabilities.json &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; modified_config.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后执行步骤&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config&quot;&gt;Step 3: Re-encode and submit the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;因为你现在更新的是系统通道，系统通道的修改策略只需要排序服务组织的管理员签名。在应用程序通道中，假如你没有修改默认值，通常需要同时满足&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Application&lt;/code&gt;组（由peer组织的MSPs组成）和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;组（由排序服务组织组成）的&lt;strong&gt;大多数管理员&lt;/strong&gt;策略。&lt;/p&gt;
+
+&lt;h3 id=&quot;在已有通道上启用capabilities&quot;&gt;在已有通道上启用capabilities&lt;/h3&gt;
+
+&lt;p&gt;现在我们来更新orderer system 通道的capabilities，我们将会更新已有通道（你想更新的）的配置。&lt;/p&gt;
+
+&lt;p&gt;应用程序通道的配置与系统通道的非常相似。这样，我们就能复用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;capabilities.json&lt;/code&gt;文件，并使用相同的命令来进行更新（只需要重新设置环境变量即可）。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;在更新capabilities前，请确保排序服务中的所有排序节点和通道中的所有peer节点都已升级至要求的版本，否则未升级的节点将无法处理启用了capability的配置块并引起崩溃&lt;/strong&gt;。更多信息详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/capabilities_concept.html&quot;&gt;Capabilities&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h4 id=&quot;设置环境变量-3&quot;&gt;设置环境变量&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CH_NAME&lt;/font&gt;
+    &lt;p&gt;：待更新的应用程序通道名称。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CORE_PEER_LOCALMSPID&lt;/font&gt;
+    &lt;p&gt;：执行通道更新操作的MSP ID，peer组织中的MSP。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;TLS_ROOT_CA&lt;/font&gt;
+    &lt;p&gt;：peer组织TLS证书的绝对路径。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CORE_PEER_MSPCONFIGPATH&lt;/font&gt;
+    &lt;p&gt;：标识你的组织的MSP存放的绝对路径。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;ORDERER_CONTAINER&lt;/font&gt;
+    &lt;p&gt;：排序节点的容器名称。访问排序服务时，你可以访问排序服务中的任意节点。你的请求会自动提交给leader节点。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;orderer组-1&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;组&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config&quot;&gt;Step 1: Pull and translate the config&lt;/a&gt;。如果你有了&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modified_config.json&lt;/code&gt;文件，那你可以使用下面的命令来新增&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;组capabilities：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jq &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;.[0] * {&quot;通道_group&quot;:{&quot;groups&quot;:{&quot;Orderer&quot;: {&quot;values&quot;: {&quot;Capabilities&quot;: .[1].orderer}}}}}&apos;&lt;/span&gt; config.json ./capabilities.json &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; modified_config.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后执行步骤&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config&quot;&gt;Step 3: Re-encode and submit the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;该capability默认的修改策略是需要&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;组中&lt;strong&gt;大多数管理员&lt;/strong&gt;同意（即，大多数排序服务的管理员）。peer组织可以更新该capability，但这种情况下，peer组织的签名并不满足该策略。&lt;/p&gt;
+
+&lt;h4 id=&quot;通道组-1&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;组&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config&quot;&gt;Step 1: Pull and translate the config&lt;/a&gt;。如果你有了&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modified_config.json&lt;/code&gt;文件，那你可以使用下面的命令来新增&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;组capabilities：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jq &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;.[0] * {&quot;通道_group&quot;:{&quot;values&quot;: {&quot;Capabilities&quot;: .[1].通道}}}&apos;&lt;/span&gt; config.json ./capabilities.json &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; modified_config.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后执行步骤&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config&quot;&gt;Step 3: Re-encode and submit the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;该capability默认的修改策略是需要&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Application&lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Orderer&lt;/code&gt;组&lt;strong&gt;大多数管理员&lt;/strong&gt;审核通过。也就是说，需要peer组织和排序服务组织中大多数管理员对该请求进行签名认证。&lt;/p&gt;
+
+&lt;h4 id=&quot;application组&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Application&lt;/code&gt;组&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config&quot;&gt;Step 1: Pull and translate the config&lt;/a&gt;。如果你有了&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modified_config.json&lt;/code&gt;文件，那你可以使用下面的命令来新增&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;通道&lt;/code&gt;组capabilities：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jq &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;.[0] * {&quot;通道_group&quot;:{&quot;groups&quot;:{&quot;Application&quot;: {&quot;values&quot;: {&quot;Capabilities&quot;: .[1].application}}}}}&apos;&lt;/span&gt; config.json ./capabilities.json &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; modified_config.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后执行步骤&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config&quot;&gt;Step 3: Re-encode and submit the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;该capability默认的修改策略是需要&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Application&lt;/code&gt;组&lt;strong&gt;大多数管理员&lt;/strong&gt;审核通过。也就是说，需要peer组织中的大多数管理员进行投票。排序服务的管理员不需要参与。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;这样的结果就是不要将此capability设置为不存在的版本&lt;/strong&gt;。因为排序节点既不会解析应用程序capabilities，也不会验证它，排序节点会审核通过所有的应用程序capabilities版本并将新的配置块分发给peer节点以便peer节点将其保存到账本中。这样的话，peer节点将无法处理该capability并引起崩溃。即使之后再将一个合法的capability版本配置到peer节点上，但之前的配置块仍存在于账本中，当尝试处理之前的配置块时还是会引发崩溃。&lt;/p&gt;
+
+&lt;p&gt;这也是为什么需要&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;capabilities.json&lt;/code&gt;这样的文件。它可以有效防止简单的用户错误，例如，当将应用程序的apability设置为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;V20&lt;/code&gt;，而不是&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;V2_0&lt;/code&gt;时，这会导致通道不可用且无法恢复。&lt;/p&gt;
+
+&lt;h3 id=&quot;启用capabilities后进行验证&quot;&gt;启用capabilities后进行验证&lt;/h3&gt;
+
+&lt;p&gt;验证capabilities是否成功启用的最好方式是在所有的通道上执行一次chaincode调用。未升级到相应版本的节点都无法解析新的capabilities，这些节点都会崩溃。在这些节点成功重启之前你需要将它们升级至相应的版本。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;启用新的chaincode-lifecycle&quot;&gt;启用新的chaincode lifecycle&lt;/h2&gt;
+
+&lt;p&gt;用户从v1.4.x升级到v2.x后，必须编辑通道配置来启用新的lifecycle功能。这个过程涉及到相关用户必须执行的一系列&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html&quot;&gt;通道配置更新&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;要启用新的chaincode lifecycle，应用程序通道的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Channel&lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Application&lt;/code&gt;capabilities必须更新到&lt;strong&gt;V2_0&lt;/strong&gt;，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html#chaincode-lifecycle&quot;&gt;Considerations for getting to 2.0&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;总体来看，通道配置更新分三步（每个通道）：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;获取最新的通道配置&lt;/li&gt;
+  &lt;li&gt;创建修改后的通道配置&lt;/li&gt;
+  &lt;li&gt;创建配置更新交易&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;接下来我们使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enable_lifecycle.json&lt;/code&gt;文件（包含我们所需要的所有通道配置更新）来更新通道配置。需要留意的是，在生成环境中，可能有多个用户发起通道更新请求。为了方便起见，我们将所有的更新都放在单个文件中呈现。&lt;/p&gt;
+
+&lt;h3 id=&quot;创建enable_lifecyclejson文件&quot;&gt;创建&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enable_lifecycle.json&lt;/code&gt;文件&lt;/h3&gt;
+
+&lt;p&gt;除了使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enable_lifecycle.json&lt;/code&gt;文件外，本教程还将使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jq&lt;/code&gt;将编辑后的内容应用到文件中。修改的文件也可以手动编辑，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#sample-channel-configuration&quot;&gt;sample channel configuration&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;本文展示的操作（使用JSON文件和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jq&lt;/code&gt;工具）在脚本化方面更具优势，更适合大量的通道配置更新。也是编辑通道配置的推荐操作。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enable_lifecycle.json&lt;/code&gt;使用的示例，例如&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;org1Policies&lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Org1ExampleCom&lt;/code&gt;，在部署时需要替换成实际值：&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;org1Policies&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Endorsement&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;mod_policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admins&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;identities&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;principal&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;msp_identifier&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Org1ExampleCom&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;role&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;PEER&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;principal_classification&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ROLE&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;rule&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;n_out_of&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;n&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;rules&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;signed_by&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;org2Policies&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Endorsement&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;mod_policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admins&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;identities&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;principal&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;msp_identifier&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Org2ExampleCom&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;role&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;PEER&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;principal_classification&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ROLE&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;rule&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;n_out_of&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;n&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;rules&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;signed_by&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                            &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;appPolicies&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Endorsement&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;mod_policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admins&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;rule&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;MAJORITY&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;sub_policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Endorsement&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;LifecycleEndorsement&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;mod_policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admins&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;rule&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;MAJORITY&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;sub_policy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Endorsement&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;acls&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;_lifecycle/CheckCommitReadiness&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy_ref&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/Channel/Application/Writers&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;_lifecycle/CommitChaincodeDefinition&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy_ref&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/Channel/Application/Writers&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;_lifecycle/QueryChaincodeDefinition&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy_ref&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/Channel/Application/Readers&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;_lifecycle/QueryChaincodeDefinitions&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy_ref&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/Channel/Application/Readers&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;在新的策略中，如果&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NodeOUs&lt;/code&gt;启用了，”role”字段应该设置为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PEER&lt;/code&gt;，否则设置为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MEMBER&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h3 id=&quot;编辑通道配置&quot;&gt;编辑通道配置&lt;/h3&gt;
+
+&lt;h4 id=&quot;系统通道更新&quot;&gt;系统通道更新&lt;/h4&gt;
+
+&lt;p&gt;因为修改系统通道配置以启用新的lifecycle只涉及到peer组织配置中的通道配置参数，所以被编辑的peer组织都必须掉相关的通道配置更新进行签名。&lt;/p&gt;
+
+&lt;p&gt;默认情况下，系统通道只能被系统通道的管理员编辑（排序服务组织的管理员，而非peer组织的），这意味着对联盟中peer组织的配置更新必须有系统通道管理提出，并发送给相应的peer组织进行签名。&lt;/p&gt;
+
+&lt;p&gt;需要导入以下环境变量：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CH_NAME&lt;/font&gt;
+    &lt;p&gt;：待更新的系统通道名称。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CORE_PEER_LOCALMSPID&lt;/font&gt;
+    &lt;p&gt;：执行通道更新操作的MSP ID，排序服务组织中的MSP。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;TLS_ROOT_CA&lt;/font&gt;
+    &lt;p&gt;：发起系统通道更新组织的TLS证书的绝对路径。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CORE_PEER_MSPCONFIGPATH&lt;/font&gt;
+    &lt;p&gt;：标识你的组织的MSP存放的绝对路径。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;ORDERER_CONTAINER&lt;/font&gt;
+    &lt;p&gt;：排序节点的容器名称。访问排序服务时，你可以访问排序服务中的任意节点。你的请求会自动提交给leader节点。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;ORGNAME&lt;/font&gt;
+    &lt;p&gt;：正在更新的组织名称。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CONSORTIUM_NAME&lt;/font&gt;
+    &lt;p&gt;：正在更新的联盟名称。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;设置好环境变量之后，&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config&quot;&gt;Step 1: Pull and translate the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;之后，使用下面的命令将lifecycle组织策略（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enable_lifecycle.json&lt;/code&gt;中列出的）添加到名为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modified_config.json&lt;/code&gt;文件中：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jq &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;.[0] * {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;channel_group&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Consortiums&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$CONSORTIUM_NAME&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ORGNAME&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;policies&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: .[1].&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ORGNAME&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Policies}}}}}}}}&quot;&lt;/span&gt; config.json ./enable_lifecycle.json &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; modified_config.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;最后，&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config&quot;&gt;Step 3: Re-encode and submit the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;如上所述，这些更新都必须由系统通道管理员提出，并发送给相应的peer组织进行签名。&lt;/p&gt;
+
+&lt;h4 id=&quot;应用程序通道更新&quot;&gt;应用程序通道更新&lt;/h4&gt;
+
+&lt;h5 id=&quot;编辑peer组织&quot;&gt;编辑peer组织&lt;/h5&gt;
+
+&lt;p&gt;我们需要对所有应用程序通道上的组织执行一组类似的编辑。&lt;/p&gt;
+
+&lt;p&gt;跟系统通道不同，peer组织可以发起对应用程序通道的配置更新请求。如果你只是对自己的组织进行配置更新，那你不需要其它组织的签名；但如果你要更新另一个组织的配置，那你就需要这个组织的签名。&lt;/p&gt;
+
+&lt;p&gt;需要导入以下环境变量：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CH_NAME&lt;/font&gt;
+    &lt;p&gt;：待更新的应用程序通道名称。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CORE_PEER_LOCALMSPID&lt;/font&gt;
+    &lt;p&gt;：执行通道更新操作的MSP ID，peer组织中的MSP。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;TLS_ROOT_CA&lt;/font&gt;
+    &lt;p&gt;：排序节点的TLS证书的绝对路径。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;CORE_PEER_MSPCONFIGPATH&lt;/font&gt;
+    &lt;p&gt;：标识你的组织的MSP存放的绝对路径。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;ORDERER_CONTAINER&lt;/font&gt;
+    &lt;p&gt;：排序节点的容器名称。访问排序服务时，你可以访问排序服务中的任意节点。你的请求会自动提交给leader节点。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;ORGNAME&lt;/font&gt;
+    &lt;p&gt;：正在更新的组织名称。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;设置好环境变量之后，&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config&quot;&gt;Step 1: Pull and translate the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;之后，使用下面的命令将lifecycle组织策略（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enable_lifecycle.json&lt;/code&gt;中列出的）添加到名为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modified_config.json&lt;/code&gt;文件中：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jq &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;.[0] * {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;channel_group&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Application&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ORGNAME&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;policies&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: .[1].&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ORGNAME&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Policies}}}}}}&quot;&lt;/span&gt; config.json ./enable_lifecycle.json &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; modified_config.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;最后，&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config&quot;&gt;Step 3: Re-encode and submit the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h5 id=&quot;编辑应用程序通道&quot;&gt;编辑应用程序通道&lt;/h5&gt;
+
+&lt;p&gt;在所有的应用程序通道都已经&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrade_to_newest_version.html#capabilities&quot;&gt;更新到包含V2_0capabilities&lt;/a&gt;后，新的chaincode lifecycle背书策略必须添加到所有的通道中。&lt;/p&gt;
+
+&lt;p&gt;所需的环境变量与更新peer组织时一样。不同之处在于不需要更新配置文件中的组织配置，所以不需要设置&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ORGNAME&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;设置好环境变量之后，&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config&quot;&gt;Step 1: Pull and translate the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;之后，使用下面的命令将lifecycle组织策略（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enable_lifecycle.json&lt;/code&gt;中列出的）添加到名为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modified_config.json&lt;/code&gt;文件中：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jq &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;.[0] * {&quot;channel_group&quot;:{&quot;groups&quot;:{&quot;Application&quot;: {&quot;policies&quot;: .[1].appPolicies}}}}&apos;&lt;/span&gt; config.json ./enable_lifecycle.json &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; modified_config.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;最后，&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config&quot;&gt;Step 3: Re-encode and submit the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;要通过通过更新请求，则必须满足配置文件中&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Channel/Application&lt;/code&gt;章节配置的修改策略。默认情况下，需要该通道中的&lt;strong&gt;大多数&lt;/strong&gt;peer组织同意。&lt;/p&gt;
+
+&lt;h5 id=&quot;编辑通道acls可选&quot;&gt;编辑通道ACLs（可选）&lt;/h5&gt;
+
+&lt;p&gt;下面的&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/access_control.html&quot;&gt;访问控制列表（ACL）&lt;/a&gt;是&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enable_lifecycle.json&lt;/code&gt;文件中的默认值，可根据你的使用场景进行选择：&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nl&quot;&gt;&quot;acls&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+ &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;_lifecycle/CheckCommitReadiness&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy_ref&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/Channel/Application/Writers&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+ &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+ &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;_lifecycle/CommitChaincodeDefinition&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy_ref&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/Channel/Application/Writers&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+ &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+ &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;_lifecycle/QueryChaincodeDefinition&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy_ref&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/Channel/Application/Readers&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+ &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+ &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;_lifecycle/QueryChaincodeDefinitions&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+   &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;policy_ref&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/Channel/Application/Readers&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;可以使用前面编辑应用程序通道时使用的环境变量。&lt;/p&gt;
+
+&lt;p&gt;设置好环境变量之后，&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-1-pull-and-translate-the-config&quot;&gt;Step 1: Pull and translate the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;之后，使用下面的命令将lifecycle组织策略（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enable_lifecycle.json&lt;/code&gt;中列出的）添加到名为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modified_config.json&lt;/code&gt;文件中：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jq &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;.[0] * {&quot;channel_group&quot;:{&quot;groups&quot;:{&quot;Application&quot;: {&quot;values&quot;: {&quot;ACLs&quot;: {&quot;value&quot;: {&quot;acls&quot;: .[1].acls}}}}}}}&apos;&lt;/span&gt; config.json ./enable_lifecycle.json &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; modified_config.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;最后，&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/config_update.html#step-3-re-encode-and-submit-the-config&quot;&gt;Step 3: Re-encode and submit the config&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;要通过通过更新请求，则必须满足配置文件中&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Channel/Application&lt;/code&gt;章节配置的修改策略。默认情况下，需要该通道中的&lt;strong&gt;大多数&lt;/strong&gt;peer组织同意。&lt;/p&gt;
+
+&lt;h3 id=&quot;在coreyaml中启用新的lifecycle&quot;&gt;在&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core.yaml&lt;/code&gt;中启用新的lifecycle&lt;/h3&gt;
+
+&lt;p&gt;如果你是按照&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrading_your_components.html#overview&quot;&gt;推荐操作&lt;/a&gt;，使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;diff&lt;/code&gt;之类的工具比较新旧&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core.yaml&lt;/code&gt;，那你就不必添加&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_lifecycle: enable&lt;/code&gt;来启用系统chaincode，因为它在新版&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core.yaml&lt;/code&gt;的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chaincode/system&lt;/code&gt;下。&lt;/p&gt;
+
+&lt;p&gt;如果你是直接更新原有的YAML文件，那就必须添加&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_lifecycle: enable&lt;/code&gt;来启用系统chaincode。&lt;/p&gt;
+
+&lt;p&gt;关于节点升级的信息，详见&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/release-2.2/upgrading_your_components.html&quot;&gt;Upgrading your components&lt;/a&gt;。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;声明：本作品采用&lt;a href=&quot;https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh&quot;&gt;署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)&lt;/a&gt;进行许可，使用时请注明出处。&lt;br /&gt;
+Author: mengbin92&lt;br /&gt;
+Github: &lt;a href=&quot;https://mengbin92.github.io/&quot;&gt;mengbin92&lt;/a&gt;&lt;br /&gt;
+cnblogs: &lt;a href=&quot;https://www.cnblogs.com/lianshuiwuyi/&quot;&gt;恋水无意&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+</description>
+        <pubDate>Fri, 28 Oct 2022 00:00:00 +0800</pubDate>
+        <link>http://192.168.1.5:4000/2022/10/fabric%E7%BD%91%E7%BB%9C%E5%8D%87%E7%BA%A7/</link>
+        <guid isPermaLink="true">http://192.168.1.5:4000/2022/10/fabric%E7%BD%91%E7%BB%9C%E5%8D%87%E7%BA%A7/</guid>
+        
+        <category>fabric</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>fabric网络升级示例</title>
+        <description>&lt;p&gt;以&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fabric-samples v1.4.8&lt;/code&gt;为例，将v1.4.8升级至v2.2.0。注意，所有节点以滚动的方式进行升级，这样可以保证即使单个节点数据备份过程出错也不会影响整个网络的运行。先升级orderer节点，再升级peer节点。&lt;/p&gt;
+
+&lt;h2 id=&quot;前期准备&quot;&gt;前期准备&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;v1.4.xFabric网络&lt;/li&gt;
+  &lt;li&gt;v2.2.0 docker镜像：
+    &lt;ol&gt;
+      &lt;li&gt;hyperledger/fabric-ca&lt;/li&gt;
+      &lt;li&gt;hyperledger/fabric-tools&lt;/li&gt;
+      &lt;li&gt;hyperledger/fabric-peer&lt;/li&gt;
+      &lt;li&gt;hyperledger/fabric-orderer&lt;/li&gt;
+      &lt;li&gt;hyperledger/fabric-ccenv&lt;/li&gt;
+      &lt;li&gt;hyperledger/fabric-baseos&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;升级orderer节点&quot;&gt;升级orderer节点&lt;/h2&gt;
+
+&lt;p&gt;升级每个orderer时，都需要执行以下操作。&lt;/p&gt;
+
+&lt;h3 id=&quot;1配置orderer容器中的环境变量&quot;&gt;1、配置orderer容器中的环境变量&lt;/h3&gt;
+
+&lt;p&gt;方便起见，orderer容器运行时需要的环境变量可以记录在文件中，具体内容如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FABRIC_LOGGING_SPEC=INFO
+FABRIC_CFG_PATH=/etc/hyperledger/fabric
+ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+ORDERER_GENERAL_GENESISMETHOD=file
+ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+# enabled TLS
+ORDERER_GENERAL_TLS_ENABLED=true
+ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+ORDERER_KAFKA_TOPIC_REPLICATIONFACTOR=1
+ORDERER_KAFKA_VERBOSE=true
+ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;2设置升级时的环境变量&quot;&gt;2、设置升级时的环境变量&lt;/h3&gt;
+
+&lt;p&gt;在升级排序节点前导入以下环境变量：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;ORDERER_CONTAINER&lt;/font&gt;
+    &lt;p&gt;：排序节点的容器名称。注意，每个节点升级时你都样设置一遍。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;LEDGERS_BACKUP&lt;/font&gt;
+    &lt;p&gt;：存放备份数据的路径。就如下面的示例中，每个节点都有它自己的子目录来存放它的账本。目录如果不存在的话，你需要手动创建。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;IMAGE_TAG&lt;/font&gt;
+    &lt;p&gt;：你期望升级到的Fabric版本，例如v2.0。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;示例如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ORDERER_CONTAINER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;orderer.example.com
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LEDGERS_BACKUP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/root/upgrade/backup
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;IMAGE_TAG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;2.2.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;3升级&quot;&gt;3、升级&lt;/h3&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;FABRIC_SAMPLES&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/root/go/src/github.com/hyperledger/fabric-samples/
+&lt;span class=&quot;c&quot;&gt;# 停止容器&lt;/span&gt;
+docker stop &lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 备份账本和MSPs&lt;/span&gt;
+docker &lt;span class=&quot;nb&quot;&gt;cp&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt;:/var/hyperledger/production/orderer/ &lt;span class=&quot;nv&quot;&gt;$LEDGERS_BACKUP&lt;/span&gt;/&lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 删除容器&lt;/span&gt;
+docker &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 升级容器&lt;/span&gt;
+docker run &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$LEDGERS_BACKUP&lt;/span&gt;/&lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt;/:/var/hyperledger/production/orderer/ &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$FABRIC_SAMPLES&lt;/span&gt;/first-network/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$FABRIC_SAMPLES&lt;/span&gt;/first-network/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$FABRIC_SAMPLES&lt;/span&gt;/first-network/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls  &lt;span class=&quot;nt&quot;&gt;--env-file&lt;/span&gt; ./env_order.list  &lt;span class=&quot;nt&quot;&gt;--net&lt;/span&gt; net_byfn &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ORDERER_CONTAINER&lt;/span&gt;  &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 7050:7050 hyperledger/fabric-orderer:&lt;span class=&quot;nv&quot;&gt;$IMAGE_TAG&lt;/span&gt; orderer  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;升级peer节点&quot;&gt;升级peer节点&lt;/h2&gt;
+
+&lt;p&gt;以peer0org1节点为例，以下操作每个peer节点都需要执行。&lt;/p&gt;
+
+&lt;h3 id=&quot;1配置peer运行时的环境变量&quot;&gt;1、配置peer运行时的环境变量&lt;/h3&gt;
+
+&lt;p&gt;方便起见，peer容器运行时需要的环境变量可以记录在文件中，具体内容如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CORE_PEER_LOCALMSPID=Org1MSP
+CORE_PEER_GOSSIP_USELEADERELECTION=true
+CORE_PEER_ID=peer0.org1.example.com
+CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+FABRIC_CFG_PATH=/etc/hyperledger/fabric
+CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=net_byfn
+CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
+CORE_PEER_PROFILE_ENABLED=true
+CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+CORE_PEER_GOSSIP_ORGLEADER=false
+CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.example.com:8051
+CORE_PEER_TLS_ENABLED=true
+FABRIC_LOGGING_SPEC=INFO
+CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;2设置升级时的环境变量-1&quot;&gt;2、设置升级时的环境变量&lt;/h3&gt;
+
+&lt;p&gt;在升级peer节点前导入以下环境变量：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;PEER_CONTAINER&lt;/font&gt;
+    &lt;p&gt;：peer节点的容器名称。注意，每个节点升级时你都样设置一遍。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;LEDGERS_BACKUP&lt;/font&gt;
+    &lt;p&gt;：存放备份数据的路径。就如下面的示例中，每个节点都有它自己的子目录来存放它的账本。目录如果不存在的话，你需要手动创建。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;font color=&quot;red&quot;&gt;IMAGE_TAG&lt;/font&gt;
+    &lt;p&gt;：你期望升级到的Fabric版本，例如v2.0。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;示例如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PEER_CONTAINER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;peer0.org1.example.com
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LEDGERS_BACKUP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/root/upgrade/backup
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;IMAGE_TAG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;2.2.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;3升级-1&quot;&gt;3、升级&lt;/h3&gt;
+
+&lt;p&gt;在升级的你的peers节点之前，你还需要额外进行一步操作，那就是升级peer数据库。所有peers节点的数据库（不仅包括状态数据库，还包括历史数据库和peer节点的其它内部数据库）都必须使用v2.x的数据格式进行重建，这是升级到v2.x版本的一部分。要出发重建操作，在peers节点启动前需要删除数据库。接下来介绍如何使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;peer node upgrade-dbs&lt;/code&gt;命令来删除本地数据库并为升级做好准备，这样在启动v2.xpeers节点的第一时间，所有的数据库都会被重建。如果你使用CouchDB作为状态数据库，v2.2的peers已经支持自动删除CouchDB了。要启用该支持，需要你配置peer使用CouchDB，且在执行&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upgrade-dbs&lt;/code&gt;命令前启动CouchDB。在v2.0和v2.1中，peer并不支持自动删除CouchDB数据库，你需要自己手动删除。&lt;/p&gt;
+
+&lt;p&gt;peer节点会在启动之后立即使用v2.x数据格式重建数据库。由于重建数据库可能是一个漫长的过程（这取决于你的数据库大小，可能长达数小时），所以需要实时检查peer节点的日志来确认重建的进度。每隔1000个区块，你会看到如下信息：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;font color=&quot;red&quot;&gt;[lockbasedtxmgr] CommitLostBlock -&amp;gt; INFO 041 Recommitting block [1000] to state database&lt;/font&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;表示数据库还在重建中。&lt;/p&gt;
+
+&lt;p&gt;如果升级过程中没有删除数据库，在peer节点启动时会返回错误信息：&lt;strong&gt;peer节点使用的是老旧的数据格式，必须使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;peer node upgrade-dbs&lt;/code&gt;命令删除上述数据库（如果使用CouchDB作为状态数据库，则需要手动删除）&lt;/strong&gt;。处理完成后重启节点即可。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 停止容器&lt;/span&gt;
+docker stop &lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 备份账本和MSPs&lt;/span&gt;
+docker &lt;span class=&quot;nb&quot;&gt;cp&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;:/var/hyperledger/production &lt;span class=&quot;nv&quot;&gt;$LEDGERS_BACKUP&lt;/span&gt;/&lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 删除CC容器&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;CC_CONTAINERS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;docker ps | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;dev-&lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{print $1}&apos;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$CC_CONTAINERS&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$CC_CONTAINERS&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 删除CC镜像&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;CC_IMAGES&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;docker images | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;dev-&lt;span class=&quot;nv&quot;&gt;$PEER&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{print $1}&apos;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$CC_IMAGES&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then &lt;/span&gt;docker rmi &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$CC_IMAGES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 删除peer容器&lt;/span&gt;
+docker &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 升级peer节点数据库&lt;/span&gt;
+docker run &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$LEDGERS_BACKUP&lt;/span&gt;/&lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;:/var/hyperledger/production/ &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /var/run/:/host/var/run/ &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$FABRIC_SAMPLES&lt;/span&gt;/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/msp &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$FABRIC_SAMPLES&lt;/span&gt;/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 7051:7051 &lt;span class=&quot;nt&quot;&gt;--env-file&lt;/span&gt; env_peer.list &lt;span class=&quot;nt&quot;&gt;--net&lt;/span&gt; net_byfn &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;  hyperledger/fabric-peer:&lt;span class=&quot;nv&quot;&gt;$IMAGE_TAG&lt;/span&gt; peer node upgrade-dbs
+&lt;span class=&quot;c&quot;&gt;# 升级peer节点&lt;/span&gt;
+docker run &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$LEDGERS_BACKUP&lt;/span&gt;/&lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;:/var/hyperledger/production/ &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /var/run/:/host/var/run/ &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$FABRIC_SAMPLES&lt;/span&gt;/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/msp &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$FABRIC_SAMPLES&lt;/span&gt;/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 7051:7051 &lt;span class=&quot;nt&quot;&gt;--env-file&lt;/span&gt; env_peer.list &lt;span class=&quot;nt&quot;&gt;--net&lt;/span&gt; net_byfn &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PEER_CONTAINER&lt;/span&gt;  hyperledger/fabric-peer:&lt;span class=&quot;nv&quot;&gt;$IMAGE_TAG&lt;/span&gt; peer node start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;声明：本作品采用&lt;a href=&quot;https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh&quot;&gt;署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)&lt;/a&gt;进行许可，使用时请注明出处。&lt;br /&gt;
+Author: mengbin92&lt;br /&gt;
+Github: &lt;a href=&quot;https://mengbin92.github.io/&quot;&gt;mengbin92&lt;/a&gt;&lt;br /&gt;
+cnblogs: &lt;a href=&quot;https://www.cnblogs.com/lianshuiwuyi/&quot;&gt;恋水无意&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+</description>
+        <pubDate>Fri, 28 Oct 2022 00:00:00 +0800</pubDate>
+        <link>http://192.168.1.5:4000/2022/10/example/</link>
+        <guid isPermaLink="true">http://192.168.1.5:4000/2022/10/example/</guid>
+        
+        <category>fabric</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>fabric couchdb使用</title>
+        <description>&lt;p&gt;Fabric支持两种类型的状态数据库：&lt;strong&gt;LevelDB&lt;/strong&gt;和&lt;strong&gt;CouchDB&lt;/strong&gt;。&lt;strong&gt;LevelDB&lt;/strong&gt;默认嵌入在peer节点中，用于将合约数据存储为简单的key-value，仅支持键、键范围和组合键查询。&lt;strong&gt;CouchDB&lt;/strong&gt;是可选的状态数据库，支持以JSON格式在账本中建模存储数据，且支持富查询。&lt;strong&gt;CouchDB&lt;/strong&gt;同样支持在合约中部署索引，以便高效查询和对大型数据集的支持。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;LevelDB&lt;/strong&gt;是以二进制的形式存储数据。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;只有基于内容的JSON查询才能发挥出&lt;strong&gt;CouchDB&lt;/strong&gt;的优势，即合约数据必须以JSON格式来存储，这就要求在部署区块链网络之前就确定要使用&lt;strong&gt;LevelDB&lt;/strong&gt;还是&lt;strong&gt;CouchDB&lt;/strong&gt;（因为数据兼容性的问题，不支持节点从&lt;strong&gt;LevelDB&lt;/strong&gt;切换到&lt;strong&gt;CouchDB&lt;/strong&gt;，且网络中各个节点都必须使用相同类型的状态数据库）。&lt;strong&gt;CouchDB&lt;/strong&gt;支持JSON格式和二进制形式的数据存储，但二进制的数据仅支持支持键、键范围和组合键查询。&lt;/p&gt;
+
+&lt;h2 id=&quot;启用couchdb&quot;&gt;启用CouchDB&lt;/h2&gt;
+
+&lt;p&gt;CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和操作的时候有一些额外 的注意事项。有一个可用的 Docker 镜像 &lt;a href=&quot;https://hub.docker.com/_/couchdb/&quot;&gt;CouchDB&lt;/a&gt; 并且我们建议它和节点运行在同一个服务器上。我们需要在每一个节点上安装一个 CouchDB 容器，并且更新每一个节点的配置文件 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core.yaml&lt;/code&gt; ，将节点指向 CouchDB 容器。 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core.yaml&lt;/code&gt; 文件的路径必须在环境变量 FABRIC_CFG_PATH 中指定：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;对于 Docker 的部署，在节点容器中 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FABRIC_CFG_PATH&lt;/code&gt; 指定的文件夹中的 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core.yaml&lt;/code&gt; 是预先配置好的。如果你要使用 docker 环境，你可以通过重写 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose-couch.yaml&lt;/code&gt; 中的环境变量来覆盖 core.yaml&lt;/li&gt;
+  &lt;li&gt;对于原生的二进制部署， &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core.yaml&lt;/code&gt; 包含在发布的构件中。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;编辑 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core.yaml&lt;/code&gt; 中的 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stateDatabase&lt;/code&gt; 部分。将 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stateDatabase&lt;/code&gt; 指定为 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CouchDB&lt;/code&gt; 并且填写 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;couchDBConfig&lt;/code&gt; 相关的配置。在 Fabric 中配置 CouchDB 的更多细节，请参阅 &lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/zh_CN/latest/couchdb_as_state_database.html#couchdb-configuration&quot;&gt;CouchDB 配置&lt;/a&gt; 。&lt;/p&gt;
+
+&lt;h2 id=&quot;创建一个索引&quot;&gt;创建一个索引&lt;/h2&gt;
+
+&lt;p&gt;索引可以让数据库不用在每次查询的时候都检查每一行，可以让数据库运行的更快和更高效。 一般来说，对频繁查询的数据进行索引可以使数据查询更高效。为了充分发挥 CouchDB 的优 势 – 对 JSON 数据进行富查询的能力 – 并不需要索引，但是为了性能考虑强烈建议建立 索引。另外，如果在一个查询中需要排序，CouchDB 需要在排序的字段有一个索引。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;没有索引的情况下富查询也是可以使用的，但是会在 CouchDB 的日志中抛出一个没 有找到索引的警告。如果一个富查询中包含了一个排序的说明，需要排序的那个字段 就必须有索引；否则，查询将会失败并抛出错误。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;为了演示构建一个索引，我们将会使用来自 &lt;a href=&quot;https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go&quot;&gt;Marbles sample&lt;/a&gt;. 的数据。 在这个例子中， Marbles 的数据结构定义如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;marble&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+         &lt;span class=&quot;n&quot;&gt;ObjectType&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;`json:&quot;docType&quot;`&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;//docType is used to distinguish the various types of objects in state database&lt;/span&gt;
+         &lt;span class=&quot;n&quot;&gt;Name&lt;/span&gt;       &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;`json:&quot;name&quot;`&lt;/span&gt;    &lt;span class=&quot;c&quot;&gt;//the field tags are needed to keep case from bouncing around&lt;/span&gt;
+         &lt;span class=&quot;n&quot;&gt;Color&lt;/span&gt;      &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;`json:&quot;color&quot;`&lt;/span&gt;
+         &lt;span class=&quot;n&quot;&gt;Size&lt;/span&gt;       &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;    &lt;span class=&quot;s&quot;&gt;`json:&quot;size&quot;`&lt;/span&gt;
+         &lt;span class=&quot;n&quot;&gt;Owner&lt;/span&gt;      &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;`json:&quot;owner&quot;`&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;在这个结构体中，（ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docType&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;name&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;color&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;size&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;owner&lt;/code&gt; ）属性 定义了和资产相关的账本数据。 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docType&lt;/code&gt; 属性用来在链码中区分可能需要单独查询的 不同数据类型的模式。当时使用 CouchDB 的时候，建议包含 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docType&lt;/code&gt; 属性来区分在链 码命名空间中的每一个文档。（每一个链码都需要有他们自己的 CouchDB 数据库，也就是 说，每一个链码都有它自己的键的命名空间。）&lt;/p&gt;
+
+&lt;p&gt;在 Marbles 数据结构的定义中， &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docType&lt;/code&gt; 用来识别这个文档或者资产是一个弹珠资产。 同时在链码数据库中也可能存在其他文档或者资产。数据库中的文档对于这些属性值来说都是 可查询的。&lt;/p&gt;
+
+&lt;p&gt;当为链码查询定义一个索引的时候，每一个索引都必须定义在一个扩展名为 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;*.json&lt;/code&gt; 的文本文件中，并且索引定义的格式必须为 CouchDB 索引的 JSON 格式。&lt;/p&gt;
+
+&lt;p&gt;需要以下三条信息来定义一个索引：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;fields: 这些是常用的查询字段&lt;/li&gt;
+    &lt;li&gt;name: 索引名&lt;/li&gt;
+    &lt;li&gt;type: 它的内容一般是 json&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;例如，这是一个对字段 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foo&lt;/code&gt; 的一个名为 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foo-index&lt;/code&gt; 的简单索引。&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;fields&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo-index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;json&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;可选地，设计文档（ design document ）属性 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ddoc&lt;/code&gt; 可以写在索引的定义中。&lt;a href=&quot;http://guide.couchdb.org/draft/design.html&quot;&gt;design document&lt;/a&gt; 是 CouchDB 结构,用于包含索引。索引可以以组的形式定义在设计文档中以提升效率，但是 CouchDB 建议每一个设计文档包含一个索引。&lt;/p&gt;
+
+&lt;p&gt;小技巧&lt;/p&gt;
+
+&lt;p&gt;当定义一个索引的时候，最好将 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ddoc&lt;/code&gt; 属性和值包含在索引内。包含这个 属性以确保在你需要的时候升级索引，这是很重要的。它还使你能够明确指定 要在查询上使用的索引。&lt;/p&gt;
+
+&lt;p&gt;这里有另外一个使用 Marbles 示例定义索引的例子，在索引 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;indexOwner&lt;/code&gt; 使用了多个字段 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docType&lt;/code&gt; 和 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;owner&lt;/code&gt; 并且包含了 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ddoc&lt;/code&gt; 属性：&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;fields&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;docType&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;owner&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;Names&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;be&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;queried&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;ddoc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;indexOwnerDoc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;(optional)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;design&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;in&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;which&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;will&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;be&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;created.&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;indexOwner&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;json&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;在上边的例子中，如果设计文档 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;indexOwnerDoc&lt;/code&gt; 不存在，当索引部署的时候会自动创建 一个。一个索引可以根据字段列表中指定的一个或者多个属性构建，而且可以定义任何属性的 组合。一个属性可以存在于同一个 docType 的多个索引中。在下边的例子中， &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;index1&lt;/code&gt; 只包含 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;owner&lt;/code&gt; 属性， &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;index2&lt;/code&gt; 包含 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;owner 和 color&lt;/code&gt; 属性， &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;index3&lt;/code&gt; 包含 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;owner、 color 和 size&lt;/code&gt; 属性。另外，注意，根据 CouchDB 的建议，每一个索引的定义 都包含一个它们自己的 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ddoc&lt;/code&gt; 值。&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;fields&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;owner&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;Names&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;be&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;queried&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;ddoc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;index1Doc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;(optional)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;design&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;in&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;which&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;will&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;be&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;created.&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;index1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;json&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;fields&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;owner&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;color&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;Names&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;be&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;queried&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;ddoc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;index2Doc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;(optional)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;design&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;in&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;which&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;will&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;be&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;created.&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;index2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;json&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;fields&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;owner&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;color&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;Names&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;be&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;queried&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;ddoc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;index3Doc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;(optional)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;design&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;in&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;which&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;will&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;be&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;created.&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;index3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;json&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;一般来说，你为索引字段建模应该匹配将用于查询过滤和排序的字段。对于以 JSON 格式 构建索引的更多信息请参阅 &lt;a href=&quot;http://docs.couchdb.org/en/latest/api/database/find.html#db-index&quot;&gt;CouchDB documentation&lt;/a&gt; 。&lt;/p&gt;
+
+&lt;p&gt;关于索引最后要说的是，Fabric 在数据库中为文档建立索引的时候使用一种成为 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;索引升温 （index warming）&lt;/code&gt; 的模式。 CouchDB 直到下一次查询的时候才会索引新的或者更新的 文档。Fabric 通过在每一个数据区块提交完之后请求索引更新的方式，来确保索引处于 ‘热 （warm）’ 状态。这就确保了查询速度快，因为在运行查询之前不用索引文档。这个过程保 持了索引的现状，并在每次新数据添加到状态数据的时候刷新。&lt;/p&gt;
+
+&lt;h2 id=&quot;将索引添加到合约文件夹&quot;&gt;将索引添加到合约文件夹&lt;/h2&gt;
+
+&lt;p&gt;当你完成索引之后，你需要把它打包到你的链码中，以便于将它部署到合适的元数据文件夹。你可以使用 &lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/zh_CN/latest/commands/peerlifecycle.html&quot;&gt;peer lifecycle chaincode&lt;/a&gt; 命令安装链码。JSON 索引文件必须放在链码目录的 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;META-INF/statedb/couchdb/indexes&lt;/code&gt; 路径下。&lt;/p&gt;
+
+&lt;p&gt;下边的 &lt;a href=&quot;https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02/go&quot;&gt;Marbles 示例&lt;/a&gt; 展示了如何将索引打包到链码中。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/zh_CN/latest/_images/couchdb_tutorial_pkg_example.png&quot;&gt;&lt;img src=&quot;https://hyperledger-fabric.readthedocs.io/zh_CN/latest/_images/couchdb_tutorial_pkg_example.png&quot; alt=&quot;Marbles Chaincode Index Package&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;这个例子包含了一个名为 indexOwnerDoc 的索引:&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;fields&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;docType&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;owner&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]},&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;ddoc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;indexOwnerDoc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;indexOwner&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;json&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;声明：本作品采用&lt;a href=&quot;https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh&quot;&gt;署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)&lt;/a&gt;进行许可，使用时请注明出处。&lt;br /&gt;
+Author: mengbin92&lt;br /&gt;
+Github: &lt;a href=&quot;https://mengbin92.github.io/&quot;&gt;mengbin92&lt;/a&gt;&lt;br /&gt;
+cnblogs: &lt;a href=&quot;https://www.cnblogs.com/lianshuiwuyi/&quot;&gt;恋水无意&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+</description>
+        <pubDate>Fri, 28 Oct 2022 00:00:00 +0800</pubDate>
+        <link>http://192.168.1.5:4000/2022/10/couchdb/</link>
+        <guid isPermaLink="true">http://192.168.1.5:4000/2022/10/couchdb/</guid>
+        
+        <category>fabric</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>从源码中解析fabric区块数据结构（一）</title>
+        <description>&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+
+&lt;p&gt;最近打算基于&lt;a href=&quot;https://github.com/hyperledger/fabric-sdk-go&quot;&gt;fabric-sdk-go&lt;/a&gt;实现&lt;a href=&quot;https://hyperledger-fabric.readthedocs.io/en/latest/getting_started.html&quot;&gt;hyperledger fabric&lt;/a&gt;浏览器，其中最重要的一步就是解析fabric的上链区块。虽说fabric是&lt;strong&gt;Golang&lt;/strong&gt;实现的，但直到&lt;a href=&quot;https://github.com/hyperledger/fabric-sdk-go/releases&quot;&gt;2021年2月1号&lt;/a&gt;才发布了第一个稳定版&lt;strong&gt;fabric-sdk-go&lt;/strong&gt;，而且官方几乎没有响应的文档介绍。对于fabric-sdk-go，基本都是参照源码中的测试用例来使用；而要实现区块链浏览器，仅靠测试用例还差好多，特别是对出块信息的解析。&lt;/p&gt;
+
+&lt;p&gt;通过&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;event.Client.RegisterBlockEvent()&lt;/code&gt;可以监听fabric的出块事件，但返回的信息中有用的是一个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BlockEvent&lt;/code&gt;类型的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chan&lt;/code&gt;，定义如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// BlockEvent contains the data for the block event&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BlockEvent&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;c&quot;&gt;// Block is the block that was committed&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;Block&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Block&lt;/span&gt;
+	&lt;span class=&quot;c&quot;&gt;// SourceURL specifies the URL of the peer that produced the event&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;SourceURL&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;区块链浏览器需要的所有信息基本都包含在&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Block&lt;/code&gt;中，其定义如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// This is finalized block structure to be shared among the orderer and peer&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;// Note that the BlockHeader chains to the previous BlockHeader, and the BlockData hash is embedded&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;// in the BlockHeader.  This makes it natural and obvious that the Data is included in the hash, but&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;// the Metadata is not.&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Block&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;Header&lt;/span&gt;               &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BlockHeader&lt;/span&gt;   &lt;span class=&quot;s&quot;&gt;`protobuf:&quot;bytes,1,opt,name=header,proto3&quot; json:&quot;header,omitempty&quot;`&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;Data&lt;/span&gt;                 &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BlockData&lt;/span&gt;     &lt;span class=&quot;s&quot;&gt;`protobuf:&quot;bytes,2,opt,name=data,proto3&quot; json:&quot;data,omitempty&quot;`&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;Metadata&lt;/span&gt;             &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BlockMetadata&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;`protobuf:&quot;bytes,3,opt,name=metadata,proto3&quot; json:&quot;metadata,omitempty&quot;`&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;本文作为区块链浏览器系列的开篇，结构体中各字段的含义会在之后的文章中一一介绍，这里就不再过多介绍。接下来将以类图的形式来解析区块中包含的信息。&lt;/p&gt;
+
+&lt;div class=&quot;mermaid&quot;&gt;
+classDiagram
+	class Block{
+		Header *BlockHeader
+		Data   *BlockData
+		Metadata *BlockMetadata
+	}
+	class BlockHeader{
+		Number uint64
+		PreviousHash []byte
+		DataHash []byte
+	}
+	class BlockData{
+		Data [][]byte
+	}
+	class BlockMetadata{
+		Metadata [][]byte
+	}
+	class Metadata{
+		Value []byte
+		Signatures []*MetadataSignature
+	}
+	class MetadataSignature{
+		SignatureHeader []byte
+		Signature []byte
+		IdentifierHeader []byte
+	}
+	class SignatureHeader{
+		Creator []byte
+		Nonce []byte
+	}
+	class SerializedIdentity{
+		Mspid string
+		IdBytes []byte
+	}
+	class Certificate{
+		crypto/x509.Certificate
+	}
+	class IdentifierHeader{
+		Identifier uint32
+		Nonce []byte
+	}
+	class Envelope{
+		Payload []byte
+		Signature []byte
+	}
+	class Payload{
+		Header *Header
+		Data []byte
+	}
+	class Header{
+		ChannelHeader []byte
+		SignatureHeader []byte
+	}
+	class ChannelHeader{
+		Type int32
+		Version int32
+		Timestamp *timestamp.Timestamp
+		TxId string
+		Epoch uint64
+		Extension []byte
+		TlsCertHash          []byte
+	}
+	class Transaction{
+		Actions              []*TransactionAction
+	}
+	class TransactionAction{
+		Header []byte
+		Payload []byte
+	}
+	class ChaincodeActionPayload{
+		ChaincodeProposalPayload []byte
+		Action               *ChaincodeEndorsedAction
+	}
+	class ChaincodeEndorsedAction{
+		ProposalResponsePayload []byte
+		Endorsements         []*Endorsement
+	}
+	class ProposalResponsePayload{
+		ProposalHash []byte
+		Extension            []byte
+	}
+	class Endorsement{
+		Endorser []byte
+		Signature []byte
+	}
+	class ChaincodeProposalPayload{
+		Input []byte
+		TransientMap map[string][]byte
+	}
+	class ChaincodeInvocationSpec{
+		ChaincodeSpec        *ChaincodeSpec
+	}
+	class ChaincodeSpec{
+		Type                 ChaincodeSpec_Type
+		ChaincodeId          *ChaincodeID
+		Input                *ChaincodeInput
+		Timeout              int32
+	}
+	class ChaincodeID{
+		Path string
+		Name string
+		Version string
+	}
+	class ChaincodeInput{
+		Args        [][]byte
+		Decorations map[string][]byte
+		IsInit               bool
+	}
+	class ChaincodeAction{
+		Results []byte
+		Events []byte
+		Response *Response
+		ChaincodeId          *ChaincodeID
+	}
+	class TxReadWriteSet{
+		DataModel  TxReadWriteSet_DataModel
+		NsRwset []*NsReadWriteSet
+	}
+	class NsReadWriteSet{
+		Namespace             string
+		Rwset                 []byte
+		CollectionHashedRwset []*CollectionHashedReadWriteSet
+	}
+	class KVRWSet{
+		Reads                []*KVRead
+		RangeQueriesInfo     []*RangeQueryInfo
+		Writes               []*KVWrite
+		MetadataWrites       []*KVMetadataWrite
+	}
+	
+	Block --* BlockHeader
+	Block --* BlockData
+	Block --* BlockMetadata
+	
+	BlockMetadata --* Metadata
+	Metadata --* MetadataSignature
+	
+	MetadataSignature --* SignatureHeader
+	MetadataSignature --* IdentifierHeader
+	
+	SignatureHeader --* SerializedIdentity
+	SerializedIdentity --* Certificate
+	
+	BlockData --* Envelope
+	Envelope --* Payload
+	
+	Payload --* Header
+	Payload --* Transaction
+	Transaction --* TransactionAction
+	
+	TransactionAction --* ChaincodeActionPayload
+	
+	ChaincodeActionPayload --* ChaincodeEndorsedAction
+	ChaincodeActionPayload --* ChaincodeProposalPayload
+	
+	ChaincodeProposalPayload --* ChaincodeInvocationSpec
+	
+	ChaincodeInvocationSpec --* ChaincodeSpec
+	
+	ChaincodeSpec --* ChaincodeID
+	ChaincodeSpec --* ChaincodeInput
+	
+	ChaincodeEndorsedAction --* Endorsement
+	ChaincodeEndorsedAction --* ProposalResponsePayload
+	
+	ProposalResponsePayload --* ChaincodeAction
+	
+	ChaincodeAction --* TxReadWriteSet
+	
+	TxReadWriteSet --* NsReadWriteSet
+	
+	NsReadWriteSet --* KVRWSet
+	
+	Header --* ChannelHeader
+	Header --* SignatureHeader
+&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;声明：本作品采用&lt;a href=&quot;https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh&quot;&gt;署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)&lt;/a&gt;进行许可，使用时请注明出处。&lt;br /&gt;
+Author: mengbin92&lt;br /&gt;
+Github: &lt;a href=&quot;https://mengbin92.github.io/&quot;&gt;mengbin92&lt;/a&gt;&lt;br /&gt;
+cnblogs: &lt;a href=&quot;https://www.cnblogs.com/lianshuiwuyi/&quot;&gt;恋水无意&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+</description>
+        <pubDate>Thu, 27 Oct 2022 00:00:00 +0800</pubDate>
+        <link>http://192.168.1.5:4000/2022/10/00/</link>
+        <guid isPermaLink="true">http://192.168.1.5:4000/2022/10/00/</guid>
+        
+        <category>fabric</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>使用boot.iso镜像安装OL8</title>
+        <description>&lt;p&gt;本文记录使用boot.iso镜像安装Oracle Linux 8。&lt;/p&gt;
+
+&lt;h2 id=&quot;镜像下载&quot;&gt;镜像下载&lt;/h2&gt;
+
+&lt;p&gt;Oracle Linux 8 boot镜像可以从&lt;a href=&quot;http://yum.oracle.com/oracle-linux-isos.html&quot;&gt;这里&lt;/a&gt;下载。&lt;/p&gt;
+
+&lt;h2 id=&quot;安装&quot;&gt;安装&lt;/h2&gt;
+
+&lt;p&gt;Oracle Linux 8 boot镜像安装系统跟使用全镜像安装过程基本一样，除了需要自己手动配置&lt;strong&gt;软件源&lt;/strong&gt;，我这里使用的时Oracle官方提供的yum源：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;名称&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;地址&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;类型&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;baseos&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;https://yum.oracle.com/repo/OracleLinux/OL8/baseos/latest/x86_64&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Repository URL&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;ol8_AppStream&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;https://yum.oracle.com/repo/OracleLinux/OL8/appstream/x86_64/&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Repository URL&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;ol8_UEKR6&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;https://yum.oracle.com/repo/OracleLinux/OL8/UEKR6/x86_64/&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Repository URL&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;hr /&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;声明：本作品采用&lt;a href=&quot;https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh&quot;&gt;署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)&lt;/a&gt;进行许可，使用时请注明出处。&lt;br /&gt;
+Author: mengbin92&lt;br /&gt;
+Github: &lt;a href=&quot;https://mengbin92.github.io/&quot;&gt;mengbin92&lt;/a&gt;&lt;br /&gt;
+cnblogs: &lt;a href=&quot;https://www.cnblogs.com/lianshuiwuyi/&quot;&gt;恋水无意&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+</description>
+        <pubDate>Tue, 25 Oct 2022 00:00:00 +0800</pubDate>
+        <link>http://192.168.1.5:4000/2022/10/ol8%E5%AE%89%E8%A3%85/</link>
+        <guid isPermaLink="true">http://192.168.1.5:4000/2022/10/ol8%E5%AE%89%E8%A3%85/</guid>
+        
+        <category>其它</category>
+        
+        
+      </item>
+    
+  </channel>
+</rss>

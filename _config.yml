@@ -1,1 +1,64 @@
-theme: jekyll-theme-cayman
+# Basic
+title: 孟斌
+subtitle: 个人站
+description: 欢迎来到我的个人站~
+# 头像里面的标题
+avatarTitle: mengbin92
+# 头像里面的描述
+avatarDesc: 区块链
+url: "https://mengbin92.github.io/"
+
+# 博客是否自动生成目录，false为不生成
+enableToc: true
+
+# Comment
+# comment:
+#     # livere: MTAyMC81MDk5NC8yNzQ3Ng  # https://www.livere.com
+#     disqus: leopard
+#     # uyan: 2143225  # 有言id,登录有言官网申请
+
+# Social
+social:
+  # weibo:
+  github: mengbin92
+  # zhihu:
+  # juejin:
+  # jianshu:
+  # twitter:
+  mail: mengbin1992@outlook.com
+
+# 百度统计
+# 使用博客模板请去掉或者更换 id
+# baidu:
+#     id:
+
+# Google Analytics
+# 使用博客模板请去掉或者更换 id
+# ga:
+#     id:
+#     host: auto
+
+permalink: /:year/:month/:title/
+# Format
+highlighter: rouge
+
+textColor: #FF0000
+
+# supported colors: blue, green, purple, red, orange or slate. If you need clear, leave it empty.
+cover_color: clear
+
+# The blog button should not be removed.
+blog_button:
+  title: 博客主页
+
+# Navigation buttons in the front page.s
+nav:
+  - { title: 所有文章, description: archive, url: "/archive" }
+  - { title: 标签, description: tags, url: "/tags" }
+  - { title: 技术支持, description: support, url: "/support" }
+  - { title: 关于我, description: about, url: "/about" }
+
+# Pagination
+gems: [jekyll-paginate, jekyll-sitemap]
+paginate: 20
+paginate_path: "page/:num/"
