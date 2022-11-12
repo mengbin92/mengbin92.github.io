@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  blog:
+    build: .
+    #image: testblog
+    ports:
+      - "4000:4000/tcp"
+    volumes:
+      - ./:/srv/jekyll
+    environment:
+      - JEKYLL_ENV=docker
+    command: jekyll serve --config  _config.yml,_config.docker.yml
+    networks:
+      front:
+
+networks:
+  front:
+    driver: bridge

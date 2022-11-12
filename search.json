@@ -1,0 +1,17 @@
+---
+layout: null
+---
+[
+  {% for post in site.posts %}
+    {
+      "title"    : "{{ post.title | escape }}",
+      "subtitle" : "{{ post.subtitle }}",
+      "category" : "{{ post.category }}",
+      "tags"     : "{{ post.tags | join: ', ' }}",
+      "url"      : "{{ site.baseurl }}{{ post.url }}",
+      "info"     : "Blogpost: {{ post.date | date_to_string }}",
+      "content"  : {{ post.content | strip_html | xml_escape | jsonify }},
+      "preview"  : {{ post.content | strip_html | xml_escape | truncatewords: site.excerpt_length | jsonify }}
+    } {% unless forloop.last %},{% endunless %}
+  {% endfor %}
+]
