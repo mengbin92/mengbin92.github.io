@@ -175,6 +175,7 @@ paginate_path: "/blog/page:num/"
 
 kramdown:
   input: GFM
+  math_engine: null
 
 # Default YAML values (more information on Jekyll's site)
 defaults:
