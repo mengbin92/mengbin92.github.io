@@ -108,6 +108,7 @@ mobile-theme-col: "#0085A1"
 
 # Fill in your Google Analytics ID to track your website using Google Analytics
 #google_analytics: ""
+# baidu-analytics: 67eeda4938471cda2165a19faf3cf665
 
 # Fill in your Cloudflare Analytics beacon token to track your website using Cloudflare Analytics
 #cloudflare_analytics: ""
