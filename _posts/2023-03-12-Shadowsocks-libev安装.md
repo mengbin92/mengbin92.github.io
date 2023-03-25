@@ -188,7 +188,9 @@ v2ray-plugin可以从[这里](https://github.com/shadowsocks/v2ray-plugin/releas
 
 ### 3.3 ipv6支持
 
-使用`v2ray-plugin`时，server设置为"0.0.0.0"即可同时支持ipv4和ipv6，可以通过`ipv6_first`来设置是否优先ipv6：  
+使用`v2ray-plugin`时，server设置为"0.0.0.0"即可同时支持ipv4和ipv6，详见[issue](https://github.com/shadowsocks/v2ray-plugin/issues/28)。  
+
+可以通过`ipv6_first`来设置是否优先ipv6：  
 
 ```json
 {
