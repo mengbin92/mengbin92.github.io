@@ -186,6 +186,26 @@ v2ray-plugin可以从[这里](https://github.com/shadowsocks/v2ray-plugin/releas
 }
 ```  
 
+### 3.3 ipv6支持
+
+使用`v2ray-plugin`时，server设置为"0.0.0.0"即可同时支持ipv4和ipv6，可以通过`ipv6_first`来设置是否优先ipv6：  
+
+```json
+{
+    "server":"0.0.0.0",
+    "port_password":{
+        "port1":"password1",
+        "port2":"password2",
+        "port3":"password2"
+    },
+    "timeout":300,
+    "method":"aes-256-gcm",
+    "ipv6_first":true,
+    "plugin":"v2ray-plugin",
+    "plugin_opts":"server"
+}
+```
+
 ---
 
 > 声明：本作品采用[署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)进行许可，使用时请注明出处。  
