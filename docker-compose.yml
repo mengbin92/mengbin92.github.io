@@ -9,7 +9,7 @@ services:
       - ./:/srv/jekyll
     environment:
       - JEKYLL_ENV=docker
-    command: bundle exec jekyll serve
+    command: jekyll serve
     networks:
       front:
 
