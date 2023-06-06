@@ -3,6 +3,7 @@ services:
   blog:
     # build: .
     image: jekyll/jekyll:latest
+    container_name: web
     ports:
       - 4000:4000/tcp
     volumes:
@@ -12,6 +13,7 @@ services:
     command: jekyll serve
     networks:
       front:
+
 
 networks:
   front:
