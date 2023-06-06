@@ -15,8 +15,8 @@ author: 孟斌
 navbar-links:
   Blog:
     - Posts: "blog"
-    - Tags: "tags"
-  About Me: "pages/aboutme"
+    - Tags: "tags.html"
+  About Me: "pages/aboutme.html"
   Search: "pages/search"
 # --- Logo --- #
 
