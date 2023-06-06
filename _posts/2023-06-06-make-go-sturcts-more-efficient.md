@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 如何让你的结构体更高效
-tags: 
+tags: go
 mermaid: false
 math: false
 ---  
