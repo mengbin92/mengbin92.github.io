@@ -13,9 +13,8 @@ author: 孟斌
 # --- List of links in the navigation bar --- #
 
 navbar-links:
-  Blog:
-    - Posts: "blog"
-    - Tags: "tags.html"
+  Blogs: "blog"
+  Tags: "tags.html"
   About Me: "pages/aboutme.html"
   Search: "pages/search"
 # --- Logo --- #
