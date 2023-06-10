@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Proto3 Techniques
-tags: proto3
+tags: protobuf
 mermaid: false
 ---  
 
