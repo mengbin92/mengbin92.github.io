@@ -1,6 +1,7 @@
 version: '3.7'
 services:
   blog:
+    restart: always
     # build: .
     image: jekyll/jekyll:latest
     container_name: web
