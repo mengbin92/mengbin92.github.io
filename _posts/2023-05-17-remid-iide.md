@@ -8,7 +8,7 @@ math: false
 
 Solidity是一门为实现智能合约而创建的面向对象的高级编程语言。智能合约是管理以太坊中账户行为的程序。  
 
-Solidity是一种面向以太坊虚拟机(EVM)的带花括号的语言。它受C++，Python和JavaScript的影响。您可以在语言的影响因素部分中找到更多有关Solidity受哪些语言启发的细节。  
+Solidity是一种面向以太坊虚拟机(EVM)的带花括号的语言。它受C++，Python和JavaScript的影响。你可以在语言的影响因素部分中找到更多有关Solidity受哪些语言启发的细节。  
 
 Solidity是静态类型语言，支持继承，库和复杂的用户自定义的类型以及其他特性。  
 
