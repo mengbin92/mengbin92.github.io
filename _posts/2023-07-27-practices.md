@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 
+title: Wire 最佳实践
 tags: 
 mermaid: false
 math: false
