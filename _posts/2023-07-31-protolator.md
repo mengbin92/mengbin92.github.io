@@ -1,7 +1,7 @@
 ---
 layout: post
 title: protolator - Protobuf <==> json
-tags: 
+tags: go
 mermaid: false
 math: false
 ---  
