@@ -38,11 +38,11 @@ $ govulncheck ./...
 
 ## 数据库  
 
-Govulncheck由Go漏洞数据库[https://vuln.go.dev](https://vuln.go.dev/)提供支持，该数据库提供了关于公共Go模块中已知漏洞的详尽信息。您可以在[pkg.go.dev/vuln](https://pkg.go.dev/vuln)上浏览数据库中的条目。  
+Govulncheck由Go漏洞数据库[https://vuln.go.dev](https://vuln.go.dev/)提供支持，该数据库提供了关于公共Go模块中已知漏洞的详尽信息。你可以在[pkg.go.dev/vuln](https://pkg.go.dev/vuln)上浏览数据库中的条目。  
 
-自初始发布以来，我们已更新了[数据库API](https://go.dev/security/vuln/database#api)以提高性能并确保长期的可扩展性。提供了一个实验性工具来生成您自己的漏洞数据库索引，位于[golang.org/x/vulndb/cmd/indexdb](https://golang.org/x/vulndb/cmd/indexdb)。
+自初始发布以来，我们已更新了[数据库API](https://go.dev/security/vuln/database#api)以提高性能并确保长期的可扩展性。提供了一个实验性工具来生成你自己的漏洞数据库索引，位于[golang.org/x/vulndb/cmd/indexdb](https://golang.org/x/vulndb/cmd/indexdb)。
 
-如果您是Go包维护者，我们鼓励您[贡献关于您项目中公开漏洞的信息](https://go.dev/s/vulndb-report-new)。
+如果你是Go包维护者，我们鼓励你[贡献关于你项目中公开漏洞的信息](https://go.dev/s/vulndb-report-new)。
 
 有关Go漏洞数据库的更多信息，请参见[go.dev/security/vuln/database](https://go.dev/security/vuln/database)。  
 
@@ -52,19 +52,19 @@ Govulncheck由Go漏洞数据库[https://vuln.go.dev](https://vuln.go.dev/)提供
 
 可以在 pkg.go.dev/vuln 上浏览来自Go漏洞数据库的数据。漏洞信息还会在[pkg.go.dev](https://pkg.go.dev/vuln)的搜索和包页面中显示。例如，[golang.org/x/text/language](https://pkg.go.dev/golang.org/x/text/language?tab=versions)的版本页面会显示该模块旧版本中的漏洞。
 
-您还可以使用Visual Studio Code的Go扩展直接在编辑器中运行 govulncheck。详细操作请参见[教程](https://go.dev/doc/tutorial/govulncheck-ide)。
+你还可以使用Visual Studio Code的Go扩展直接在编辑器中运行 govulncheck。详细操作请参见[教程](https://go.dev/doc/tutorial/govulncheck-ide)。
 
-最后，我们知道许多开发人员希望将 govulncheck 作为CI/CD系统的一部分运行。作为起点，我们为 govulncheck 提供了一个[GitHub Action](https://github.com/marketplace/actions/golang-govulncheck-action)，以便与您的项目集成使用。  
+最后，我们知道许多开发人员希望将 govulncheck 作为CI/CD系统的一部分运行。作为起点，我们为 govulncheck 提供了一个[GitHub Action](https://github.com/marketplace/actions/golang-govulncheck-action)，以便与你的项目集成使用。  
 
 ## 视频演示
 
-如果您对上述集成感兴趣，今年我们在Google I/O大会上展示了这些工具的演示，我们在演讲中介绍了[如何使用Go和Google构建更安全的应用程序](https://www.youtube.com/watch?v=HSt6FhsPT8c&ab_channel=TheGoProgrammingLanguage)。  
+如果你对上述集成感兴趣，今年我们在Google I/O大会上展示了这些工具的演示，我们在演讲中介绍了[如何使用Go和Google构建更安全的应用程序](https://www.youtube.com/watch?v=HSt6FhsPT8c&ab_channel=TheGoProgrammingLanguage)。  
 
 ## 反馈
 
-我们一如既往地欢迎您的反馈！请查看有关[如何贡献和帮助我们进行改进的详细信息](https://go.dev/security/vuln/#feedback)。
+我们一如既往地欢迎你的反馈！请查看有关[如何贡献和帮助我们进行改进的详细信息](https://go.dev/security/vuln/#feedback)。
 
-我们希望您会发现Go对漏洞管理的最新支持对您有用，并与我们一起建立更安全可靠的Go生态系统。  
+我们希望你会发现Go对漏洞管理的最新支持对你有用，并与我们一起建立更安全可靠的Go生态系统。  
 
 ---
 
