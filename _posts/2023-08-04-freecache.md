@@ -1,7 +1,7 @@
 ---
 layout: post
 title: FreeCache简介
-tags: [go, cache]
+tags: [go, cache, redis]
 mermaid: false
 math: false
 ---  
