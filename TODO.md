@@ -19,10 +19,10 @@
   - [ ] https
   - [ ] 缓存
 
-- go 1.21
-
-  - [ ] mix、max和clear
-  - [ ] cmp
+- go 
+  - [ ] mix、max和clear(1.21)
+  - [ ] cmp(1.21)
+  - [x] embed(1.16)
 
 - no-sql数据库
 
