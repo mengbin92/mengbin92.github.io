@@ -16,14 +16,16 @@
 
   - [x] 反向代理
   - [x] 负载均衡
-  - [ ] https
+  - [x] https
   - [ ] 缓存
 
 - go 
   - [ ] mix、max和clear(1.21)
   - [ ] cmp(1.21)
   - [x] embed(1.16)
-
+  - [ ] flag
+  - [ ] cobra/command
+  
 - no-sql数据库
 
   - [ ] leveldb
