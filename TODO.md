@@ -36,7 +36,7 @@
 
 - gin
 
-  - [ ] github.com/gin-contrib/pprof和标准库里的pprof
+  - [x] github.com/gin-contrib/pprof和标准库里的pprof
 
 - redis
 
