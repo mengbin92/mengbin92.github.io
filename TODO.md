@@ -41,5 +41,5 @@
 - redis
 
 - [x] fsnotify库，监控文件系统的变化
-- [ ] errors 
+- [x] errors 
 - [x] restful api介绍
