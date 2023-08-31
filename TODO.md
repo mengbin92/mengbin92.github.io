@@ -8,7 +8,7 @@
 
 - 共识算法
 
-  - [ ] PoW
+  - [x] PoW
   - [ ] PoS DPoS 拜占庭
   - [ ] Raft
 
