@@ -25,7 +25,10 @@
   - [ ] cmp(1.21)
   - [x] embed(1.16)
   - [ ] flag
-  - [ ] cobra/command
+  - [ ] [cobra](https://github.com/spf13/cobra)
+  - [ ] [viper](https://github.com/spf13/viper)
+  - [ ] [promptui](https://github.com/manifoldco/promptui)
+  - [ ] [tablewriter](https://github.com/olekukonko/tablewriter)
   
 - no-sql数据库
 
