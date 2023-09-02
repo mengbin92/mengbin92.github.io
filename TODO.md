@@ -32,8 +32,8 @@
   
 - no-sql数据库
 
-  - [ ] leveldb
-  - [ ] couchdb
+  - [x] leveldb
+  - [x] couchdb
   - [x] memcache
   - [x] bigcache
   - [x] freecache
