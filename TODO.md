@@ -22,7 +22,7 @@
 
 - go 
   - [ ] mix、max和clear(1.21)
-  - [ ] cmp(1.21)
+  - [x] cmp(1.21)
   - [x] embed(1.16)
   - [ ] flag
   - [ ] [cobra](https://github.com/spf13/cobra)
