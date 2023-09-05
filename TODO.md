@@ -24,7 +24,7 @@
   - [ ] mix、max和clear(1.21)
   - [x] cmp(1.21)
   - [x] embed(1.16)
-  - [ ] flag
+  - [x] flag
   - [ ] [cobra](https://github.com/spf13/cobra)
   - [ ] [viper](https://github.com/spf13/viper)
   - [ ] [promptui](https://github.com/manifoldco/promptui)
