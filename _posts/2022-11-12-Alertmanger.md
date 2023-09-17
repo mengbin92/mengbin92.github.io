@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Prometheus Alertmanager
-tags: Prometheus
+tags: prometheus
 mermaid: false
 ---  
 
