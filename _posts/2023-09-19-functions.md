@@ -50,7 +50,7 @@ MySQL 提供了丰富的内置函数，用于在 SQL 查询中执行各种操作
 - `IF(expr, true_val, false_val)`：如果表达式为真，则返回 true_val；否则返回 false_val。
 - `CASE`：用于在查询中执行条件逻辑。
 
-这些是 MySQL 中一些常用的内置函数。MySQL 还提供了许多其他函数，包括数据类型转换函数、加密函数、数据处理函数等。你可以根据具体的需求在查询中使用这些函数来执行各种操作。要了解更多详细信息，可以查阅 MySQL [官方文档](https://dev.mysql.com/doc/)。
+这些是 MySQL 中一些常用的内置函数。MySQL 还提供了许多其他函数，包括数据类型转换函数、加密函数、数据处理函数等。你可以根据具体的需求在查询中使用这些函数来执行各种操作。要了解更多详细信息，可以查阅 MySQL [官方文档](https://dev.mysql.com/doc/refman/8.0/en/functions.html)。
 
 ---
 
