@@ -2,8 +2,8 @@
 
 - 配置文件读取
 
-  - [ ] viper
-  - [ ] yaml
+  - [x] viper
+  - [x] yaml
   - [ ] ini
 
 - 共识算法
@@ -21,12 +21,12 @@
   - [x] 防盗链
 
 - go 
-  - [ ] mix、max和clear(1.21)
+  - [x] mix、max和clear(1.21)
   - [x] cmp(1.21)
   - [x] embed(1.16)
   - [x] flag
   - [ ] [cobra](https://github.com/spf13/cobra)
-  - [ ] [viper](https://github.com/spf13/viper)
+  - [x] [viper](https://github.com/spf13/viper)
   - [ ] [promptui](https://github.com/manifoldco/promptui)
   - [ ] [tablewriter](https://github.com/olekukonko/tablewriter)
   
