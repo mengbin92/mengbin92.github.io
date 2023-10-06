@@ -25,7 +25,7 @@
   - [x] cmp(1.21)
   - [x] embed(1.16)
   - [x] flag
-  - [ ] [cobra](https://github.com/spf13/cobra)
+  - [x] [cobra](https://github.com/spf13/cobra)
   - [x] [viper](https://github.com/spf13/viper)
   - [ ] [promptui](https://github.com/manifoldco/promptui)
   - [ ] [tablewriter](https://github.com/olekukonko/tablewriter)
