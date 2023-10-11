@@ -47,3 +47,10 @@
 - [x] fsnotify库，监控文件系统的变化
 - [x] errors 
 - [x] restful api介绍
+
+## 面试问题
+
+- [x] go defer执行顺序
+- [ ] 数据安全
+- [ ] pkcs#11标准
+- [ ] RSA 3DES区别
