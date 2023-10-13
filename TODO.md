@@ -52,5 +52,5 @@
 
 - [x] go defer执行顺序
 - [ ] 数据安全
-- [ ] pkcs#11标准
+- [x] pkcs#11标准
 - [ ] RSA 3DES区别
