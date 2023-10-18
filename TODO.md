@@ -43,14 +43,12 @@
   - [x] github.com/gin-contrib/pprof和标准库里的pprof
 
 - redis
-  - [ ] 缓存雪崩、缓存击穿、缓存穿透
+  - [x] 缓存雪崩、缓存击穿、缓存穿透
 
-  - [x] 分布式锁
-
-  - [ ] 互斥锁
+  - [x] 互斥锁
 
 - MySQL
-  - [ ] 存储引擎
+  - [x] 存储引擎
 
 - [x] fsnotify库，监控文件系统的变化
 - [x] errors 
