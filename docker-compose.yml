@@ -3,15 +3,14 @@ services:
   blog:
     restart: always
     # build: .
-    image: jekyll/jekyll:latest
+    # image: jekyll/jekyll:latest
+    image: mengbin92/jekyll:4.3.2
     container_name: web
     ports:
-      - 4000:4000/tcp
+      - 4000:4000
     volumes:
       - ./:/srv/jekyll
-    environment:
-      - JEKYLL_ENV=docker
-    command: jekyll serve
+    command: jekyll serve -H 0.0.0.0
     networks:
       front:
 

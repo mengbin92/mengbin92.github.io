@@ -11,3 +11,4 @@ ehthumbs.db
 beautiful-jekyll-theme-*.gem
 
 .vscode
+Gemfile.lock
