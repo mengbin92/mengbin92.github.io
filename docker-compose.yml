@@ -3,14 +3,23 @@ services:
   blog:
     restart: always
     # build: .
-    # image: jekyll/jekyll:latest
     image: mengbin92/jekyll:4.3.2
-    container_name: web
-    ports:
-      - 4000:4000
+    container_name: blog
     volumes:
       - ./:/srv/jekyll
-    command: jekyll serve -H 0.0.0.0
+    command: jekyll serve
+    networks:
+      front:
+  
+  web:
+    image: nginx:alpine3.18
+    container_name: web
+    ports:
+      - 4000:80
+    volumes:
+      - ./_site:/usr/share/nginx/html
+    depends_on:
+      - blog
     networks:
       front:
 
