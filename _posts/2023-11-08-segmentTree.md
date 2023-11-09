@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 理解线段树和主席树：解决区间操作的利器
+title: 理解线段树：解决区间操作的利器
 tags: 数据结构
 mermaid: false
 math: false
