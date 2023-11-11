@@ -12,6 +12,7 @@ services:
       front:
   
   web:
+    restart: always
     image: nginx:alpine3.18
     container_name: web
     ports:
