@@ -3,7 +3,7 @@ layout: post
 title: Redis Lists
 tags: redis
 mermaid: false
-math: false
+math: true
 ---  
 
 > 原文在[这里](https://redis.io/docs/data-types/json/)。 
