@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 钱包与账户概览
-tags: blockchain
+tags: [blockchain, web3.js]
 mermaid: false
 math: false
 ---  
