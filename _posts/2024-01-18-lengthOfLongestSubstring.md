@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 查找最大不重复子串的长度
-tags: 算法
+tags: algorithm
 mermaid: false
 math: false
 ---  

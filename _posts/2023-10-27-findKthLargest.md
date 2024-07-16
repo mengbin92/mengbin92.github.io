@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 查找数组中第K大的元素
-tags: [go, 算法]
+tags: [go, algorithm]
 mermaid: false
 math: false
 ---  

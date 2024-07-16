@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Raft vs. Gossip
-tags: 算法
+tags: algorithm
 mermaid: false
 math: false
 ---  

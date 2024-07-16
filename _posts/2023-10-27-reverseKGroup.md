@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 链表分组逆序
-tags: [go, 算法]
+tags: [go, algorithm]
 mermaid: false
 math: false
 ---  

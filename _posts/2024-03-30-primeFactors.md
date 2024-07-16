@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 分解质因数
-tags: [go, 算法]
+tags: [go, algorithm]
 mermaid: false
 math: false
 ---  
