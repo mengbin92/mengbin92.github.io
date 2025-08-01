@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《纸上谈兵·solidity》第 6 课：Solidity 数据结构与存储布局 —— memory、storage、calldata 傻傻分不清？
+title: 《纸上谈兵·solidity》第 6 课：Solidity 数据存储布局 —— memory、storage、calldata 傻傻分不清？
 tags: solidity
 mermaid: false
 math: false
