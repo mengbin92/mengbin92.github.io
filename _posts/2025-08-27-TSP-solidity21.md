@@ -252,4 +252,15 @@ Ran 1 test suite in 6.50ms (3.57ms CPU time): 2 tests passed, 0 failed, 0 skippe
 
 ---
 
+---
 
+<div align="center">
+  <img src="../img/qrcode_wechat.jpg" alt="孟斯特">
+</div>
+
+> 声明：本作品采用[署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)进行许可，使用时请注明出处。  
+> Author: [mengbin](mengbin1992@outlook.com)  
+> blog: [mengbin](https://mengbin.top)  
+> Github: [mengbin92](https://mengbin92.github.io/)  
+> 腾讯云开发者社区：[孟斯特](https://cloud.tencent.com/developer/user/6649301)  
+---
