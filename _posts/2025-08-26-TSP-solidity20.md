@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《纸上谈兵·solidity》第 19 课：Solidity 安全专题（二）—— 编译器特性与低级漏洞
+title: 《纸上谈兵·solidity》第 20 课：Solidity 安全专题（二）—— 编译器特性与低级漏洞
 tags: solidity
 mermaid: false
 math: false
