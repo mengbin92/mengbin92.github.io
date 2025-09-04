@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《纸上谈兵·solidity》第 25 课：简化版的去中心化交易所（DEX）简化版
+title: 《纸上谈兵·solidity》第 25 课：简化版的去中心化交易所（DEX）
 tags: solidity
 mermaid: false
 math: false
