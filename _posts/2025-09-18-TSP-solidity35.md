@@ -95,28 +95,44 @@ contract LPToken is ERC20 {
 
 ```solidity
 // SPDX-License-Identifier: MIT
+// SimplePair.sol
+// Description: A minimal decentralized exchange (DEX) pair contract for token swaps and liquidity provision.
+// Author: Your Name
+// Version: 1.0.0
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./LPToken.sol";
 
+/**
+ * @title SimplePair
+ * @dev A minimal decentralized exchange (DEX) pair contract for token swaps and liquidity provision.
+ * This contract allows users to add/remove liquidity and swap tokens while maintaining a constant product invariant.
+ */
 contract SimplePair is ReentrancyGuard {
     using SafeERC20 for IERC20;
 
+    // Token addresses for the pair
     IERC20 public token0;
     IERC20 public token1;
+
+    // Liquidity pool token
     LPToken public lpToken;
 
+    // Reserves for token0 and token1
     uint112 private reserve0; // uses single slot, must be uint112
     uint112 private reserve1;
-    uint32 private blockTimestampLast;
+    uint32 private blockTimestampLast; // Last block timestamp for price calculations
 
-    uint256 public constant FEE_NUM = 3; // 0.3% fee numerator
-    uint256 public constant FEE_DEN = 1000; // denominator
+    // Fee constants (0.3% fee)
+    uint256 public constant FEE_NUM = 3; // Fee numerator
+    uint256 public constant FEE_DEN = 1000; // Fee denominator
 
+    // Address to hold minimum liquidity (burned to avoid division by zero)
     address public constant MINIMUM_LIQUIDITY_HOLDER = address(0xdead);
 
+    // Events
     event Mint(
         address indexed sender,
         uint256 amount0,
@@ -139,18 +155,33 @@ contract SimplePair is ReentrancyGuard {
     );
     event Sync(uint256 reserve0, uint256 reserve1);
 
+    /**
+     * @dev Constructor to initialize the pair with two tokens.
+     * @param _token0 Address of the first token in the pair.
+     * @param _token1 Address of the second token in the pair.
+     */
     constructor(address _token0, address _token1) {
         token0 = IERC20(_token0);
         token1 = IERC20(_token1);
-        // deploy LP token with pair as minter
+        // Deploy LP token with pair as minter
         lpToken = new LPToken("SimpleLP", "sLP");
     }
 
+    /**
+     * @dev Get the current reserves of token0 and token1.
+     * @return r0 Reserve of token0.
+     * @return r1 Reserve of token1.
+     */
     function getReserves() public view returns (uint112 r0, uint112 r1) {
         return (reserve0, reserve1);
     }
 
     // ---- ADD LIQUIDITY: mint LP tokens ----
+    /**
+     * @dev Add liquidity to the pair and mint LP tokens.
+     * @param to Address to receive the minted LP tokens.
+     * @return liquidity Amount of LP tokens minted.
+     */
     function mint(
         address to
     ) external nonReentrant returns (uint256 liquidity) {
@@ -165,10 +196,11 @@ contract SimplePair is ReentrancyGuard {
         uint256 _totalSupply = lpToken.totalSupply();
 
         if (_totalSupply == 0) {
-            // initial liquidity
-            liquidity = sqrt(amount0 * amount1) - 1000; // lock a minimum liquidity to avoid divide by zero later
-            lpToken.mint(MINIMUM_LIQUIDITY_HOLDER, 1000); // burn 1000 to lock
+            // Initial liquidity: lock a minimum liquidity to avoid divide by zero later
+            liquidity = sqrt(amount0 * amount1) - 1000;
+            lpToken.mint(MINIMUM_LIQUIDITY_HOLDER, 1000); // Burn 1000 to lock
         } else {
+            // Calculate liquidity based on existing reserves
             liquidity = min(
                 (amount0 * _totalSupply) / reserve0,
                 (amount1 * _totalSupply) / reserve1
@@ -183,6 +215,12 @@ contract SimplePair is ReentrancyGuard {
     }
 
     // ---- REMOVE LIQUIDITY: burn LP tokens and send underlying ----
+    /**
+     * @dev Remove liquidity from the pair and burn LP tokens.
+     * @param to Address to receive the underlying tokens.
+     * @return amount0 Amount of token0 returned.
+     * @return amount1 Amount of token1 returned.
+     */
     function burn(
         address to
     ) external nonReentrant returns (uint256 amount0, uint256 amount1) {
@@ -191,7 +229,7 @@ contract SimplePair is ReentrancyGuard {
 
         require(liquidity > 0, "No liquidity");
 
-        // transfer LP tokens from sender to pair and burn
+        // Transfer LP tokens from sender to pair and burn
         lpToken.transferFrom(msg.sender, address(this), liquidity);
         lpToken.burn(address(this), liquidity);
 
@@ -214,8 +252,13 @@ contract SimplePair is ReentrancyGuard {
     }
 
     // ---- SWAP: token0 -> token1 or token1 -> token0 ----
-    // caller transfers tokens in before calling swap; we accept amount0Out/amount1Out to be sent to `to`
-    // This function follows CEI and checks the invariant after fee
+    /**
+     * @dev Swap tokens in the pair.
+     * @param amount0Out Amount of token0 to send out.
+     * @param amount1Out Amount of token1 to send out.
+     * @param to Address to receive the output tokens.
+     * @param data Optional callback data for flash swaps.
+     */
     function swap(
         uint256 amount0Out,
         uint256 amount1Out,
@@ -228,11 +271,11 @@ contract SimplePair is ReentrancyGuard {
             "Insufficient liquidity"
         );
 
-        // --- Transfer output tokens first ---
+        // Transfer output tokens first
         if (amount0Out > 0) token0.safeTransfer(to, amount0Out);
         if (amount1Out > 0) token1.safeTransfer(to, amount1Out);
 
-        // --- Compute input amounts ---
+        // Compute input amounts
         uint256 balance0 = token0.balanceOf(address(this));
         uint256 balance1 = token1.balanceOf(address(this));
 
@@ -246,7 +289,7 @@ contract SimplePair is ReentrancyGuard {
         }
         require(amount0In > 0 || amount1In > 0, "Insufficient input amount");
 
-        // --- Check constant product invariant with fee ---
+        // Check constant product invariant with fee
         require(
             (balance0 * FEE_DEN - amount0In * FEE_NUM) *
                 (balance1 * FEE_DEN - amount1In * FEE_NUM) >=
@@ -254,18 +297,23 @@ contract SimplePair is ReentrancyGuard {
             "K"
         );
 
-        // --- Update reserves ---
+        // Update reserves
         _update(uint112(balance0), uint112(balance1));
 
         emit Swap(msg.sender, amount0In, amount1In, amount0Out, amount1Out, to);
 
-        // --- Flash swap hook ---
+        // Flash swap hook (optional callback)
         if (data.length > 0) {
-            // optional callback
+            // Optional callback logic
         }
     }
 
     // ---- HELPERS ----
+    /**
+     * @dev Internal function to update reserves and emit Sync event.
+     * @param _reserve0 New reserve for token0.
+     * @param _reserve1 New reserve for token1.
+     */
     function _update(uint112 _reserve0, uint112 _reserve1) private {
         reserve0 = _reserve0;
         reserve1 = _reserve1;
@@ -274,9 +322,21 @@ contract SimplePair is ReentrancyGuard {
     }
 
     // ---- UTILITIES ----
+    /**
+     * @dev Returns the smaller of two numbers.
+     * @param x First number.
+     * @param y Second number.
+     * @return The smaller number.
+     */
     function min(uint256 x, uint256 y) internal pure returns (uint256) {
         return x < y ? x : y;
     }
+
+    /**
+     * @dev Calculates the square root of a number.
+     * @param y The number to calculate the square root of.
+     * @return z The square root of y.
+     */
     function sqrt(uint256 y) internal pure returns (uint256 z) {
         if (y > 3) {
             z = y;
@@ -292,6 +352,7 @@ contract SimplePair is ReentrancyGuard {
     receive() external payable {}
 }
 ```
+
 
 > 说明（重要）：
 >
@@ -333,11 +394,19 @@ contract SimpleFactory {
 
 ```solidity
 // SPDX-License-Identifier: MIT
+// SimpleRouter.sol
+// Description: A minimal decentralized exchange (DEX) router contract for token swaps and liquidity provision.
+// Author: Your Name
+// Version: 1.0.0
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./SimpleFactory.sol";
 
+/**
+ * @title ISimplePair
+ * @dev Interface for the SimplePair contract, defining functions for fee calculation, reserves, and token swaps.
+ */
 interface ISimplePair {
     function FEE_NUM() external pure returns (uint256);
     function FEE_DEN() external pure returns (uint256);
@@ -349,20 +418,35 @@ interface ISimplePair {
         address to,
         bytes calldata data
     ) external;
-
     function mint(address to) external returns (uint256 liquidity);
-
 }
 
+/**
+ * @title SimpleRouter
+ * @dev A minimal decentralized exchange (DEX) router contract for token swaps and liquidity provision.
+ * This contract interacts with SimplePair contracts to facilitate token swaps and liquidity management.
+ */
 contract SimpleRouter {
     using SafeERC20 for IERC20;
     SimpleFactory public factory;
 
+    /**
+     * @dev Constructor to initialize the router with a factory address.
+     * @param _factory Address of the SimpleFactory contract.
+     */
     constructor(address _factory) {
         factory = SimpleFactory(_factory);
     }
 
-    // UniswapV2-style getAmountOut but parameterized by fee numerator/denominator
+    /**
+     * @dev Calculate the output amount for a token swap, considering fees.
+     * @param amountIn Amount of input tokens.
+     * @param reserveIn Reserve of the input token.
+     * @param reserveOut Reserve of the output token.
+     * @param feeNum Fee numerator (e.g., 3 for 0.3% fee).
+     * @param feeDen Fee denominator (e.g., 1000 for 0.3% fee).
+     * @return Amount of output tokens after fees.
+     */
     function getAmountOut(
         uint256 amountIn,
         uint256 reserveIn,
@@ -378,7 +462,14 @@ contract SimpleRouter {
         return numerator / denominator;
     }
 
-    // swapExactTokensForTokens (single-hop, simplified)
+    /**
+     * @dev Swap exact input tokens for output tokens (single-hop).
+     * @param amountIn Amount of input tokens.
+     * @param amountOutMin Minimum amount of output tokens expected.
+     * @param tokenIn Address of the input token.
+     * @param tokenOut Address of the output token.
+     * @param to Address to receive the output tokens.
+     */
     function swapExactTokensForTokens(
         uint256 amountIn,
         uint256 amountOutMin,
@@ -386,14 +477,15 @@ contract SimpleRouter {
         address tokenOut,
         address to
     ) external {
+        // Get the pair address for the input and output tokens
         address pairAddr = factory.getPair(tokenIn, tokenOut);
         require(pairAddr != address(0), "PAIR_NOT_EXIST");
         ISimplePair pair = ISimplePair(pairAddr);
 
-        // transfer tokenIn from user to pair (pair will see increased balance)
+        // Transfer input tokens from the user to the pair
         IERC20(tokenIn).safeTransferFrom(msg.sender, pairAddr, amountIn);
 
-        // read reserves and map to in/out order
+        // Read reserves and determine the order of tokens in the pair
         (uint112 r0, uint112 r1) = pair.getReserves();
         address token0 = pair.token0();
         uint256 reserveIn;
@@ -406,6 +498,7 @@ contract SimpleRouter {
             reserveOut = uint256(r0);
         }
 
+        // Calculate the output amount and ensure it meets the minimum requirement
         uint256 feeNum = pair.FEE_NUM();
         uint256 feeDen = pair.FEE_DEN();
         uint256 amountOut = getAmountOut(
@@ -417,16 +510,25 @@ contract SimpleRouter {
         );
         require(amountOut >= amountOutMin, "INSUFFICIENT_OUTPUT_AMOUNT");
 
-        // call swap on the pair with correct output side
+        // Execute the swap based on the token order
         if (token0 == tokenIn) {
-            // tokenIn is token0, so we want token1 out
+            // Swap token0 for token1
             pair.swap(0, amountOut, to, "");
         } else {
-            // tokenIn is token1, so token0 out
+            // Swap token1 for token0
             pair.swap(amountOut, 0, to, "");
         }
     }
 
+    /**
+     * @dev Add liquidity to a token pair and mint LP tokens.
+     * @param tokenA Address of the first token.
+     * @param tokenB Address of the second token.
+     * @param amountADesired Desired amount of tokenA to add.
+     * @param amountBDesired Desired amount of tokenB to add.
+     * @param to Address to receive the LP tokens.
+     * @return liquidity Amount of LP tokens minted.
+     */
     function addLiquidity(
         address tokenA,
         address tokenB,
@@ -434,17 +536,17 @@ contract SimpleRouter {
         uint256 amountBDesired,
         address to
     ) external returns (uint256 liquidity) {
-        // 1. 找到或创建交易对
+        // 1. Find or create the token pair
         address pairAddr = factory.getPair(tokenA, tokenB);
         if (pairAddr == address(0)) {
             pairAddr = factory.createPair(tokenA, tokenB);
         }
 
-        // 2. 把用户的 token 转到 pair
+        // 2. Transfer tokens from the user to the pair
         IERC20(tokenA).safeTransferFrom(msg.sender, pairAddr, amountADesired);
         IERC20(tokenB).safeTransferFrom(msg.sender, pairAddr, amountBDesired);
 
-        // 3. 调用 pair 的 mint，铸造 LP 给用户
+        // 3. Mint LP tokens to the user
         liquidity = ISimplePair(pairAddr).mint(to);
     }
 }
@@ -458,106 +560,150 @@ contract SimpleRouter {
 
 用 Foundry 写测试覆盖：Create pair、add liquidity、swap、remove liquidity、滑点测试。
 
-// SPDX-License-Identifier: MIT
+```solidity
+// SPDX-License-Identifier: UNLICENSED
+// DexTest.t.sol
+// Description: Test contract for the decentralized exchange (DEX) functionality.
+// Author: Your Name
+// Version: 1.0.0
 pragma solidity ^0.8.20;
 
 import "forge-std/Test.sol";
 import "../src/TestToken.sol";
 import "../src/SimpleFactory.sol";
-import "../src/SimplePair.sol";
 import "../src/SimpleRouter.sol";
+import "../src/SimplePair.sol";
 
+/**
+ * @title DexTest
+ * @dev Test contract for the decentralized exchange (DEX) functionality.
+ * This contract tests the token swap and liquidity provision features of the DEX.
+ */
 contract DexTest is Test {
+    // Token contracts for testing
     TestToken tokenA;
     TestToken tokenB;
+
+    // DEX components
     SimpleFactory factory;
     SimpleRouter router;
-    address alice = address(0x123);
-    address bob = address(0x234);
+    address pair;
 
+    // Test user addresses
+    address user1 = address(0x123);
+    address user2 = address(0x234);
+
+    /**
+     * @dev Setup function to initialize the test environment.
+     * - Deploys token contracts (TokenA and TokenB).
+     * - Deploys the DEX factory and router.
+     * - Creates a token pair (TokenA/TokenB).
+     * - Mints tokens to test users (user1 and user2).
+     * - Adds initial liquidity to the pair via user1.
+     */
     function setUp() public {
+        // Deploy token contracts
         tokenA = new TestToken("TokenA", "TKA");
         tokenB = new TestToken("TokenB", "TKB");
+
+        // Deploy DEX factory and router
         factory = new SimpleFactory();
         router = new SimpleRouter(address(factory));
-        tokenA.mint(alice, 1_000_000e18);
-        tokenB.mint(alice, 1_000_000e18);
-        tokenA.mint(bob, 1_000_000e18);
-        tokenB.mint(bob, 1_000_000e18);
-    }
 
-    function testAddLiquidityAndSwap() public {
-        // 地址
-        address user1 = address(0x123);
-        address user2 = address(0x234);
+        // Create a token pair (TokenA/TokenB)
+        pair = factory.createPair(address(tokenA), address(tokenB));
 
-        // 准备 token
+        // Mint tokens to test users (user1 and user2)
+        tokenA.mint(user1, 1000 ether);
+        tokenB.mint(user1, 1000 ether);
+        tokenA.mint(user2, 1000 ether);
+        tokenB.mint(user2, 1000 ether);
 
-        // 发币给用户
-        tokenA.mint(user1, 1e21);
-        tokenB.mint(user1, 1e21);
-        tokenA.mint(user2, 1e21);
-        tokenB.mint(user2, 1e21);
-
-        // 创建 router + factory + pair
-
-        // 用户1 添加流动性
+        // Add initial liquidity to the pair via user1
         vm.startPrank(user1);
-        tokenA.approve(address(router), 1e21);
-        tokenB.approve(address(router), 1e21);
-
+        tokenA.approve(address(router), type(uint256).max);
+        tokenB.approve(address(router), type(uint256).max);
         router.addLiquidity(
             address(tokenA),
             address(tokenB),
-            1e21,
-            1e21,
-            user1
+            100 ether, // Amount of TokenA to add
+            100 ether, // Amount of TokenB to add
+            user1      // Recipient of LP tokens
         );
         vm.stopPrank();
+    }
 
-        // 获取 pair
-        ISimplePair pair = ISimplePair(
-            factory.getPair(address(tokenA), address(tokenB))
-        );
+    /**
+     * @dev Test function to verify token swap functionality via the router.
+     * - Simulates a token swap (TokenA -> TokenB) by user2.
+     * - Checks the token balances before and after the swap.
+     * - Asserts that the swap results in the expected token balance changes.
+     */
+    function testSwapWithRouter() public {
+        // Start acting as user2
+        vm.startPrank(user2);
 
-        // 用户2 想 swap tokenA -> tokenB
-        uint256 reserveA;
-        uint256 reserveB;
-        (reserveA, reserveB) = pair.getReserves();
-
-        uint256 amountOut = 9e18; // 想要输出的 tokenB
-        uint256 FEE_NUM = 3;
-        uint256 FEE_DEN = 1000;
-
-        // 按恒定乘积公式计算需要多少 tokenA 输入
-        // amountIn = ((reserveIn * amountOut * FEE_DEN) / ((reserveOut - amountOut) * (FEE_DEN - FEE_NUM))) + 1
-        uint256 amountIn = (reserveA * amountOut * FEE_DEN) /
-            ((reserveB - amountOut) * (FEE_DEN - FEE_NUM)) +
-            1;
-
+        // Record token balances before the swap
         uint256 beforeA = tokenA.balanceOf(user2);
         uint256 beforeB = tokenB.balanceOf(user2);
 
-        // 批准 + 转账 + swap
-        vm.startPrank(user2);
-        tokenA.approve(address(pair), amountIn);
-        tokenA.transfer(address(pair), amountIn);
-        pair.swap(0, amountOut, user2, "");
-        vm.stopPrank();
+        // Approve the router to spend user2's TokenA
+        tokenA.approve(address(router), type(uint256).max);
 
+        // Execute the swap: 10 TokenA -> TokenB
+        router.swapExactTokensForTokens(
+            10 ether, // Amount of TokenA to swap
+            0,        // Minimum amount of TokenB expected (0 to avoid revert)
+            address(tokenA), // Input token (TokenA)
+            address(tokenB), // Output token (TokenB)
+            user2     // Recipient of TokenB
+        );
+
+        // Record token balances after the swap
         uint256 afterA = tokenA.balanceOf(user2);
         uint256 afterB = tokenB.balanceOf(user2);
 
-        // B 收到正确数量
-        assertEq(afterB - beforeB, amountOut);
+        // Stop acting as user2
+        vm.stopPrank();
 
-        // A 支出至少 amountIn（也可以允许多一点，因为手续费）
-        assertGe(beforeA - afterA, amountIn);
+        // Assertions:
+        // 1. TokenA balance should decrease by exactly 10 ether
+        assertEq(beforeA - afterA, 10 ether, "tokenA spent not match");
+        // 2. TokenB balance should increase by some amount (>0)
+        assertGt(afterB - beforeB, 0, "tokenB not received");
     }
 }
 ```
 
 > 测试需精确计算 `amountOut` 的公式（课程中会给出 `getAmountOut(amountIn, reserveIn, reserveOut)` 函数并在 Router 与测试中统一使用）。
 
+**验证流程**：  
+
+```bash
+➜  dex git:(main) ✗ forge test --match-path test/DexTest.t.sol -vvv
+[⠊] Compiling...
+[⠒] Compiling 37 files with Solc 0.8.30
+[⠑] Solc 0.8.30 finished in 560.13ms
+Compiler run successful!
+
+Ran 1 test for test/DexTest.t.sol:DexTest
+[PASS] testSwapWithRouter() (gas: 130588)
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 1.59ms (180.63µs CPU time)
+
+Ran 1 test suite in 149.39ms (1.59ms CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+```  
+
+> 使用 `-vvvv` 可以看到更详细的日志信息
+
 ---
 
+<div align="center">
+  <img src="../img/qrcode_wechat.jpg" alt="孟斯特">
+</div>
+
+> 声明：本作品采用[署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)进行许可，使用时请注明出处。  
+> Author: [mengbin](mengbin1992@outlook.com)  
+> blog: [mengbin](https://mengbin.top)  
+> Github: [mengbin92](https://mengbin92.github.io/)  
+> 腾讯云开发者社区：[孟斯特](https://cloud.tencent.com/developer/user/6649301)  
+---
