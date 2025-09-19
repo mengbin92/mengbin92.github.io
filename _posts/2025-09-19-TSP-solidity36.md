@@ -6,7 +6,7 @@ mermaid: false
 math: false
 --- 
 
-## 6. 前端（React + ethers.js v6）示例（Swap + Add Liquidity）
+## 6. 前端
 
 前端要点：
 
@@ -146,7 +146,7 @@ export default function SwapWidget({ tokenInAddr, tokenOutAddr }) {
 
 ---
 
-## 7. 安全与审计要点（必看）
+## 7. 安全与审计要点
 
 1. **滑点与前端保护**：强制用户设置 slippage tolerance 与显示 price impact，避免被链上前端 MEV 抽走。
 2. **闪电贷 & 价格操控**：任何基于 on-chain 单一价格的协议都易受闪电贷操控；在更复杂场景用 TWAP 或外部预言机。
@@ -160,7 +160,7 @@ export default function SwapWidget({ tokenInAddr, tokenOutAddr }) {
 
 ---
 
-## 8. 练习题（分层）
+## 8. 练习题
 
 **基础练习**
 
@@ -180,10 +180,14 @@ export default function SwapWidget({ tokenInAddr, tokenOutAddr }) {
 
 ---
 
-## 9. 交付清单（课程产出）
+<div align="center">
+  <img src="../img/qrcode_wechat.jpg" alt="孟斯特">
+</div>
 
-* 可编译的 Solidity 合约文件（Token, LPToken, Pair, Factory, Router）。
-* Foundry 测试示例（覆盖 addLiquidity / swap / removeLiquidity）。
-* React 前端示例（Swap + AddLiquidity UI，ethers v6），含代码片段与注意事项。
-* 安全审计清单与练习题。
+> 声明：本作品采用[署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)进行许可，使用时请注明出处。  
+> Author: [mengbin](mengbin1992@outlook.com)  
+> blog: [mengbin](https://mengbin.top)  
+> Github: [mengbin92](https://mengbin92.github.io/)  
+> 腾讯云开发者社区：[孟斯特](https://cloud.tencent.com/developer/user/6649301)  
+---
 
