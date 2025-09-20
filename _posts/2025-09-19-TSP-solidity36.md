@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《纸上谈兵·solidity》第 35 课：去中心化交易所（DEX）实战 — 上线
+title: 《纸上谈兵·solidity》第 36 课：去中心化交易所（DEX）实战 — 上线
 tags: solidity
 mermaid: false
 math: false
