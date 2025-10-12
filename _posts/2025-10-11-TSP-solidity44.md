@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《纸上谈兵·solidity》第 43 课：DeFi 实战(8) -- 利率曲线与资金池优化（动态利用率模型）
+title: 《纸上谈兵·solidity》第 44 课：DeFi 实战(8) -- 利率曲线与资金池优化（动态利用率模型）
 tags: solidity
 mermaid: false
 math: false
