@@ -115,7 +115,6 @@ math: false
 - [Solidity 官方文档](https://docs.soliditylang.org/)
 - [Foundry 文档](https://book.getfoundry.sh/)
 - [OpenZeppelin 文档](https://docs.openzeppelin.com/)
-- [Consensys 最佳实践](https://consensys.github.io/smart-contract-best-practices/)
 
 ---
 
