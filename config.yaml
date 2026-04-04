@@ -1,0 +1,42 @@
+title: 孟斌
+author: 孟斌
+description: 技术博客与学习记录
+languageCode: zh-CN
+baseURL: https://mengbin92.github.io
+timezone: Asia/Shanghai
+
+contentDir: _posts
+staticDir: assets
+publishDir: public
+
+paginate: 10
+paginatePath: blog/page
+
+permalinks:
+  posts: /:year-:month-:day-:title/
+
+navbarLinks:
+  - name: Blog
+    url: /
+  - name: About
+    url: /pages/aboutme/
+  - name: Search
+    url: /search/
+  - name: Sitemap
+    url: /sitemap/
+  - name: Tags
+    url: /tags/
+  - name: Categories
+    url: /categories/
+
+social:
+  email: mengbin1992@outlook.com
+  github: mengbin92
+
+enableRobotsTXT: true
+
+outputs:
+  feed: true
+  search: true
+  sitemap: true
+  robots: true

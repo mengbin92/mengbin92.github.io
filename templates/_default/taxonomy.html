@@ -1,0 +1,38 @@
+{{ define "taxonomyTermsMain" }}
+<section class="taxonomy-shell">
+  <h1 class="taxonomy-title">{{ .Title }}</h1>
+  {{ if .Terms }}
+  <ul class="taxonomy-list">
+    {{ range .Terms }}
+    <li><a href="{{ .URL }}"><strong>{{ .Name }}</strong><br><span>{{ .Count }} 篇文章</span></a></li>
+    {{ end }}
+  </ul>
+  {{ else }}
+  <p>No {{ .Kind }} found.</p>
+  {{ end }}
+</section>
+{{ end }}
+{{ define "taxonomyMain" }}
+<section class="taxonomy-shell">
+  <h1 class="taxonomy-title">{{ .Title }}</h1>
+  <div class="taxonomy-posts">
+    {{ if .Posts }}
+    {{ range .Posts }}
+    <article class="post-card">
+      <div class="post-card-header">
+        <h2 class="post-card-title"><a href="{{ .URL }}">{{ .Title }}</a></h2>
+        <time class="post-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+      </div>
+      <div class="post-summary">
+        {{ if .SummaryHTML }}{{ safeHTML .SummaryHTML }}{{ else if .Summary }}<p>{{ .Summary }}</p>{{ end }}
+      </div>
+    </article>
+    {{ end }}
+    {{ else }}
+    <p>No posts found.</p>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+{{ define "taxonomyTermsPage" }}{{ template "base" . }}{{ end }}
+{{ define "taxonomyPage" }}{{ template "base" . }}{{ end }}

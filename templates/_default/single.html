@@ -1,0 +1,110 @@
+{{ define "singleMain" }}
+<article class="article-shell">
+  <header class="article-header">
+    <h1 class="article-title">{{ .Post.Title }}</h1>
+    {{ if .Post.Description }}
+    <p class="article-lead">{{ .Post.Description }}</p>
+    {{ end }}
+    <div class="article-meta">
+      <time datetime="{{ .Post.Date.Format "2006-01-02" }}">{{ .Post.Date.Format "2006-01-02" }}</time>
+      <span>{{ .Post.ReadingTime }} min read</span>
+    </div>
+    {{ if .Post.Tags }}
+    <div class="tag-list">
+      {{ range .Post.Tags }}<a href="/tags/{{ . | urlize }}/" class="tag">{{ . }}</a>{{ end }}
+    </div>
+    {{ end }}
+  </header>
+
+  <nav class="article-toc" id="article-toc" hidden>
+    <h2 class="article-toc-title">目录</h2>
+    <div id="article-toc-links"></div>
+  </nav>
+
+  <div class="article-content">
+    {{ safeHTML .Post.ContentHTML }}
+  </div>
+
+  {{ if .Post.Categories }}
+  <footer class="article-footer">
+    <div class="tag-list">
+      {{ range .Post.Categories }}<a href="/categories/{{ . | urlize }}/" class="tag">{{ . }}</a>{{ end }}
+    </div>
+  </footer>
+  {{ end }}
+
+  {{ if or .PrevPost .NextPost }}
+  <nav class="post-nav">
+    {{ if .PrevPost }}
+    <a href="{{ .PrevPost.URL }}" class="post-nav-card">
+      <span class="post-nav-label">上一篇</span>
+      <strong>{{ .PrevPost.Title }}</strong>
+    </a>
+    {{ else }}
+    <span class="post-nav-card post-nav-card-empty"></span>
+    {{ end }}
+
+    {{ if .NextPost }}
+    <a href="{{ .NextPost.URL }}" class="post-nav-card post-nav-card-next">
+      <span class="post-nav-label">下一篇</span>
+      <strong>{{ .NextPost.Title }}</strong>
+    </a>
+    {{ else }}
+    <span class="post-nav-card post-nav-card-empty"></span>
+    {{ end }}
+  </nav>
+  {{ end }}
+
+  {{ template "comments" . }}
+
+  <script>
+  (function() {
+    const article = document.querySelector('.article-content');
+    const toc = document.getElementById('article-toc');
+    const tocLinks = document.getElementById('article-toc-links');
+    if (!article || !toc || !tocLinks) return;
+
+    const headings = article.querySelectorAll('h2, h3');
+    if (headings.length < 2) return;
+
+    headings.forEach((heading, index) => {
+      if (!heading.id) heading.id = 'section-' + (index + 1);
+      const link = document.createElement('a');
+      link.href = '#' + heading.id;
+      link.textContent = heading.textContent || ('Section ' + (index + 1));
+      link.className = heading.tagName.toLowerCase() === 'h3' ? 'toc-link toc-link-sub' : 'toc-link';
+      tocLinks.appendChild(link);
+    });
+
+    toc.hidden = false;
+  })();
+  </script>
+
+  {{ if paramBool .Post.Params "mermaid" }}
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    document.querySelectorAll('pre > code.language-mermaid').forEach((code) => {
+      const pre = code.parentElement;
+      const container = document.createElement('div');
+      container.className = 'mermaid';
+      container.textContent = code.textContent;
+      pre.replaceWith(container);
+    });
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+  {{ end }}
+
+  {{ if paramBool .Post.Params "math" }}
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  {{ end }}
+</article>
+{{ end }}
+{{ define "singlePage" }}{{ template "base" . }}{{ end }}

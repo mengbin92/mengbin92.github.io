@@ -1,0 +1,30 @@
+{{ define "base" }}
+<!DOCTYPE html>
+<html lang="{{ if .Site.LanguageCode }}{{ .Site.LanguageCode }}{{ else }}zh-CN{{ end }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .MetaTitle }}{{ .MetaTitle }} - {{ else if and .Title (ne .Title .Site.Title) }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
+  <meta name="description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ .Site.Description }}{{ end }}">
+  {{ if .Site.Author }}<meta name="author" content="{{ .Site.Author }}">{{ end }}
+  {{ if .Canonical }}<link rel="canonical" href="{{ .Canonical }}">{{ end }}
+  <meta property="og:title" content="{{ if .MetaTitle }}{{ .MetaTitle }}{{ else if and .Title (ne .Title .Site.Title) }}{{ .Title }}{{ else }}{{ .Site.Title }}{{ end }}">
+  <meta property="og:description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ .Site.Description }}{{ end }}">
+  <meta property="og:type" content="{{ if .OpenGraphType }}{{ .OpenGraphType }}{{ else }}website{{ end }}">
+  {{ if .Canonical }}<meta property="og:url" content="{{ .Canonical }}">{{ end }}
+  <link rel="stylesheet" href="/css/gobin-blog.css">
+  <link rel="stylesheet" href="/css/pygment_highlights.css">
+</head>
+<body>
+  <div class="site-shell">
+    <div class="site-frame">
+      {{ render .HeaderTemplate . }}
+      <main role="main" class="site-main">
+        {{ render .MainTemplate . }}
+      </main>
+      {{ render .FooterTemplate . }}
+    </div>
+  </div>
+</body>
+</html>
+{{ end }}

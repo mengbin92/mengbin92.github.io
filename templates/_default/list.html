@@ -1,0 +1,75 @@
+{{ define "listMain" }}
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-panel">
+      <span class="hero-kicker site-mono">Engineering Notes</span>
+      <h1 class="hero-title">{{ .Site.Title }}</h1>
+      <p class="hero-description">{{ if .Site.Description }}{{ .Site.Description }}{{ else }}技术博客与学习记录。{{ end }}</p>
+      <div class="hero-meta">
+        <span class="hero-chip">共 {{ .Pagination.TotalPosts }} 篇文章</span>
+        <span class="hero-chip">标签与分类索引已启用</span>
+      </div>
+    </div>
+    <aside class="hero-note">
+      <div>
+        <h2 class="hero-note-title">写作范围</h2>
+        <p>Go、后端、区块链、数据库、运维与日常技术笔记。</p>
+      </div>
+      <div>
+        <h2 class="hero-note-title">阅读方式</h2>
+        <p>从最新文章开始，或通过标签与分类按主题回溯。</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="posts-section">
+  <div class="posts-grid">
+    {{ range .Posts }}
+    <article class="post-card">
+      <div class="post-card-header">
+        <h2 class="post-card-title"><a href="{{ .URL }}">{{ .Title }}</a></h2>
+        <time class="post-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+      </div>
+      <div class="post-summary">
+        {{ if .SummaryHTML }}{{ safeHTML .SummaryHTML }}{{ else if .Summary }}<p>{{ .Summary }}</p>{{ end }}
+      </div>
+      {{ if .Tags }}
+      <div class="tag-list">
+        {{ range .Tags }}<a href="/tags/{{ . | urlize }}/" class="tag">{{ . }}</a>{{ end }}
+      </div>
+      {{ end }}
+      <a href="{{ .URL }}" class="read-more">继续阅读 <span aria-hidden="true">→</span></a>
+    </article>
+    {{ else }}
+    <article class="post-card">
+      <p>No posts found.</p>
+    </article>
+    {{ end }}
+  </div>
+
+  {{ if gt .Pagination.TotalPages 1 }}
+  <nav class="pagination">
+    <div>
+      {{ if and (gt .Pagination.PrevPage 0) (not .Pagination.IsFirstPage) }}
+      {{ if eq .Pagination.PrevPage 1 }}
+      <a href="/">&larr; 较新的文章</a>
+      {{ else }}
+      <a href="/{{ $.Site.PaginatePath }}/{{ .Pagination.PrevPage }}/">&larr; 较新的文章</a>
+      {{ end }}
+      {{ else }}
+      <span>第一页</span>
+      {{ end }}
+    </div>
+    <div>
+      {{ if and (gt .Pagination.NextPage 0) (not .Pagination.IsLastPage) }}
+      <a href="/{{ $.Site.PaginatePath }}/{{ .Pagination.NextPage }}/">更早的文章 &rarr;</a>
+      {{ else }}
+      <span>最后一页</span>
+      {{ end }}
+    </div>
+  </nav>
+  {{ end }}
+</section>
+{{ end }}
+{{ define "listPage" }}{{ template "base" . }}{{ end }}

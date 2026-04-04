@@ -1,0 +1,18 @@
+{{ define "pageMain" }}
+<article class="article-shell">
+  <header class="article-header">
+    <h1 class="article-title">{{ .Page.Title }}</h1>
+    {{ if .Page.Description }}
+    <p class="article-lead">{{ .Page.Description }}</p>
+    {{ end }}
+  </header>
+
+  <div class="article-content page-content">
+    {{ safeHTML .Page.ContentHTML }}
+  </div>
+</article>
+{{ end }}
+
+{{ define "pagePage" }}
+{{ template "base" . }}
+{{ end }}

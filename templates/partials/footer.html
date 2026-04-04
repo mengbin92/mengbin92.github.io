@@ -1,0 +1,14 @@
+{{ define "footer" }}
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <p>{{ .Site.Author }}</p>
+    <div class="site-footer-center">
+      <p>Copyright © 2026 {{ .Site.Author }}. All rights reserved.</p>
+      <p>备案号：粤ICP备12345678号-1</p>
+    </div>
+    <p>Built with Gobin. Markdown first, static by default.</p>
+  </div>
+</footer>
+{{ template "analytics" . }}
+{{ end }}
+{{ define "footerNested" }}{{ template "footer" . }}{{ end }}

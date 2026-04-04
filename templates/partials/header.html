@@ -1,0 +1,16 @@
+{{ define "header" }}
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="brand" href="/">
+      <span class="brand-mark site-mono">mengbin.top</span>
+      <span class="brand-title">{{ .Site.Title }}</span>
+    </a>
+    <nav class="site-nav">
+      {{ range .Site.NavbarLinks }}
+      <a href="{{ .URL }}">{{ .Name }}</a>
+      {{ end }}
+    </nav>
+  </div>
+</header>
+{{ end }}
+{{ define "headerNested" }}{{ template "header" . }}{{ end }}

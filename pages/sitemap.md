@@ -1,33 +1,89 @@
 ---
-layout: default
+layout: page
 permalink: "sitemap"
 title: Sitemap
-show-avatar: true
 ---
 
-### All Posts
+<section class="sitemap-section">
+  <h2>All Posts</h2>
+  <div class="sitemap-table-wrap">
+    <table class="sitemap-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Title</th>
+          <th>Tags</th>
+        </tr>
+      </thead>
+      <tbody id="sitemap-posts-body">
+        <tr>
+          <td colspan="3">Loading posts...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
-| <i class="fa fa-calendar" aria-hidden="true"></i> Date | <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Title | <i class="fa fa-hashtag" aria-hidden="true"></i> Tags |
-| ---- | ----- | ---- |{% for post in site.posts %}
-| {{ post.date | date: "%m/%d/%Y" }} | <a href="{{ url }}{{ post.url | remove: 'index.html' }}">{{ post.title }}</a> | {% for tag in post.tags %} <i class="fa fa-tag" aria-hidden="true"></i><a href="{{ '/tags' | relative_url }}#{{- tag -}}">{{- tag -}}</a>{% endfor %}| {% endfor %}
+<section class="sitemap-section">
+  <h2>All Pages</h2>
+  <ul class="sitemap-pages" id="sitemap-pages-list"></ul>
+</section>
 
-<br>
+<script>
+const staticPages = [
+  { title: 'Home', url: '/' },
+  { title: 'About', url: '/pages/aboutme/' },
+  { title: 'Search', url: '/search/' },
+  { title: 'Tags', url: '/tags/' },
+  { title: 'Categories', url: '/categories/' },
+  { title: 'Sitemap', url: '/sitemap/' }
+];
 
-### All Pages
+function formatDate(input) {
+  if (!input) return '';
+  const date = new Date(input);
+  if (Number.isNaN(date.getTime())) return input;
+  return date.toISOString().slice(0, 10);
+}
 
-<ul>
-{% for page in site.pages %}
-    {% if page.layout != nil %}
-        {% if page.layout != 'feed' %}
-            {% if page.title != 'Sitemap' or page.title != nil%}
-                {% if page.title != nil %}
-                    {% if page.url contains 'tag/' or page.title contains '404' or page.url contains 'blog/page' %}
-                    {% else %}
-<li><a href="{{ url }}{{ page.url | remove: 'index.html' }}">{{ page.title }}</a> </li>
-                    {% endif %}
-                {% endif %}
-            {% endif %}
-        {% endif %}
-    {% endif %}
-{% endfor %}
-</ul>
+function renderPages() {
+  const list = document.getElementById('sitemap-pages-list');
+  list.innerHTML = staticPages.map((page) => {
+    return '<li><a href="' + page.url + '">' + page.title + '</a></li>';
+  }).join('');
+}
+
+function renderPosts(posts) {
+  const body = document.getElementById('sitemap-posts-body');
+  if (!posts.length) {
+    body.innerHTML = '<tr><td colspan="3">No posts found.</td></tr>';
+    return;
+  }
+
+  body.innerHTML = posts.map((post) => {
+    const tags = Array.isArray(post.tags) ? post.tags.map((tag) => {
+      return '<a class="sitemap-tag" href="/tags/' + encodeURIComponent(tag.toLowerCase()) + '/">' + tag + '</a>';
+    }).join(' ') : '';
+
+    return '<tr>' +
+      '<td>' + formatDate(post.date) + '</td>' +
+      '<td><a href="' + post.url + '">' + post.title + '</a></td>' +
+      '<td>' + tags + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+renderPages();
+
+fetch('/search-index-min.json')
+  .then((response) => response.json())
+  .then((payload) => {
+    const posts = Array.isArray(payload.index) ? payload.index.slice() : [];
+    posts.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    renderPosts(posts);
+  })
+  .catch(() => {
+    const body = document.getElementById('sitemap-posts-body');
+    body.innerHTML = '<tr><td colspan="3">Failed to load posts.</td></tr>';
+  });
+</script>
