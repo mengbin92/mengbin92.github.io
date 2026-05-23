@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Proto3 cpp API概览
-tags: [protobuf, cpp, c++]
+tags: [protobuf, cpp]
 mermaid: false
 ---  
 

@@ -2,10 +2,11 @@ title: 孟斌
 author: 孟斌
 description: 技术博客与学习记录
 languageCode: zh-CN
-baseURL: https://mengbin92.github.io
+baseURL: https://mengbin.top/
 timezone: Asia/Shanghai
 
 contentDir: _posts
+pageDir: pages
 staticDir: assets
 publishDir: public
 
@@ -34,6 +35,9 @@ social:
   github: mengbin92
 
 enableRobotsTXT: true
+
+markup:
+  allowUnsafeHTML: true
 
 outputs:
   feed: true
