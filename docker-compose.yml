@@ -14,6 +14,6 @@ services:
     image: nginx:alpine
     container_name: blog-web
     ports:
-      - "8080:80"
+      - "18595:80"
     volumes:
       - ./public:/usr/share/nginx/html:ro
