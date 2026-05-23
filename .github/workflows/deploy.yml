@@ -1,0 +1,42 @@
+name: Deploy Blog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "config.yaml"
+      - "templates/**"
+      - "assets/**"
+      - "_posts/**"
+      - "pages/**"
+      - "docker-compose.yml"
+      - "Dockerfile"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.TENCENT_SSH_KEY }}
+
+      - name: Trust server host
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "${{ vars.TENCENT_SSH_PORT }}" "${{ secrets.TENCENT_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Pull and restart on Tencent server
+        run: |
+          ssh -p "${{ vars.TENCENT_SSH_PORT }}" "${{ secrets.TENCENT_USER }}@${{ secrets.TENCENT_HOST }}" <<'EOF'
+          set -eu
+          cd "${{ vars.TENCENT_SITE_DIR }}"
+          git pull --ff-only
+          docker compose up -d --remove-orphans
+          EOF

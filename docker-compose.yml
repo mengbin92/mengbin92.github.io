@@ -5,9 +5,8 @@ services:
     working_dir: /site
     volumes:
       - ./:/site
-    command: gobin build --minify
-    profiles:
-      - build
+    command: ["gobin", "serve", "--port", "8080", "--watch=true", "--live-reload=false"]
+    restart: unless-stopped
 
   web:
     restart: always

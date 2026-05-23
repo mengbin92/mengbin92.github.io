@@ -1,6 +1,15 @@
 # mengbin92.github.io
 
-The theme for this website use the open-sourced theme known as [Beautiful Jekyll](https://deanattali.com/beautiful-jekyll/).  
-The search function is implemented with [Simple-Jekyll-Search](https://github.com/christian-fei/Simple-Jekyll-Search).  
+This site is built with Gobin, not Jekyll.
 
-Thanks [jackgruber.github.io](https://jackgruber.github.io)
+## Local build
+
+```bash
+docker compose run --rm gobin-build build --minify
+```
+
+## Auto deploy
+
+Pushes to `main` trigger `.github/workflows/deploy.yml`, which SSHes into the Tencent server,
+pulls the latest commit, and restarts the local compose stack. The `gobin-build` service
+keeps `public/` rebuilt automatically when source files change.
