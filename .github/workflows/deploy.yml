@@ -34,7 +34,7 @@ jobs:
 
       - name: Pull and restart on Tencent server
         run: |
-          ssh -p "${{ vars.TENCENT_SSH_PORT }}" "${{ secrets.TENCENT_USER }}@${{ secrets.TENCENT_HOST }}" <<'EOF'
+          ssh -p "${{ vars.TENCENT_SSH_PORT }}" "${{ vars.TENCENT_DEPLOY_USER }}@${{ secrets.TENCENT_HOST }}" <<'EOF'
           set -eu
           cd "${{ vars.TENCENT_SITE_DIR }}"
           git pull --ff-only
