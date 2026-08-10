@@ -8,6 +8,10 @@ timezone: Asia/Shanghai
 contentDir: _posts
 pageDir: pages
 staticDir: assets
+staticDirs:
+  - assets
+  - img
+  - images
 publishDir: public
 
 paginate: 10
