@@ -1,6 +1,6 @@
 services:
   gobin-build:
-    image: docker.io/mengbin92/gobin:v1.2.0
+    image: docker.io/mengbin92/gobin:v1.8.4
     container_name: blog-gobin-build
     working_dir: /site
     volumes:
