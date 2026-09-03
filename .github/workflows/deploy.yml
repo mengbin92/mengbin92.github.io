@@ -37,6 +37,10 @@ jobs:
           ssh -p "${{ vars.TENCENT_SSH_PORT }}" "${{ vars.TENCENT_DEPLOY_USER }}@${{ secrets.TENCENT_HOST }}" <<'EOF'
           set -eu
           cd "${{ vars.TENCENT_SITE_DIR }}"
+          # Stash any local edits on the server (kept, not discarded) so
+          # the pull never aborts on conflicting working-tree changes.
+          git stash push -u -m "deploy-autostash"
           git pull --ff-only
+          docker compose pull
           docker compose up -d --remove-orphans
           EOF
