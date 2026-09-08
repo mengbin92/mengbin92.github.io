@@ -55,7 +55,13 @@ jobs:
           # retrying is cheaper than a stuck deploy.
           if ! docker compose up -d --remove-orphans; then
             echo "docker compose up failed; restarting docker daemon and retrying once"
-            sudo -n systemctl restart docker
+            if ! sudo -n systemctl restart docker 2>/dev/null; then
+              echo "ERROR: deploy user cannot restart docker (no passwordless sudo)." >&2
+              echo "Run on the server as root: systemctl restart docker" >&2
+              echo "then re-run this workflow. To enable self-healing, add to sudoers:" >&2
+              echo "  deploy ALL=(root) NOPASSWD: /usr/bin/systemctl restart docker.service" >&2
+              exit 1
+            fi
             for i in $(seq 1 15); do
               docker info >/dev/null 2>&1 && break
               sleep 2
