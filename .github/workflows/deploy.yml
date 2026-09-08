@@ -50,5 +50,16 @@ jobs:
           git log --oneline origin/main..main
           git reset --hard origin/main
           docker compose pull
-          docker compose up -d --remove-orphans
+          # If the daemon is in a broken state (e.g. TTRPC/shim socket
+          # corruption after unattended upgrades), restarting it once and
+          # retrying is cheaper than a stuck deploy.
+          if ! docker compose up -d --remove-orphans; then
+            echo "docker compose up failed; restarting docker daemon and retrying once"
+            sudo -n systemctl restart docker
+            for i in $(seq 1 15); do
+              docker info >/dev/null 2>&1 && break
+              sleep 2
+            done
+            docker compose up -d --remove-orphans
+          fi
           EOF

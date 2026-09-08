@@ -2,7 +2,7 @@ title: 孟斌的小站
 author: 孟斌
 description: 技术博客与学习记录
 languageCode: zh-CN
-baseURL: https://mengbin.top/
+baseURL: https://blog.mengbin.top/
 timezone: Asia/Shanghai
 
 contentDir: _posts
