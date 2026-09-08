@@ -38,9 +38,17 @@ jobs:
           set -eu
           cd "${{ vars.TENCENT_SITE_DIR }}"
           # Stash any local edits on the server (kept, not discarded) so
-          # the pull never aborts on conflicting working-tree changes.
+          # the checkout never aborts on conflicting working-tree changes.
           git stash push -u -m "deploy-autostash"
-          git pull --ff-only
+          # The server is a pure deploy checkout: align the branch exactly
+          # to origin instead of pulling, so a diverged local branch (e.g.
+          # stray commits from an older deploy script) cannot block deploys.
+          # Server-local commits are printed here and stay recoverable via
+          # the reflog; they are never silently dropped.
+          git fetch origin
+          echo "Server-local commits being left behind (recoverable via reflog):"
+          git log --oneline origin/main..main
+          git reset --hard origin/main
           docker compose pull
           docker compose up -d --remove-orphans
           EOF
