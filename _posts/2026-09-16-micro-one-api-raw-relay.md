@@ -1,10 +1,17 @@
 ---
-title: "透传：为什么 embeddings 不该被“翻译”，以及 29 个明确不支持的接口"
-date: 2026-09-16T12:00:00+08:00
-description: "做网关的时候我一开始的想法是“给每个上游接口写一个适配器”。"
-tags: ["Micro-One-API", "Go", "Kratos", "架构"]
+title: "透传：为什么 embeddings 不该被「翻译」，以及 29 个明确不支持的接口"
+date: 2026-09-16T17:00:00+08:00
+description: "拆解 micro-one-api 的 raw relay 路径：为什么只需转发、不需理解的接口不该写适配器；透传仍然承担鉴权/选路/预扣/结算/重试全部职责；透传里唯一被改写的字段是模型名；embeddings 的开销上限为什么要做字段白名单；以及“不支持”为什么要显式注册成 501 而不是自然 404。"
+tags: ["Micro-One-API", "AI 网关", "Go", "架构", "API 设计"]
 categories: ["architecture"]
 draft: false
+mermaid: true
+---
+
+## 摘要
+
+做网关时我一开始想"给每个上游接口写一个适配器"，列完清单就停住了：embeddings、moderations、images、audio 这些接口的内容我根本不需要理解，原样转发就行。对它们写适配器等于为每个接口维护一套可能与上游产生分歧的结构体。这篇讲这条路——代码只有几十行，但有几个我认为值得说的决定。
+
 ---
 
 ## 0. 一个反直觉的判断：不是所有接口都该被适配
@@ -341,8 +348,10 @@ usage = extractCanonicalUsage(rawResp.Body, plan)
 
 ---
 
-## 8. 下一篇
+---
 
-下一篇讲订阅的账务语义：续费、退款、冲正这三种操作在一个 append-only 的账本上分别该怎么记，以及"已售出的套餐配置被改了"这件事我是怎么处理的。
+## 相关阅读
 
-[《订阅账务：续费、退款、冲正，以及“已售出的套餐被改了”怎么办》](/2026-09-17-micro-one-api-accounting-semantics/)
+需要理解的那三个协议走的是另一条路，见 [《一个网关翻译三种协议：Chat ↔ Responses ↔ Messages 转换实践》](/2026-09-10-protocol-conversion-micro-one-api/)（系列外的一篇）。
+
+上游端点的差异是怎么收敛成一张表的，见 [《一个适配器怎么覆盖二十家 provider》](/2026-09-15-micro-one-api-provider-adapters/)。
